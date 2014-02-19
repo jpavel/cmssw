@@ -41,14 +41,12 @@ PFTauQualityCuts = cms.PSet(
             minTrackHits                 = cms.uint32(3),    # total track hits
             minGammaEt                   = cms.double(0.5)  # filter PFgammas below given Pt
             #useTracksInsteadOfPFHadrons  = cms.bool(False),  # if true, use generalTracks, instead of PFChargedHadrons
-    ),
+            ),
     # The central definition of primary vertex source.
     primaryVertexSrc = cms.InputTag("offlinePrimaryVertices"),
     # Possible algorithms are: highestPtInEvent, closestInDeltaZ, combined
     pvFindingAlgo = cms.string("highestWeightForLeadTrack"),
     vertexTrackFiltering = cms.bool(False),
-    vertexSelection = cms.string("isValid & ndof >= 4 & chi2 > 0 & tracksSize > 0 & abs(z) < 24 & abs(position.Rho) < 2."), # CV: cut >= 4 if using 'offlinePrimaryVertices',
-                                                                                                                            #         >= 7 if using 'offlinePrimaryVerticesWithBS' as input
     recoverLeadingTrk = cms.bool(False),
     # produce histograms when running in debug mode
     # makeHisto = cms.bool(False)
