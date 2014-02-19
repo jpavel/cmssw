@@ -19,8 +19,8 @@ recoTauDiscriminantCutMultiplexer = cms.EDProducer(
         decayMode = cms.PSet(
             Producer = cms.InputTag("fixme"),
             cut = cms.double(0.)
-            )
-        ),
+        )
+    ),
     key = cms.InputTag("fixme"), # a discriminator
     mapping = cms.VPSet(
         cms.PSet(
@@ -30,6 +30,6 @@ recoTauDiscriminantCutMultiplexer = cms.EDProducer(
         cms.PSet(
             category = cms.uint32(1),
             cut = cms.double(0.2),
-        ),
+        )
     )
 )

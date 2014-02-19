@@ -274,7 +274,7 @@ void PFRecoTauEnergyAlgorithmPlugin::operator()(PFTau& tau) const
 	  double chargedHadronPx_modified = scaleFactor*chargedPFCand->px();
 	  double chargedHadronPy_modified = scaleFactor*chargedPFCand->py();
 	  double chargedHadronPz_modified = scaleFactor*chargedPFCand->pz();
-	  reco::Candidate::LorentzVector chargedHadronP4_modified = compChargedHadronP4fromPxPyPz(chargedHadronPx_modified, chargedHadronPy_modified, chargedHadronPz_modified);	  
+	  reco::Candidate::LorentzVector chargedHadronP4_modified = compChargedHadronP4(chargedHadronPx_modified, chargedHadronPy_modified, chargedHadronPz_modified);	  
 	  chargedHadron_modified.setP4(chargedHadronP4_modified);
 	  tau.signalTauChargedHadronCandidates_[iChargedHadron] = chargedHadron_modified;
 	  diffP4 += (chargedHadron.p4() - chargedHadron_modified.p4());
@@ -351,7 +351,7 @@ void PFRecoTauEnergyAlgorithmPlugin::operator()(PFTau& tau) const
 	      double chargedHadronPx_modified     = chargedHadronTrack.px();
 	      double chargedHadronPy_modified = chargedHadronTrack.py();
 	      double chargedHadronPz_modified   = chargedHadronTrack.pz();
-	      chargedHadronP4_modified = compChargedHadronP4fromPxPyPz(chargedHadronPx_modified, chargedHadronPy_modified, chargedHadronPz_modified);
+	      chargedHadronP4_modified = compChargedHadronP4(chargedHadronPx_modified, chargedHadronPy_modified, chargedHadronPz_modified);
 	    } else {
 	      edm::LogWarning("PFRecoTauEnergyAlgorithmPlugin::operator()") 
 		<< "PFRecoTauChargedHadron has no associated reco::Track !!" << std::endl;
@@ -412,7 +412,7 @@ void PFRecoTauEnergyAlgorithmPlugin::operator()(PFTau& tau) const
 		double chargedHadronPx_modified = scaleFactor*chargedHadronTrack->px();
 		double chargedHadronPy_modified = scaleFactor*chargedHadronTrack->py();
 		double chargedHadronPz_modified = scaleFactor*chargedHadronTrack->pz();
-		chargedHadronP4_modified = compChargedHadronP4fromPxPyPz(chargedHadronPx_modified, chargedHadronPy_modified, chargedHadronPz_modified);
+		chargedHadronP4_modified = compChargedHadronP4(chargedHadronPx_modified, chargedHadronPy_modified, chargedHadronPz_modified);
 	      } else {
 		edm::LogWarning("PFRecoTauEnergyAlgorithmPlugin::operator()") 
 		  << "PFRecoTauChargedHadron has no associated reco::Track !!" << std::endl;
