@@ -11,84 +11,90 @@
 #include "DataFormats/GsfTrackReco/interface/GsfTrack.h"
 #include "DataFormats/TrackReco/interface/Track.h"
 
-
 namespace reco { namespace tau {
-
-  bool vxTrkFiltering;
 
 // Get the highest pt track in a jet.
 // Get the KF track if it exists.  Otherwise, see if it has a GSF track.
-  reco::TrackBaseRef RecoTauVertexAssociator::getLeadTrack(const PFJet& jet) const{
+reco::TrackBaseRef RecoTauVertexAssociator::getLeadTrack(const PFJet& jet) const
+{
   std::vector<PFCandidatePtr> allTracks = pfChargedCands(jet, true);
   std::vector<PFCandidatePtr> tracks;
   //PJ filtering of tracks 
-  if (!allTracks.size()){
+  if ( !allTracks.size() ) {
     LogDebug("VxTrkAssocInfo") << " No tracks at this jet! Returning empty reference.";
     return reco::TrackBaseRef();
   }
-  if(vxTrkFiltering) tracks = qcuts_.filterCandRefs(allTracks);
-  else{ 
+  if ( vxTrkFiltering_ ) {
+    tracks = qcuts_.filterCandRefs(allTracks);
+  } else { 
     tracks = allTracks;
     LogDebug("VxTrkAssocInfo") << " No quality cuts applied. All tracks passing.";
   }
   PFCandidatePtr cand;
-  if (!tracks.size()){
-    if(!recoverLeadingTrk){
+  if ( !tracks.size() ) {
+    if ( !recoverLeadingTrk ) {
       LogDebug("VxTrkAssocInfo") << " All " << allTracks.size() << " tracks rejected!";
       return reco::TrackBaseRef();
-    }else{
+    } else {
       cand = allTracks[0];
       LogDebug("VxTrkAssocInfo") << " All " << allTracks.size() << " tracks rejected but leading track was recovered!";
     }
-  }else cand = tracks[0];
-
-  if (cand->trackRef().isNonnull())
+  } else cand = tracks[0];
+  
+  if ( cand->trackRef().isNonnull() ) {
     return reco::TrackBaseRef(cand->trackRef());
-  else if (cand->gsfTrackRef().isNonnull()) {
+  } else if ( cand->gsfTrackRef().isNonnull() ) {
     return reco::TrackBaseRef(cand->gsfTrackRef());
   }
   return reco::TrackBaseRef();
-  }
-  namespace {
-// Define functors which extract the relevant information from a collection of
-// vertices.
-class DZtoTrack : public std::unary_function<double, reco::VertexRef> {
-  public:
-    DZtoTrack(const reco::TrackBaseRef& trk):trk_(trk){}
-    double operator()(const reco::VertexRef& vtx) const {
-      if (!trk_ || !vtx) {
+}
+
+namespace {
+  // Define functors which extract the relevant information from a collection of
+  // vertices.
+  class DZtoTrack : public std::unary_function<double, reco::VertexRef> 
+  {
+   public:
+    DZtoTrack(const reco::TrackBaseRef& trk) 
+      : trk_(trk) 
+    {}
+    double operator()(const reco::VertexRef& vtx) const 
+    {
+      if ( !trk_ || !vtx ) {
         return std::numeric_limits<double>::infinity();
       }
       return std::abs(trk_->dz(vtx->position()));
     }
-  private:
+   private:
     const reco::TrackBaseRef trk_;
-};
-
-class TrackWeightInVertex : public std::unary_function<double, reco::VertexRef>
-{
-  public:
-    TrackWeightInVertex(const reco::TrackBaseRef& trk):trk_(trk){}
-    double operator()(const reco::VertexRef& vtx) const {
-      if (!trk_ || !vtx) {
+  };
+  
+  class TrackWeightInVertex : public std::unary_function<double, reco::VertexRef>
+  {
+   public:
+    TrackWeightInVertex(const reco::TrackBaseRef& trk)
+      : trk_(trk)
+    {}
+    double operator()(const reco::VertexRef& vtx) const 
+    {
+      if ( !trk_ || !vtx ) {
         return 0.0;
       }
       return vtx->trackWeight(trk_);
     }
-  private:
+   private:
     const reco::TrackBaseRef trk_;
-};
+  };
+}
 
-  }
-
-RecoTauVertexAssociator::RecoTauVertexAssociator(
-						 const edm::ParameterSet& pset, edm::ConsumesCollector && iC):  qcuts_(pset.exists("vxAssocQualityCuts") ? pset.getParameterSet("vxAssocQualityCuts") : pset.getParameterSet("signalQualityCuts"))
+RecoTauVertexAssociator::RecoTauVertexAssociator(const edm::ParameterSet& pset, edm::ConsumesCollector && iC)
+  : vertexSelector_(0),
+    qcuts_(pset.exists("vxAssocQualityCuts") ? pset.getParameterSet("vxAssocQualityCuts") : pset.getParameterSet("signalQualityCuts"))
 {
-  //   qcuts_ = pset.exists("vxAssocQualityCuts") ? pset.getParameterSet("vxAssocQualityCuts") : pset.getParameterSet("signalQualityCuts");
   vertexTag_ = edm::InputTag("offlinePrimaryVertices", "");
   std::string algorithm = "highestPtInEvent";
   // Sanity check, will remove once HLT module configs are updated.
-  if (!pset.exists("primaryVertexSrc") || !pset.exists("pvFindingAlgo")) {
+  if ( !pset.exists("primaryVertexSrc") || !pset.exists("pvFindingAlgo") ) {
     edm::LogWarning("NoVertexFindingMethodSpecified")
       << "The PSet passed to the RecoTauVertexAssociator was"
       << " incorrectly configured. The vertex will be taken as the "
@@ -98,16 +104,22 @@ RecoTauVertexAssociator::RecoTauVertexAssociator(
     vertexTag_ = pset.getParameter<edm::InputTag>("primaryVertexSrc");
     algorithm = pset.getParameter<std::string>("pvFindingAlgo");
   }
-  vxTrkFiltering = false;
-  if(!pset.exists("vertexTrackFiltering") && pset.exists("vxAssocQualityCuts")){
-       edm::LogWarning("NoVertexTrackFilteringSpecified")
-	 << "The PSet passed to the RecoTauVertexAssociator was"
-	 << " incorrectly configured. Please define vertexTrackFiltering in config file." 
-	 << " No filtering of tracks to vertices will be applied"
-	 << std::endl;
-     }else{
-    vxTrkFiltering = pset.exists("vertexTrackFiltering") ? pset.getParameter<bool>("vertexTrackFiltering") : false;
-     }
+  vxTrkFiltering_ = false;
+  if ( !pset.exists("vertexTrackFiltering") && pset.exists("vxAssocQualityCuts") ) {
+    edm::LogWarning("NoVertexTrackFilteringSpecified")
+      << "The PSet passed to the RecoTauVertexAssociator was"
+      << " incorrectly configured. Please define vertexTrackFiltering in config file." 
+      << " No filtering of tracks to vertices will be applied"
+      << std::endl;
+  } else {
+    vxTrkFiltering_ = pset.exists("vertexTrackFiltering") ? pset.getParameter<bool>("vertexTrackFiltering") : false;
+  }
+  if ( pset.exists("vertexSelection") ) {
+    std::string vertexSelection = pset.getParameter<std::string>("vertexSelection");
+    if ( vertexSelection != "" ) {
+      vertexSelector_ = new StringCutObjectSelector<reco::Vertex>(vertexSelection);
+    }
+  }
   
   LogDebug("TauVxAssociatorInfo") << " ----> Using " << algorithm << " algorithm to select vertex.";
   if (algorithm == "highestPtInEvent") {
@@ -132,58 +144,57 @@ RecoTauVertexAssociator::RecoTauVertexAssociator(
   // containers for holding vertices associated to jets
   JetToVertexAssociation=0;
   myEventNumber = -999;
+}
 
- }
-
-
-void RecoTauVertexAssociator::setEvent(const edm::Event& evt) {
+void RecoTauVertexAssociator::setEvent(const edm::Event& evt) 
+{
   edm::Handle<reco::VertexCollection> verticesH_;
   evt.getByToken(vx_token, verticesH_);
   vertices_.clear();
   vertices_.reserve(verticesH_->size());
-  for(size_t i = 0; i < verticesH_->size(); ++i) {
-    vertices_.push_back(reco::VertexRef(verticesH_, i));
+  for ( size_t i = 0; i < verticesH_->size(); ++i ) {
+    reco::VertexRef vertex(verticesH_, i);
+    if ( vertexSelector_ && !(*vertexSelector_)(*vertex) ) continue;
+    vertices_.push_back(vertex);
   }
-  if(vertices_.size()>0 ) qcuts_.setPV(vertices_[0]);
+  if ( vertices_.size() > 0 ) qcuts_.setPV(vertices_[0]);
   int currentEvent = evt.id().event();
-  if(myEventNumber == -999 || myEventNumber!=currentEvent)
-    {
-      if(myEventNumber==-999) JetToVertexAssociation= new std::map<const reco::PFJet*,reco::VertexRef>;
-      else JetToVertexAssociation->clear();
-      myEventNumber = currentEvent;
-    }
+  if ( myEventNumber == -999 || myEventNumber != currentEvent ) {
+    if ( myEventNumber == -999 ) JetToVertexAssociation = new std::map<const reco::PFJet*,reco::VertexRef>;
+    else JetToVertexAssociation->clear();
+    myEventNumber = currentEvent;
+  }
 }
 
 reco::VertexRef
-RecoTauVertexAssociator::associatedVertex(const PFTau& tau) const {
+RecoTauVertexAssociator::associatedVertex(const PFTau& tau) const 
+{
   reco::PFJetRef jetRef = tau.jetRef();
   // FIXME workaround for HLT which does not use updated data format
-  if (jetRef.isNull())
-    jetRef = tau.pfTauTagInfoRef()->pfjetRef();
+  if ( jetRef.isNull() ) jetRef = tau.pfTauTagInfoRef()->pfjetRef();
   return associatedVertex(*jetRef);
 }
 
 reco::VertexRef
-RecoTauVertexAssociator::associatedVertex(const PFJet& jet) const {
+RecoTauVertexAssociator::associatedVertex(const PFJet& jet) const 
+{
   reco::VertexRef output = vertices_.size() ? vertices_[0] : reco::VertexRef();
   PFJet const* my_jet_ptr = &jet;
   LogDebug("VxTrkAssocInfo") << "There are " << vertices_.size() << " vertices in this event. The jet is " << jet;
   LogTrace("VxTrkAssocInfo") << "The lenght of assoc map is "<< JetToVertexAssociation->size();
 
-
   std::map<const reco::PFJet*,reco::VertexRef>::iterator it = JetToVertexAssociation->find(my_jet_ptr);
-   if(it!=JetToVertexAssociation->end())
-     {
-       LogTrace("VxTrkAssocInfo") << "I have seen this jet! Returning pointer to stored value.";
-       return it->second;
-     }
-   // Vx counters
-   reco::TrackBaseRef leadTrack;
-  if (algo_ == kHighestPtInEvent) {
+  if ( it != JetToVertexAssociation->end() ) {
+    LogTrace("VxTrkAssocInfo") << "I have seen this jet! Returning pointer to stored value.";
+    return it->second;
+  }
+  // Vx counters
+  reco::TrackBaseRef leadTrack;
+  if ( algo_ == kHighestPtInEvent ) {
     return output;
-  } else if (algo_ == kClosestDeltaZ) {
+  } else if ( algo_ == kClosestDeltaZ ) {
     leadTrack = getLeadTrack(jet);
-    if(!leadTrack){
+    if ( !leadTrack ) {
       LogTrace("VxTrkAssocInfo") << "No track to associate to! Returning vx no. 0.";
       JetToVertexAssociation->insert(std::pair<const PFJet*, reco::VertexRef>(my_jet_ptr,output));
       return output;
@@ -191,17 +202,17 @@ RecoTauVertexAssociator::associatedVertex(const PFJet& jet) const {
     double closestDistance = std::numeric_limits<double>::infinity();
     DZtoTrack dzComputer(leadTrack);
     // Find the vertex that has the lowest DZ to the lead track
-    BOOST_FOREACH(const reco::VertexRef& vtx, vertices_) {
+    BOOST_FOREACH ( const reco::VertexRef& vtx, vertices_ ) {
       double dz = dzComputer(vtx);
-      if (dz < closestDistance) {
+      if ( dz < closestDistance ) {
         closestDistance = dz;
         output = vtx;
 
       }
     }
-  } else if (algo_ == kHighestWeigtForLeadTrack || algo_ == kCombined) {
+  } else if ( algo_ == kHighestWeigtForLeadTrack || algo_ == kCombined ) {
     leadTrack = getLeadTrack(jet);
-    if(!leadTrack){
+    if ( !leadTrack ) {
       LogTrace("VxTrkAssocInfo") << "No track to associate to! Returning vx no. 0.";
       JetToVertexAssociation->insert(std::pair<const PFJet*, reco::VertexRef>(my_jet_ptr,output));
       return output;
@@ -209,33 +220,31 @@ RecoTauVertexAssociator::associatedVertex(const PFJet& jet) const {
     double largestWeight = 0.;
     // Find the vertex that gives the lead track the highest weight.
     TrackWeightInVertex weightComputer(leadTrack);
-    BOOST_FOREACH(const reco::VertexRef& vtx, vertices_) {
+    BOOST_FOREACH ( const reco::VertexRef& vtx, vertices_ ) {
       double weight = weightComputer(vtx);
-     if (weight > largestWeight) {
+      if ( weight > largestWeight ) {
         largestWeight = weight;
         output = vtx;
       }
     }
     // the weight was never larger than zero
-    if(algo_==kCombined && largestWeight < 1e-7){
+    if ( algo_ == kCombined && largestWeight < 1e-7 ){
       LogTrace("VxTrkAssocInfo") << " No vertex had positive weight! Trying dZ instead... ";
       DZtoTrack dzComputer(leadTrack);
       double closestDistance = std::numeric_limits<double>::infinity();
-      BOOST_FOREACH(const reco::VertexRef& vtx, vertices_) {
+      BOOST_FOREACH ( const reco::VertexRef& vtx, vertices_ ) {
 	double dz_i = dzComputer(vtx);
-	if (dz_i < closestDistance) {
+	if ( dz_i < closestDistance ) {
 	  closestDistance = dz_i;
 	  output = vtx;
 	}
       }
     }
   }
-
+  
   JetToVertexAssociation->insert(std::pair<const PFJet*, reco::VertexRef>(my_jet_ptr,output));
-
+  
   return output;
 }
-
-
 
 }}

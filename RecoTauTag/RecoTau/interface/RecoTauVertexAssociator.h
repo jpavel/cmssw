@@ -26,6 +26,9 @@
 
 #include "DataFormats/Common/interface/AssociationMap.h"
 #include "DataFormats/JetReco/interface/PFJetCollection.h"
+
+#include "CommonTools/Utils/interface/StringCutObjectSelector.h"
+
 #include <map>
 
 // Forward declarations
@@ -51,7 +54,7 @@ class RecoTauVertexAssociator {
     };
 
     RecoTauVertexAssociator (const edm::ParameterSet& pset,  edm::ConsumesCollector&& iC);
-    virtual ~RecoTauVertexAssociator (){}
+    virtual ~RecoTauVertexAssociator() { delete vertexSelector_; }
     /// Get the primary vertex associated to a given jet. Returns a null Ref if
     /// no vertex is found.
     reco::VertexRef associatedVertex(const PFJet& tau) const;
@@ -67,10 +70,11 @@ class RecoTauVertexAssociator {
     std::map<const reco::PFJet*,reco::VertexRef> *JetToVertexAssociation;
     int  myEventNumber;
 
-
   private:
     std::vector<reco::VertexRef> vertices_;
     edm::InputTag vertexTag_;
+    bool vxTrkFiltering_;
+    StringCutObjectSelector<reco::Vertex>* vertexSelector_;
     Algorithm algo_;
     //PJ adding quality cuts
     RecoTauQualityCuts qcuts_;
