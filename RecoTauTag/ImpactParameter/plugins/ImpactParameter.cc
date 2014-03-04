@@ -1,75 +1,127 @@
+/* class ImpactParameter
+ * EDProducer for TauImpactParameterInfoCollection
+ * author: Andrea Rizzi
+ */
+
+// system include files
+#include <memory>
+
+// user include files
+#include "FWCore/Framework/interface/Frameworkfwd.h"
+#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/EventSetup.h"
+#include "FWCore/Framework/interface/ESHandle.h"
+#include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/MakerMacros.h"
+#include "FWCore/ParameterSet/interface/ParameterSet.h"
+
+#include "DataFormats/BTauReco/interface/JetTag.h"
+#include "DataFormats/TrackReco/interface/Track.h"
+#include "DataFormats/VertexReco/interface/Vertex.h"
+#include "DataFormats/VertexReco/interface/VertexFwd.h"
+#include "DataFormats/BTauReco/interface/IsolatedTauTagInfo.h"
+
+#include "TrackingTools/Records/interface/TransientTrackRecord.h"
+
 #include "RecoTauTag/ImpactParameter/interface/ImpactParameterAlgorithm.h"
 
-#include "RecoBTag/BTagTools/interface/SignedTransverseImpactParameter.h"
-#include "RecoBTag/BTagTools/interface/SignedImpactParameter3D.h"
 
-#include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
+class ImpactParameter : public edm::EDProducer {
+public:
+  explicit ImpactParameter(const edm::ParameterSet&);
+  ~ImpactParameter();
 
-ImpactParameterAlgorithm::ImpactParameterAlgorithm(){
-        ip_min   = -9999;
-        ip_max   = 9999;
-        sip_min  = 0;
-        use_sign = false;
-	use3D    = false; 
+
+  virtual void produce(edm::Event&, const edm::EventSetup&);
+private:
+  ImpactParameterAlgorithm* algo;
+  std::string jetTrackSrc;
+  std::string vertexSrc;
+  bool usingVertex;
+};
+
+
+//
+// constructors and destructor
+//
+ImpactParameter::ImpactParameter(const edm::ParameterSet& iConfig) {
+
+        jetTrackSrc = iConfig.getParameter<std::string>("JetTagProd");
+        vertexSrc   = iConfig.getParameter<std::string>("vertexSrc");
+        usingVertex = iConfig.getParameter<bool>("useVertex");
+
+        algo = new ImpactParameterAlgorithm(iConfig);
+
+        std::string modulname = iConfig.getParameter<std::string>( "@module_label" );
+        produces<reco::JetTagCollection>().setBranchAlias(modulname);
+        std::string infoBranchName = modulname + "Info";
+        produces<reco::TauImpactParameterInfoCollection>().setBranchAlias(infoBranchName);
 }
 
-ImpactParameterAlgorithm::ImpactParameterAlgorithm(const edm::ParameterSet & parameters){
-	ip_min       = parameters.getParameter<double>("TauImpactParameterMin");
-	ip_max       = parameters.getParameter<double>("TauImpactParameterMax");
-	sip_min	     = parameters.getParameter<double>("TauImpactParameterSignificanceMin");
-	use_sign     = parameters.getParameter<bool>("UseTauImpactParameterSign");
-	use3D        = parameters.getParameter<bool>("UseTau3DImpactParameter");
 
-}
-
-void ImpactParameterAlgorithm::setTransientTrackBuilder(const TransientTrackBuilder * builder) { 
-	transientTrackBuilder = builder; 
+ImpactParameter::~ImpactParameter(){
+        delete algo;
 }
 
 
-std::pair<float,reco::TauImpactParameterInfo> ImpactParameterAlgorithm::tag(const reco::IsolatedTauTagInfoRef & tauRef, const reco::Vertex & pv) {
 
-	if(transientTrackBuilder == 0){
-	     std::cout << "Transient track builder is 0. abort!" << std::endl;
-	     abort(); //FIXME: trow an exception here
-	}
+//
+// member functions
+//
+// ------------ method called to produce the data  ------------
+void ImpactParameter::produce(edm::Event& iEvent, const edm::EventSetup& iSetup){
 
-        reco::TauImpactParameterInfo resultExtended;
-	resultExtended.setIsolatedTauTag(tauRef);
+        using namespace reco;
 
-	const reco::Jet* jet = tauRef->jet().get();
-	GlobalVector direction(jet->px(),jet->py(),jet->pz());
+        edm::Handle<IsolatedTauTagInfoCollection> isolatedTaus;
+        iEvent.getByLabel(jetTrackSrc,isolatedTaus);
 
-        const reco::TrackRefVector& tracks = tauRef->selectedTracks();
+        std::auto_ptr<JetTagCollection>                 tagCollection;
+        std::auto_ptr<TauImpactParameterInfoCollection> extCollection( new TauImpactParameterInfoCollection() );
+        if (not isolatedTaus->empty()) {
+          edm::RefToBaseProd<reco::Jet> prod( isolatedTaus->begin()->jet() );
+          tagCollection.reset( new JetTagCollection(prod) );
+        } else {
+          tagCollection.reset( new JetTagCollection() );
+        }
 
-	edm::RefVector<reco::TrackCollection>::const_iterator iTrack;
-	for(iTrack = tracks.begin(); iTrack!= tracks.end(); iTrack++){
+        edm::ESHandle<TransientTrackBuilder> builder;
+        iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder",builder);
+        algo->setTransientTrackBuilder(builder.product());
 
-          const reco::TransientTrack transientTrack = (transientTrackBuilder->build(&(**iTrack)));
+        Vertex PV;
+        if (usingVertex) {
+          edm::Handle<reco::VertexCollection> vertices;
+          iEvent.getByLabel(vertexSrc,vertices);
 
-          SignedTransverseImpactParameter stip;
-	  Measurement1D ip = stip.apply(transientTrack,direction,pv).second;
+          const reco::VertexCollection vertCollection = *(vertices.product());
+          reco::VertexCollection::const_iterator iVertex;
 
-	  SignedImpactParameter3D signed_ip3D;
-	  Measurement1D ip3D = signed_ip3D.apply(transientTrack,direction,pv).second;
-	  //std::cout << "check pv,ip3d,track z " << pv.z() << " " << ip3D.value() << " " << transientTrack->dz() << std::endl;
-	  if(!use_sign){
-	    Measurement1D tmp2D(fabs(ip.value()),ip.error());
-	    ip = tmp2D;
+          for(iVertex = vertCollection.begin();iVertex!=vertCollection.end();iVertex++){
+            PV = *iVertex;
+          }
 
-	    Measurement1D tmp3D(fabs(ip3D.value()),ip3D.error());
-            ip3D = tmp3D;
-	  }
+        } else {
+          Vertex::Error e;
+          e(0,0)=0;
+          e(1,1)=0;
+          e(2,2)=0;
+          Vertex::Point p(0,0,0);
 
-          reco::TauImpactParameterTrackData theData;
+          Vertex dummyPV(p,e,1,1,1);
+          PV = dummyPV;
+        }
 
-	  theData.transverseIp = ip;
-          theData.ip3D = ip3D;
-	  resultExtended.storeTrackData(*iTrack,theData);
+        for (unsigned int i = 0; i < isolatedTaus->size(); ++i) {
+            IsolatedTauTagInfoRef tauRef(isolatedTaus, i);
+            std::pair<float, TauImpactParameterInfo> ipInfo = algo->tag(tauRef,PV);
+            tagCollection->setValue(i, ipInfo.first);    
+            extCollection->push_back(ipInfo.second);
+        }
 
-	}
-
-	float discriminator = resultExtended.discriminator(ip_min,ip_max,sip_min,use_sign,use3D);
-
-	return std::make_pair( discriminator, resultExtended );
+        iEvent.put(extCollection);
+        iEvent.put(tagCollection);
 }
+
+
+DEFINE_FWK_MODULE(ImpactParameter);
