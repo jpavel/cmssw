@@ -97,10 +97,10 @@ switchToPFTauHPS(process)
 
 
 process.tauDifferenceAnalyzer = cms.EDFilter("RecoTauDifferenceAnalyzer",
-                                             src1 = cms.InputTag("hpsPFTauProducer","",procName),
-                                             src2 = cms.InputTag("hpsPFTauProducer","",procName),
+                                             src1 = cms.InputTag("hpsPFTauProducer","", procName),
+                                             src2 = cms.InputTag("hpsPFTauProducer","","RECO"),
                                              disc1 = cms.InputTag(discriminator, "", procName),
-                                             disc2 = cms.InputTag(discriminator2, "", procName),
+                                             disc2 = cms.InputTag(discriminator2, "", "RECO"),
                                              discLoose = cms.InputTag(discriminatorLoose, "", procName),
                                              discLoose_2 = cms.InputTag(discriminatorLoose2, "", procName),
                                              discLoose_3 = cms.InputTag(discriminatorLoose3, "", procName),

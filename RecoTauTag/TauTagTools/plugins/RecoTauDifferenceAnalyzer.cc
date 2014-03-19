@@ -995,24 +995,29 @@ if(!background_ && mcMatch_ && !useGenTaus_){
 
 
     if((mcMatch_ && !matched)||(matchToJets_&& !matched)) continue;
+    if(verboseOutputMC_) std::cout << "Matched to truth" << std::endl;
     tausMatched_++; nMatched++;
     reco::PFTauRef bestMatch;
     double bestDeltaR = -1;
     reco::PFJetRef jet1,jet2;
     for (size_t iTau2 = 0; iTau2 < taus2->size(); ++iTau2) {
+      if(verboseOutput_) std::cout << "Checking ref tau no. " << iTau2 << "/" << taus2->size() << std::endl;
       reco::PFTauRef tau2(taus2, iTau2);
       jet1 = getJetRef(*tau1);
       jet2 = getJetRef(*tau2);
       double deltaRVal = deltaR(jet2->p4(), jet1->p4());
-      if (bestMatch.isNull() || deltaRVal < bestDeltaR) {
+    
+     if (bestMatch.isNull() || deltaRVal < bestDeltaR) {
         bestMatch = tau2;
         bestDeltaR = deltaRVal;
       }
     }
+    if(verboseOutput_) std::cout << "Distance to best match is " << bestDeltaR << std::endl;
     jet2 = getJetRef(*bestMatch);
     // See what's up with the discriminators
     bool result1 = ((*disc1)[tau1] > 0.5);
     bool result2 = ((*disc2)[bestMatch] > 0.5);
+    if(verboseOutput_) std::cout << "got discriminators" << std::endl;
     bool resultLoose = ((*discLoose)[tau1] > 0.5);
     bool resultMedium = ((*discMedium)[tau1] > 0.5);
     bool resultTight = ((*discTight)[tau1] > 0.5);
