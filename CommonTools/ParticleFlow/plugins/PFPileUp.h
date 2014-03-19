@@ -65,6 +65,20 @@ class PFPileUp : public edm::EDProducer {
   /// use the closest z vertex if a track is not in a vertex
   bool   checkClosestZVertex_;
 
+  /// use jets ?
+  bool  useJets_;
+
+  /// jets
+  edm::EDGetTokenT<edm::View<reco::Candidate> >  tokenJets_;
+
+  /// minimum jet Pt
+  double  minJetPt_;
+
+  /// maximum dR from track to the jet axis
+  double  maxJetDeltaR_;
+
+  /// maximum distance from track to the jet axis
+  double  maxDistanceToJetAxis_;
 };
 
 #endif
