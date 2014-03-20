@@ -719,44 +719,44 @@ bool RecoTauDifferenceAnalyzer::filter(
   evt.getByLabel(disc1_, disc1);
   edm::Handle<reco::PFTauDiscriminator> disc2;
   evt.getByLabel(disc2_, disc2);
-  edm::Handle<reco::PFTauDiscriminator> discMVA;
-  //  evt.getByLabel("hpsPFTauDiscriminationByIsolationMVAraw",discMVA);
-  edm::Handle<reco::PFTauDiscriminator> discCH;
-  evt.getByLabel("hpsPFTauDiscriminationByRawChargedIsolationDBSumPtCorr", discCH);
-  edm::Handle<reco::PFTauDiscriminator> discN;
-  evt.getByLabel("hpsPFTauDiscriminationByRawGammaIsolationDBSumPtCorr", discN);
-  edm::Handle<reco::PFTauDiscriminator> discCOMB;
-  evt.getByLabel("hpsPFTauDiscriminationByRawCombinedIsolationDBSumPtCorr", discCOMB);
+  // edm::Handle<reco::PFTauDiscriminator> discMVA;
+  // //  evt.getByLabel("hpsPFTauDiscriminationByIsolationMVAraw",discMVA);
+  // edm::Handle<reco::PFTauDiscriminator> discCH;
+  // evt.getByLabel("hpsPFTauDiscriminationByRawChargedIsolationDBSumPtCorr", discCH);
+  // edm::Handle<reco::PFTauDiscriminator> discN;
+  // evt.getByLabel("hpsPFTauDiscriminationByRawGammaIsolationDBSumPtCorr", discN);
+  // edm::Handle<reco::PFTauDiscriminator> discCOMB;
+  // evt.getByLabel("hpsPFTauDiscriminationByRawCombinedIsolationDBSumPtCorr", discCOMB);
   edm::Handle<reco::PFTauDiscriminator> discDM;
   evt.getByLabel("hpsPFTauDiscriminationByDecayModeFinding",discDM);
-  edm::Handle<reco::PFTauDiscriminator> discAntiEl;
-  evt.getByLabel("hpsPFTauDiscriminationByLooseElectronRejection",discAntiEl);
-  edm::Handle<reco::PFTauDiscriminator> discAntiMu;
-  evt.getByLabel("hpsPFTauDiscriminationByMediumMuonRejection",discAntiMu);
-  edm::Handle<reco::PFTauDiscriminator> discLoose;
-  evt.getByLabel(discLoose_, discLoose);
-  edm::Handle<reco::PFTauDiscriminator> discMedium;
-  evt.getByLabel(discMedium_, discMedium);
-  edm::Handle<reco::PFTauDiscriminator> discTight;
-  evt.getByLabel(discTight_, discTight);
-  edm::Handle<reco::PFTauDiscriminator> discLoose_2;
-  evt.getByLabel(discLoose_2_, discLoose_2);
-  edm::Handle<reco::PFTauDiscriminator> discMedium_2;
-  evt.getByLabel(discMedium_2_, discMedium_2);
-  edm::Handle<reco::PFTauDiscriminator> discTight_2;
-  evt.getByLabel(discTight_2_, discTight_2);
-  edm::Handle<reco::PFTauDiscriminator> discLoose_3;
-  evt.getByLabel(discLoose_3_, discLoose_3);
-  edm::Handle<reco::PFTauDiscriminator> discMedium_3;
-  evt.getByLabel(discMedium_3_, discMedium_3);
-  edm::Handle<reco::PFTauDiscriminator> discTight_3;
-  evt.getByLabel(discTight_3_, discTight_3);
+  // edm::Handle<reco::PFTauDiscriminator> discAntiEl;
+  // evt.getByLabel("hpsPFTauDiscriminationByLooseElectronRejection",discAntiEl);
+  // edm::Handle<reco::PFTauDiscriminator> discAntiMu;
+  // evt.getByLabel("hpsPFTauDiscriminationByMediumMuonRejection",discAntiMu);
+  // edm::Handle<reco::PFTauDiscriminator> discLoose;
+  // evt.getByLabel(discLoose_, discLoose);
+  // edm::Handle<reco::PFTauDiscriminator> discMedium;
+  // evt.getByLabel(discMedium_, discMedium);
+  // edm::Handle<reco::PFTauDiscriminator> discTight;
+  // evt.getByLabel(discTight_, discTight);
+  // edm::Handle<reco::PFTauDiscriminator> discLoose_2;
+  // evt.getByLabel(discLoose_2_, discLoose_2);
+  // edm::Handle<reco::PFTauDiscriminator> discMedium_2;
+  // evt.getByLabel(discMedium_2_, discMedium_2);
+  // edm::Handle<reco::PFTauDiscriminator> discTight_2;
+  // evt.getByLabel(discTight_2_, discTight_2);
+  // edm::Handle<reco::PFTauDiscriminator> discLoose_3;
+  // evt.getByLabel(discLoose_3_, discLoose_3);
+  // edm::Handle<reco::PFTauDiscriminator> discMedium_3;
+  // evt.getByLabel(discMedium_3_, discMedium_3);
+  // edm::Handle<reco::PFTauDiscriminator> discTight_3;
+  // evt.getByLabel(discTight_3_, discTight_3);
 
 
   edm::Handle<reco::VertexCollection> verticesH_;
   evt.getByLabel(vertexTag_, verticesH_);
   int nVx = verticesH_->size();
-  h_nVx->Fill(nVx);
+  // h_nVx->Fill(nVx);
   
   bool differenceFound = false;
   // Loop over first collection
@@ -767,11 +767,11 @@ bool RecoTauDifferenceAnalyzer::filter(
   std::vector<double> phi_visible;
   std::vector<bool> isMatched;
   
-  edm::Handle<double> hRho;
-  evt.getByLabel(rhoProducer_, hRho);
-  double rho_ = *hRho;
-  h_rho->Fill(rho_);
-  h_nVx_rho->Fill(nVx,rho_);
+  // edm::Handle<double> hRho;
+  // evt.getByLabel(rhoProducer_, hRho);
+  // double rho_ = *hRho;
+  // h_rho->Fill(rho_);
+  // h_nVx_rho->Fill(nVx,rho_);
 
   if(mcMatch_ && !useGenTaus_){
   for(size_t i = 0; i < genParticles->size(); ++ i) {
@@ -995,13 +995,11 @@ if(!background_ && mcMatch_ && !useGenTaus_){
 
 
     if((mcMatch_ && !matched)||(matchToJets_&& !matched)) continue;
-    if(verboseOutputMC_) std::cout << "Matched to truth" << std::endl;
     tausMatched_++; nMatched++;
     reco::PFTauRef bestMatch;
     double bestDeltaR = -1;
     reco::PFJetRef jet1,jet2;
     for (size_t iTau2 = 0; iTau2 < taus2->size(); ++iTau2) {
-      if(verboseOutput_) std::cout << "Checking ref tau no. " << iTau2 << "/" << taus2->size() << std::endl;
       reco::PFTauRef tau2(taus2, iTau2);
       jet1 = getJetRef(*tau1);
       jet2 = getJetRef(*tau2);
@@ -1012,34 +1010,32 @@ if(!background_ && mcMatch_ && !useGenTaus_){
         bestDeltaR = deltaRVal;
       }
     }
-    if(verboseOutput_) std::cout << "Distance to best match is " << bestDeltaR << std::endl;
     jet2 = getJetRef(*bestMatch);
     // See what's up with the discriminators
     bool result1 = ((*disc1)[tau1] > 0.5);
     bool result2 = ((*disc2)[bestMatch] > 0.5);
-    if(verboseOutput_) std::cout << "got discriminators" << std::endl;
-    bool resultLoose = ((*discLoose)[tau1] > 0.5);
-    bool resultMedium = ((*discMedium)[tau1] > 0.5);
-    bool resultTight = ((*discTight)[tau1] > 0.5);
-    bool resultLoose_2 = ((*discLoose_2)[tau1] > 0.5);
-    bool resultMedium_2 = ((*discMedium_2)[tau1] > 0.5);
-    bool resultTight_2 = ((*discTight_2)[tau1] > 0.5);
-    bool resultLoose_3 = ((*discLoose_3)[tau1] > 0.5);
-    bool resultMedium_3 = ((*discMedium_3)[tau1] > 0.5);
-    bool resultTight_3 = ((*discTight_3)[tau1] > 0.5);
-    double resultMVA = 0.0; // (*discMVA)[tau1];
-    double resultCH = (*discCH)[tau1];
-    double resultN = (*discN)[tau1];
-    double resultCOMB = (*discCOMB)[tau1];
-    double resultDM = (*discDM)[tau1];
+    // bool resultLoose = ((*discLoose)[tau1] > 0.5);
+    // bool resultMedium = ((*discMedium)[tau1] > 0.5);
+    // bool resultTight = ((*discTight)[tau1] > 0.5);
+    // bool resultLoose_2 = ((*discLoose_2)[tau1] > 0.5);
+    // bool resultMedium_2 = ((*discMedium_2)[tau1] > 0.5);
+    // bool resultTight_2 = ((*discTight_2)[tau1] > 0.5);
+    // bool resultLoose_3 = ((*discLoose_3)[tau1] > 0.5);
+    // bool resultMedium_3 = ((*discMedium_3)[tau1] > 0.5);
+    // bool resultTight_3 = ((*discTight_3)[tau1] > 0.5);
+    // double resultMVA = 0.0; // (*discMVA)[tau1];
+    // double resultCH = (*discCH)[tau1];
+    // double resultN = (*discN)[tau1];
+    // double resultCOMB = (*discCOMB)[tau1];
+     double resultDM = (*discDM)[tau1];
     double pt1 = tau1->pt();
     double pt2 = bestMatch->pt();
     double eta1 = tau1->eta();
     double eta2 = bestMatch->eta();
     double pt_mon, eta_mon, phi_mon;
     size_t nCharged,nPi0;
-    bool resultAntiEl = ((*discAntiEl)[tau1]>0.5);
-    bool resultAntiMu = ((*discAntiMu)[tau1]>0.5);
+    // bool resultAntiEl = ((*discAntiEl)[tau1]>0.5);
+    // bool resultAntiMu = ((*discAntiMu)[tau1]>0.5);
     nCharged = tau1->signalPFChargedHadrCands().size();
     nPi0 = tau1->signalPiZeroCandidates().size();
 
@@ -1054,62 +1050,62 @@ if(!background_ && mcMatch_ && !useGenTaus_){
     
     // MVA observables getters (from reco::tau::cone::IsoRings PFRecoTauDiscriminationByMVAIsolation::computeIsoRings(const PFTauRef& pfTau) )
 
-    for(uint i = 0; i < tau1->isolationPFCands().size(); i++)
-      {
-	const reco::PFCandidatePtr pf = tau1->isolationPFCands().at(i);
+   //   for(uint i = 0; i < tau1->isolationPFCands().size(); i++)
+//       {
+// 	const reco::PFCandidatePtr pf = tau1->isolationPFCands().at(i);
 	
-	// Angular distance between PF candidate and tau
-	float deta = tau1->eta() - pf->eta();
-	float dphi = reco::deltaPhi(tau1->phi(), pf->phi());
-	float dr = reco::deltaR(tau1->eta(), tau1->phi(), pf->eta(), pf->phi());
-	int pftype = 0;
+// 	// Angular distance between PF candidate and tau
+// 	float deta = tau1->eta() - pf->eta();
+// 	float dphi = reco::deltaPhi(tau1->phi(), pf->phi());
+// 	float dr = reco::deltaR(tau1->eta(), tau1->phi(), pf->eta(), pf->phi());
+// 	int pftype = 0;
 	
-	// Determine PF candidate type
-	if(pf->charge() != 0)                           pftype = 0;
-	else if(pf->particleId() == reco::PFCandidate::gamma) pftype = 1;
-	else                                            pftype = 2;
-	// Number of isolation candidates by type
-	niso[pftype]++;
+// 	// Determine PF candidate type
+// 	if(pf->charge() != 0)                           pftype = 0;
+// 	else if(pf->particleId() == reco::PFCandidate::gamma) pftype = 1;
+// 	else                                            pftype = 2;
+// 	// Number of isolation candidates by type
+// 	niso[pftype]++;
 	
-	// Isolation Rings
-	if(dr < 0.1)      rings[pftype][0] += pf->pt();
-	else if(dr < 0.2) rings[pftype][1] += pf->pt();
-	else if(dr < 0.3) rings[pftype][2] += pf->pt();
-	else if(dr < 0.4) rings[pftype][3] += pf->pt();
-	else if(dr < 0.5) rings[pftype][4] += pf->pt();
+// 	// Isolation Rings
+// 	if(dr < 0.1)      rings[pftype][0] += pf->pt();
+// 	else if(dr < 0.2) rings[pftype][1] += pf->pt();
+// 	else if(dr < 0.3) rings[pftype][2] += pf->pt();
+// 	else if(dr < 0.4) rings[pftype][3] += pf->pt();
+// 	else if(dr < 0.5) rings[pftype][4] += pf->pt();
 
-	// Angle Shape Variables
-	shapes[pftype][0] += pf->pt() * deta;
-	shapes[pftype][1] += pf->pt() * dphi;
-	shapes[pftype][2] += pf->pt() * deta*deta;
-	shapes[pftype][3] += pf->pt() * dphi*dphi;
-	shapes[pftype][4] += pf->pt() * deta*dphi;
-	isoptsum[pftype]  += pf->pt();
-	trkAvgDist[pftype]+= pf->pt()*dr;
-// 	reco::TrackBaseRef trk; 
-// 	if ((pf->trackRef()).isNonnull())
-// 	  trk = reco::TrackBaseRef(pf->trackRef());
-// 	else if ((pf->gsfTrackRef()).isNonnull()) {
-// 	  trk = reco::TrackBaseRef(pf->gsfTrackRef());
-// 	}
-// 	else continue;
+// 	// Angle Shape Variables
+// 	shapes[pftype][0] += pf->pt() * deta;
+// 	shapes[pftype][1] += pf->pt() * dphi;
+// 	shapes[pftype][2] += pf->pt() * deta*deta;
+// 	shapes[pftype][3] += pf->pt() * dphi*dphi;
+// 	shapes[pftype][4] += pf->pt() * deta*dphi;
+// 	isoptsum[pftype]  += pf->pt();
+// 	trkAvgDist[pftype]+= pf->pt()*dr;
+// // 	reco::TrackBaseRef trk; 
+// // 	if ((pf->trackRef()).isNonnull())
+// // 	  trk = reco::TrackBaseRef(pf->trackRef());
+// // 	else if ((pf->gsfTrackRef()).isNonnull()) {
+// // 	  trk = reco::TrackBaseRef(pf->gsfTrackRef());
+// // 	}
+// // 	else continue;
 	  
-// 	std::cout << trk->hitPattern().numberOfValidHits() << std::endl;
+// // 	std::cout << trk->hitPattern().numberOfValidHits() << std::endl;
 
-      }
+//       }
     
     // Mean and variance of angle variables are weighted by pT
-    for(uint i = 0; i < shapes.size(); i++)
-      {
-	for(uint j = 0; j < shapes[i].size(); j++)
-	  {
-	    shapes[i][j] = isoptsum[i] > 0 ? fabs(shapes[i][j]/isoptsum[i]) : 0;
-	  }
-      }
+    // for(uint i = 0; i < shapes.size(); i++)
+    //   {
+    // 	for(uint j = 0; j < shapes[i].size(); j++)
+    // 	  {
+    // 	    shapes[i][j] = isoptsum[i] > 0 ? fabs(shapes[i][j]/isoptsum[i]) : 0;
+    // 	  }
+    //   }
 
-    trkAvgDist[0] = isoptsum[0] >0 ? trkAvgDist[0]/isoptsum[0] : -1;
-    trkAvgDist[1] = isoptsum[1] >0 ? trkAvgDist[1]/isoptsum[1] : -1;
-    trkAvgDist[2] = (isoptsum[0] + isoptsum[1]) >0 ? (trkAvgDist[0] + trkAvgDist[1])/(isoptsum[0]+isoptsum[1]) : -1;
+    // trkAvgDist[0] = isoptsum[0] >0 ? trkAvgDist[0]/isoptsum[0] : -1;
+    // trkAvgDist[1] = isoptsum[1] >0 ? trkAvgDist[1]/isoptsum[1] : -1;
+    // trkAvgDist[2] = (isoptsum[0] + isoptsum[1]) >0 ? (trkAvgDist[0] + trkAvgDist[1])/(isoptsum[0]+isoptsum[1]) : -1;
   
     if(requireDecayMode_>=0 && resultDM){
       if(requireDecayMode_ == 0 || (requireDecayMode_ == 1 && nCharged == 1 && nPi0 ==0) || (requireDecayMode_ == 2 && nCharged ==1 && nPi0 > 0) || (requireDecayMode_==3 && nCharged == 3)){
@@ -1149,131 +1145,131 @@ if(!background_ && mcMatch_ && !useGenTaus_){
       h_eff_vx_1->Fill(nVx,0);
     }
 
-    if(resultLoose && pt1 > 20.0 && pt_mon > 5.0){
-      h_eff_id_pt_loose->Fill(pt_mon,1);
-      h_eff_id_eta_loose->Fill(eta_mon,1);
-      h_eff_id_vx_loose->Fill(nVx,1);    
-      h_eff_id_phi_loose->Fill(phi_mon,1);
-    }else if(pt1 > 20.0 && pt_mon > 5.0){
-      h_eff_id_pt_loose->Fill(pt_mon,0);
-      h_eff_id_eta_loose->Fill(eta_mon,0);
-      h_eff_id_vx_loose->Fill(nVx,0);
-      h_eff_id_phi_loose->Fill(phi_mon,0);
-    }else if(pt_mon>5.0){
-      h_eff_id_pt_loose->Fill(pt_mon,0);
-    }
+    // if(resultLoose && pt1 > 20.0 && pt_mon > 5.0){
+    //   h_eff_id_pt_loose->Fill(pt_mon,1);
+    //   h_eff_id_eta_loose->Fill(eta_mon,1);
+    //   h_eff_id_vx_loose->Fill(nVx,1);    
+    //   h_eff_id_phi_loose->Fill(phi_mon,1);
+    // }else if(pt1 > 20.0 && pt_mon > 5.0){
+    //   h_eff_id_pt_loose->Fill(pt_mon,0);
+    //   h_eff_id_eta_loose->Fill(eta_mon,0);
+    //   h_eff_id_vx_loose->Fill(nVx,0);
+    //   h_eff_id_phi_loose->Fill(phi_mon,0);
+    // }else if(pt_mon>5.0){
+    //   h_eff_id_pt_loose->Fill(pt_mon,0);
+    // }
 
-    if(resultMedium && pt1 > 20.0 ){
-      h_eff_id_pt_medium->Fill(pt_mon,1);
-      h_eff_id_eta_medium->Fill(eta_mon,1);
-      h_eff_id_vx_medium->Fill(nVx,1);    
-      h_eff_id_phi_medium->Fill(phi_mon,1);
-    }else if(pt1 > 20.0){
-      h_eff_id_pt_medium->Fill(pt_mon,0);
-      h_eff_id_eta_medium->Fill(eta_mon,0);
-      h_eff_id_vx_medium->Fill(nVx,0);
-      h_eff_id_phi_medium->Fill(phi_mon,0);
-    }else{
-      h_eff_id_pt_medium->Fill(pt_mon,0);
-    }
+    // if(resultMedium && pt1 > 20.0 ){
+    //   h_eff_id_pt_medium->Fill(pt_mon,1);
+    //   h_eff_id_eta_medium->Fill(eta_mon,1);
+    //   h_eff_id_vx_medium->Fill(nVx,1);    
+    //   h_eff_id_phi_medium->Fill(phi_mon,1);
+    // }else if(pt1 > 20.0){
+    //   h_eff_id_pt_medium->Fill(pt_mon,0);
+    //   h_eff_id_eta_medium->Fill(eta_mon,0);
+    //   h_eff_id_vx_medium->Fill(nVx,0);
+    //   h_eff_id_phi_medium->Fill(phi_mon,0);
+    // }else{
+    //   h_eff_id_pt_medium->Fill(pt_mon,0);
+    // }
 
-    if(resultTight && pt1 > 20.0){
-      h_eff_id_pt_tight->Fill(pt_mon,1);
-      h_eff_id_eta_tight->Fill(eta_mon,1);
-      h_eff_id_vx_tight->Fill(nVx,1);    
-      h_eff_id_phi_tight->Fill(phi_mon,1);
-    }else if(pt1 > 20.0){
-      h_eff_id_pt_tight->Fill(pt_mon,0);
-      h_eff_id_eta_tight->Fill(eta_mon,0);
-      h_eff_id_vx_tight->Fill(nVx,0);
-      h_eff_id_phi_tight->Fill(phi_mon,0);
-    }else{
-      h_eff_id_pt_tight->Fill(pt_mon,0);
-    }
+    // if(resultTight && pt1 > 20.0){
+    //   h_eff_id_pt_tight->Fill(pt_mon,1);
+    //   h_eff_id_eta_tight->Fill(eta_mon,1);
+    //   h_eff_id_vx_tight->Fill(nVx,1);    
+    //   h_eff_id_phi_tight->Fill(phi_mon,1);
+    // }else if(pt1 > 20.0){
+    //   h_eff_id_pt_tight->Fill(pt_mon,0);
+    //   h_eff_id_eta_tight->Fill(eta_mon,0);
+    //   h_eff_id_vx_tight->Fill(nVx,0);
+    //   h_eff_id_phi_tight->Fill(phi_mon,0);
+    // }else{
+    //   h_eff_id_pt_tight->Fill(pt_mon,0);
+    // }
 
-    if(resultLoose_2 && pt1 > 20.0){
-      h_eff_id_pt_loose_2->Fill(pt_mon,1);
-      h_eff_id_eta_loose_2->Fill(eta_mon,1);
-      h_eff_id_vx_loose_2->Fill(nVx,1); 
-      h_eff_id_phi_loose_2->Fill(phi_mon,1);
-    }else if(pt1 > 20.0){
-      h_eff_id_pt_loose_2->Fill(pt_mon,0);
-      h_eff_id_eta_loose_2->Fill(eta_mon,0);
-      h_eff_id_vx_loose_2->Fill(nVx,0);
-      h_eff_id_phi_loose_2->Fill(phi_mon,0);
-    }else{
-      h_eff_id_pt_loose_2->Fill(pt_mon,0);
-    }
+    // if(resultLoose_2 && pt1 > 20.0){
+    //   h_eff_id_pt_loose_2->Fill(pt_mon,1);
+    //   h_eff_id_eta_loose_2->Fill(eta_mon,1);
+    //   h_eff_id_vx_loose_2->Fill(nVx,1); 
+    //   h_eff_id_phi_loose_2->Fill(phi_mon,1);
+    // }else if(pt1 > 20.0){
+    //   h_eff_id_pt_loose_2->Fill(pt_mon,0);
+    //   h_eff_id_eta_loose_2->Fill(eta_mon,0);
+    //   h_eff_id_vx_loose_2->Fill(nVx,0);
+    //   h_eff_id_phi_loose_2->Fill(phi_mon,0);
+    // }else{
+    //   h_eff_id_pt_loose_2->Fill(pt_mon,0);
+    // }
 
-    if(resultMedium_2 && pt1 > 20.0){
-      h_eff_id_pt_medium_2->Fill(pt_mon,1);
-      h_eff_id_eta_medium_2->Fill(eta_mon,1);
-      h_eff_id_vx_medium_2->Fill(nVx,1);
-      h_eff_id_phi_medium_2->Fill(phi_mon,1);
-    }else if(pt1 > 20.0){
-      h_eff_id_pt_medium_2->Fill(pt_mon,0);
-      h_eff_id_eta_medium_2->Fill(eta_mon,0);
-      h_eff_id_vx_medium_2->Fill(nVx,0);
-      h_eff_id_phi_medium_2->Fill(phi_mon,0);
-    }else{
-      h_eff_id_pt_medium_2->Fill(pt_mon,0);
-    }
+    // if(resultMedium_2 && pt1 > 20.0){
+    //   h_eff_id_pt_medium_2->Fill(pt_mon,1);
+    //   h_eff_id_eta_medium_2->Fill(eta_mon,1);
+    //   h_eff_id_vx_medium_2->Fill(nVx,1);
+    //   h_eff_id_phi_medium_2->Fill(phi_mon,1);
+    // }else if(pt1 > 20.0){
+    //   h_eff_id_pt_medium_2->Fill(pt_mon,0);
+    //   h_eff_id_eta_medium_2->Fill(eta_mon,0);
+    //   h_eff_id_vx_medium_2->Fill(nVx,0);
+    //   h_eff_id_phi_medium_2->Fill(phi_mon,0);
+    // }else{
+    //   h_eff_id_pt_medium_2->Fill(pt_mon,0);
+    // }
 
-    if(resultTight_2 && pt1 > 20.0){
-      h_eff_id_pt_tight_2->Fill(pt_mon,1);
-      h_eff_id_eta_tight_2->Fill(eta_mon,1);
-      h_eff_id_vx_tight_2->Fill(nVx,1);    
-      h_eff_id_phi_tight_2->Fill(phi_mon,1);
-    }else if(pt1 > 20.0){
-      h_eff_id_pt_tight_2->Fill(pt_mon,0);
-      h_eff_id_eta_tight_2->Fill(eta_mon,0);
-      h_eff_id_vx_tight_2->Fill(nVx,0);
-      h_eff_id_phi_tight_2->Fill(phi_mon,0);
-    }else{
-      h_eff_id_pt_tight_2->Fill(pt_mon,0);
-    }
+    // if(resultTight_2 && pt1 > 20.0){
+    //   h_eff_id_pt_tight_2->Fill(pt_mon,1);
+    //   h_eff_id_eta_tight_2->Fill(eta_mon,1);
+    //   h_eff_id_vx_tight_2->Fill(nVx,1);    
+    //   h_eff_id_phi_tight_2->Fill(phi_mon,1);
+    // }else if(pt1 > 20.0){
+    //   h_eff_id_pt_tight_2->Fill(pt_mon,0);
+    //   h_eff_id_eta_tight_2->Fill(eta_mon,0);
+    //   h_eff_id_vx_tight_2->Fill(nVx,0);
+    //   h_eff_id_phi_tight_2->Fill(phi_mon,0);
+    // }else{
+    //   h_eff_id_pt_tight_2->Fill(pt_mon,0);
+    // }
 
-    if(resultLoose_3 && pt1 > 20.0){
-      h_eff_id_pt_loose_3->Fill(pt_mon,1);
-      h_eff_id_eta_loose_3->Fill(eta_mon,1);
-      h_eff_id_vx_loose_3->Fill(nVx,1);
-      h_eff_id_phi_loose_3->Fill(phi_mon,1);
-    }else if(pt1 > 20.0){
-      h_eff_id_pt_loose_3->Fill(pt_mon,0);
-      h_eff_id_eta_loose_3->Fill(eta_mon,0);
-      h_eff_id_vx_loose_3->Fill(nVx,0);
-      h_eff_id_phi_loose_3->Fill(phi_mon,0);
-    }else{
-      h_eff_id_pt_loose_3->Fill(pt_mon,0);
-    }
+    // if(resultLoose_3 && pt1 > 20.0){
+    //   h_eff_id_pt_loose_3->Fill(pt_mon,1);
+    //   h_eff_id_eta_loose_3->Fill(eta_mon,1);
+    //   h_eff_id_vx_loose_3->Fill(nVx,1);
+    //   h_eff_id_phi_loose_3->Fill(phi_mon,1);
+    // }else if(pt1 > 20.0){
+    //   h_eff_id_pt_loose_3->Fill(pt_mon,0);
+    //   h_eff_id_eta_loose_3->Fill(eta_mon,0);
+    //   h_eff_id_vx_loose_3->Fill(nVx,0);
+    //   h_eff_id_phi_loose_3->Fill(phi_mon,0);
+    // }else{
+    //   h_eff_id_pt_loose_3->Fill(pt_mon,0);
+    // }
 
-    if(resultMedium_3 && pt1 > 20.0){
-      h_eff_id_pt_medium_3->Fill(pt_mon,1);
-      h_eff_id_eta_medium_3->Fill(eta_mon,1);
-      h_eff_id_vx_medium_3->Fill(nVx,1);  
-      h_eff_id_phi_medium_3->Fill(phi_mon,1);
-    }else if(pt1 > 20.0){
-      h_eff_id_pt_medium_3->Fill(pt_mon,0);
-      h_eff_id_eta_medium_3->Fill(eta_mon,0);
-      h_eff_id_vx_medium_3->Fill(nVx,0);
-      h_eff_id_phi_medium_3->Fill(phi_mon,0);
-    }else{
-      h_eff_id_pt_medium_3->Fill(pt_mon,0);
-    }
+    // if(resultMedium_3 && pt1 > 20.0){
+    //   h_eff_id_pt_medium_3->Fill(pt_mon,1);
+    //   h_eff_id_eta_medium_3->Fill(eta_mon,1);
+    //   h_eff_id_vx_medium_3->Fill(nVx,1);  
+    //   h_eff_id_phi_medium_3->Fill(phi_mon,1);
+    // }else if(pt1 > 20.0){
+    //   h_eff_id_pt_medium_3->Fill(pt_mon,0);
+    //   h_eff_id_eta_medium_3->Fill(eta_mon,0);
+    //   h_eff_id_vx_medium_3->Fill(nVx,0);
+    //   h_eff_id_phi_medium_3->Fill(phi_mon,0);
+    // }else{
+    //   h_eff_id_pt_medium_3->Fill(pt_mon,0);
+    // }
 
-    if(resultTight_3 && pt1 > 20.0){
-      h_eff_id_pt_tight_3->Fill(pt_mon,1);
-      h_eff_id_eta_tight_3->Fill(eta_mon,1);
-      h_eff_id_vx_tight_3->Fill(nVx,1);    
-      h_eff_id_phi_tight_3->Fill(phi_mon,1);
-    }else if(pt1 > 20.0){
-      h_eff_id_pt_tight_3->Fill(pt_mon,0);
-      h_eff_id_eta_tight_3->Fill(eta_mon,0);
-      h_eff_id_vx_tight_3->Fill(nVx,0);
-      h_eff_id_phi_tight_3->Fill(phi_mon,0);
-    }else{
-      h_eff_id_pt_tight_3->Fill(pt_mon,0);
-    }
+    // if(resultTight_3 && pt1 > 20.0){
+    //   h_eff_id_pt_tight_3->Fill(pt_mon,1);
+    //   h_eff_id_eta_tight_3->Fill(eta_mon,1);
+    //   h_eff_id_vx_tight_3->Fill(nVx,1);    
+    //   h_eff_id_phi_tight_3->Fill(phi_mon,1);
+    // }else if(pt1 > 20.0){
+    //   h_eff_id_pt_tight_3->Fill(pt_mon,0);
+    //   h_eff_id_eta_tight_3->Fill(eta_mon,0);
+    //   h_eff_id_vx_tight_3->Fill(nVx,0);
+    //   h_eff_id_phi_tight_3->Fill(phi_mon,0);
+    // }else{
+    //   h_eff_id_pt_tight_3->Fill(pt_mon,0);
+    // }
 
     if(background_){
       pt_mon=jet2->pt();
@@ -1318,58 +1314,58 @@ if(!background_ && mcMatch_ && !useGenTaus_){
     h_eta_1->Fill(eta1);
     h_eta_2->Fill(eta2);
     
-    h_discComparisonRaw_sum->Fill(resultMVA,resultCOMB);
-    h_discComparisonRawN_sum->Fill(resultMVA,resultN);
-    h_discComparisonRawCH_sum->Fill(resultMVA,resultCH);
+    // h_discComparisonRaw_sum->Fill(resultMVA,resultCOMB);
+    // h_discComparisonRawN_sum->Fill(resultMVA,resultN);
+    // h_discComparisonRawCH_sum->Fill(resultMVA,resultCH);
 
-    h_discMVA_sum->Fill(resultMVA);
-    h_discRaw_sum->Fill(resultCOMB);
-    h_discRawN_sum->Fill(resultN);
-    h_discRawCH_sum->Fill(resultCH);
+    // h_discMVA_sum->Fill(resultMVA);
+    // h_discRaw_sum->Fill(resultCOMB);
+    // h_discRawN_sum->Fill(resultN);
+    // h_discRawCH_sum->Fill(resultCH);
 
-    h_discMVA_pt->Fill(pt1,resultMVA);
-    h_discRaw_pt->Fill(pt1,resultCOMB);
-    h_discRawN_pt->Fill(pt1,resultN);
-    h_discRawCH_pt->Fill(pt1,resultCH);
+    // h_discMVA_pt->Fill(pt1,resultMVA);
+    // h_discRaw_pt->Fill(pt1,resultCOMB);
+    // h_discRawN_pt->Fill(pt1,resultN);
+    // h_discRawCH_pt->Fill(pt1,resultCH);
 
-    h_discMVA_eta->Fill(eta1,resultMVA);
-    h_discRaw_eta->Fill(eta1,resultCOMB);
-    h_discRawN_eta->Fill(eta1,resultN);
-    h_discRawCH_eta->Fill(eta1,resultCH);
+    // h_discMVA_eta->Fill(eta1,resultMVA);
+    // h_discRaw_eta->Fill(eta1,resultCOMB);
+    // h_discRawN_eta->Fill(eta1,resultN);
+    // h_discRawCH_eta->Fill(eta1,resultCH);
 
-    h_discMVA_rho->Fill(rho_,resultMVA);
-    h_discRaw_rho->Fill(rho_,resultCOMB);
-    h_discRawN_rho->Fill(rho_,resultN);
-    h_discRawCH_rho->Fill(rho_,resultCH);
+    // h_discMVA_rho->Fill(rho_,resultMVA);
+    // h_discRaw_rho->Fill(rho_,resultCOMB);
+    // h_discRawN_rho->Fill(rho_,resultN);
+    // h_discRawCH_rho->Fill(rho_,resultCH);
 
-    h_discMVA_nVx->Fill(nVx,resultMVA);
-    h_discRaw_nVx->Fill(nVx,resultCOMB);
-    h_discRawN_nVx->Fill(nVx,resultN);
-    h_discRawCH_nVx->Fill(nVx,resultCH);
+    // h_discMVA_nVx->Fill(nVx,resultMVA);
+    // h_discRaw_nVx->Fill(nVx,resultCOMB);
+    // h_discRawN_nVx->Fill(nVx,resultN);
+    // h_discRawCH_nVx->Fill(nVx,resultCH);
 
-    h_discMVA_pt_rho->Fill(pt1,rho_,resultMVA);
-    h_discRaw_pt_rho->Fill(pt1,rho_,resultCOMB);
-    h_discRawN_pt_rho->Fill(pt1,rho_,resultN);
-    h_discRawCH_pt_rho->Fill(pt1,rho_,resultCH);
+    // h_discMVA_pt_rho->Fill(pt1,rho_,resultMVA);
+    // h_discRaw_pt_rho->Fill(pt1,rho_,resultCOMB);
+    // h_discRawN_pt_rho->Fill(pt1,rho_,resultN);
+    // h_discRawCH_pt_rho->Fill(pt1,rho_,resultCH);
 
-    h_discMVA_pt_nVx->Fill(pt1,nVx,resultMVA);
-    h_discRaw_pt_nVx->Fill(pt1,nVx,resultCOMB);
-    h_discRawN_pt_nVx->Fill(pt1,nVx,resultN);
-    h_discRawCH_pt_nVx->Fill(pt1,nVx,resultCH);
+    // h_discMVA_pt_nVx->Fill(pt1,nVx,resultMVA);
+    // h_discRaw_pt_nVx->Fill(pt1,nVx,resultCOMB);
+    // h_discRawN_pt_nVx->Fill(pt1,nVx,resultN);
+    // h_discRawCH_pt_nVx->Fill(pt1,nVx,resultCH);
 
-    h_discMVA_eta_rho->Fill(eta1,rho_,resultMVA);
-    h_discRaw_eta_rho->Fill(eta1,rho_,resultCOMB);
-    h_discRawN_eta_rho->Fill(eta1,rho_,resultN);
-    h_discRawCH_eta_rho->Fill(eta1,rho_,resultCH);
+    // h_discMVA_eta_rho->Fill(eta1,rho_,resultMVA);
+    // h_discRaw_eta_rho->Fill(eta1,rho_,resultCOMB);
+    // h_discRawN_eta_rho->Fill(eta1,rho_,resultN);
+    // h_discRawCH_eta_rho->Fill(eta1,rho_,resultCH);
 
-    h_discMVA_eta_nVx->Fill(eta1,nVx,resultMVA);
-    h_discRaw_eta_nVx->Fill(eta1,nVx,resultCOMB);
-    h_discRawN_eta_nVx->Fill(eta1,nVx,resultN);
-    h_discRawCH_eta_nVx->Fill(eta1,nVx,resultCH);
+    // h_discMVA_eta_nVx->Fill(eta1,nVx,resultMVA);
+    // h_discRaw_eta_nVx->Fill(eta1,nVx,resultCOMB);
+    // h_discRawN_eta_nVx->Fill(eta1,nVx,resultN);
+    // h_discRawCH_eta_nVx->Fill(eta1,nVx,resultCH);
 
-    h_trkAvgDist->Fill(trkAvgDist[2]);
-    h_trkAvgDist_n->Fill(trkAvgDist[1]);
-    h_trkAvgDist_ch->Fill(trkAvgDist[0]);
+    // h_trkAvgDist->Fill(trkAvgDist[2]);
+    // h_trkAvgDist_n->Fill(trkAvgDist[1]);
+    // h_trkAvgDist_ch->Fill(trkAvgDist[0]);
 
     if(ptRange >= 0)
       {
@@ -1381,161 +1377,161 @@ if(!background_ && mcMatch_ && !useGenTaus_){
 	    if(result2) h_discComparison[ptRange]->Fill(0.0,1.0);
 	    else h_discComparison[ptRange]->Fill(0.0,0.0);
 	  }
-	h_discComparisonRaw[ptRange]->Fill(resultMVA,resultCOMB);
-	h_discComparisonRawN[ptRange]->Fill(resultMVA,resultN);
-	h_discComparisonRawCH[ptRange]->Fill(resultMVA,resultCH);
-	h_discMVA[ptRange]->Fill(resultMVA);
-	h_discRaw[ptRange]->Fill(resultCOMB);
-	h_discRawN[ptRange]->Fill(resultN);
-	h_discRawCH[ptRange]->Fill(resultCH);
-	h_discMVA_rho_vec[ptRange]->Fill(rho_,resultMVA);
-        h_discRaw_rho_vec[ptRange]->Fill(rho_,resultCOMB);
-        h_discRawN_rho_vec[ptRange]->Fill(rho_,resultN);
-        h_discRawCH_rho_vec[ptRange]->Fill(rho_,resultCH);
-	h_discMVA_nVx_vec[ptRange]->Fill(nVx,resultMVA);
-        h_discRaw_nVx_vec[ptRange]->Fill(nVx,resultCOMB);
-        h_discRawN_nVx_vec[ptRange]->Fill(nVx,resultN);
-        h_discRawCH_nVx_vec[ptRange]->Fill(nVx,resultCH);
+	// h_discComparisonRaw[ptRange]->Fill(resultMVA,resultCOMB);
+	// h_discComparisonRawN[ptRange]->Fill(resultMVA,resultN);
+	// h_discComparisonRawCH[ptRange]->Fill(resultMVA,resultCH);
+	// h_discMVA[ptRange]->Fill(resultMVA);
+	// h_discRaw[ptRange]->Fill(resultCOMB);
+	// h_discRawN[ptRange]->Fill(resultN);
+	// h_discRawCH[ptRange]->Fill(resultCH);
+	// h_discMVA_rho_vec[ptRange]->Fill(rho_,resultMVA);
+        // h_discRaw_rho_vec[ptRange]->Fill(rho_,resultCOMB);
+        // h_discRawN_rho_vec[ptRange]->Fill(rho_,resultN);
+        // h_discRawCH_rho_vec[ptRange]->Fill(rho_,resultCH);
+	// h_discMVA_nVx_vec[ptRange]->Fill(nVx,resultMVA);
+        // h_discRaw_nVx_vec[ptRange]->Fill(nVx,resultCOMB);
+        // h_discRawN_nVx_vec[ptRange]->Fill(nVx,resultN);
+        // h_discRawCH_nVx_vec[ptRange]->Fill(nVx,resultCH);
 
       }
     // MVA fillers
-    if(pt1>20. && pt1 < 40. && fabs(eta1) < 2.3 && result1 && resultAntiEl && resultAntiMu)
-      {
+    // if(pt1>20. && pt1 < 40. && fabs(eta1) < 2.3 && result1 && resultAntiEl && resultAntiMu)
+    //   {
 	
-	h_trkAvgDist_pass->Fill(trkAvgDist[2]);
-	h_trkAvgDist_n_pass->Fill(trkAvgDist[1]);
-	h_trkAvgDist_ch_pass->Fill(trkAvgDist[0]);
+	// h_trkAvgDist_pass->Fill(trkAvgDist[2]);
+	// h_trkAvgDist_n_pass->Fill(trkAvgDist[1]);
+	// h_trkAvgDist_ch_pass->Fill(trkAvgDist[0]);
 
-	h_discRaw_sum_pass->Fill(resultCOMB);
-	h_discRawN_sum_pass->Fill(resultN);
-	h_discRawCH_sum_pass->Fill(resultCH);
+	// h_discRaw_sum_pass->Fill(resultCOMB);
+	// h_discRawN_sum_pass->Fill(resultN);
+	// h_discRawCH_sum_pass->Fill(resultCH);
 
-	for(uint iType =0; iType < 3; iType++)
-	  {
-	    h_niso[iType]->Fill(niso[iType]);
-	    double sum[3]={0.0,0.0,0.0};
-	    for(uint iRing = 0; iRing < 5; iRing++)
-	      {
-		h_rings[iType][iRing]->Fill(rings[iType][iRing]);
-		h_shapes[iType][iRing]->Fill(shapes[iType][iRing]);
-		sum[iType]+=rings[iType][iRing];
-	      }
-	    h_rings_sum[iType]->Fill(sum[iType]);
-	  }
-	h_mva_rho->Fill(rho_);
+	// for(uint iType =0; iType < 3; iType++)
+	//   {
+	//     h_niso[iType]->Fill(niso[iType]);
+	//     double sum[3]={0.0,0.0,0.0};
+	//     for(uint iRing = 0; iRing < 5; iRing++)
+	//       {
+	// 	h_rings[iType][iRing]->Fill(rings[iType][iRing]);
+	// 	h_shapes[iType][iRing]->Fill(shapes[iType][iRing]);
+	// 	sum[iType]+=rings[iType][iRing];
+	//       }
+	//     h_rings_sum[iType]->Fill(sum[iType]);
+	//   }
+	// h_mva_rho->Fill(rho_);
 
-	if(resultMVA>0.863)
-	  {
-	    for(uint iType =0; iType < 3; iType++)
-	      {
-		h_niso_mva_pass[iType]->Fill(niso[iType]);
-		for(uint iRing = 0; iRing < 5; iRing++)
-		  {
-		    h_rings_mva_pass[iType][iRing]->Fill(rings[iType][iRing]);
-		    h_shapes_mva_pass[iType][iRing]->Fill(shapes[iType][iRing]);
-		  }
-	      }
-	    h_mva_rho_mva_pass->Fill(rho_);
-	  }else{
-	  for(uint iType =0; iType < 3; iType++)
-	    {
-	      h_niso_mva_fail[iType]->Fill(niso[iType]);
-	      for(uint iRing = 0; iRing < 5; iRing++)
-		{
-		  h_rings_mva_fail[iType][iRing]->Fill(rings[iType][iRing]);
-		  h_shapes_mva_fail[iType][iRing]->Fill(shapes[iType][iRing]);
-		}
-	    }
-	  h_mva_rho_mva_fail->Fill(rho_);
-	}
+	// if(resultMVA>0.863)
+	//   {
+	//     for(uint iType =0; iType < 3; iType++)
+	//       {
+	// 	h_niso_mva_pass[iType]->Fill(niso[iType]);
+	// 	for(uint iRing = 0; iRing < 5; iRing++)
+	// 	  {
+	// 	    h_rings_mva_pass[iType][iRing]->Fill(rings[iType][iRing]);
+	// 	    h_shapes_mva_pass[iType][iRing]->Fill(shapes[iType][iRing]);
+	// 	  }
+	//       }
+	//     h_mva_rho_mva_pass->Fill(rho_);
+	//   }else{
+	//   for(uint iType =0; iType < 3; iType++)
+	//     {
+	//       h_niso_mva_fail[iType]->Fill(niso[iType]);
+	//       for(uint iRing = 0; iRing < 5; iRing++)
+	// 	{
+	// 	  h_rings_mva_fail[iType][iRing]->Fill(rings[iType][iRing]);
+	// 	  h_shapes_mva_fail[iType][iRing]->Fill(shapes[iType][iRing]);
+	// 	}
+	//     }
+	//   h_mva_rho_mva_fail->Fill(rho_);
+	// }
 
-	for(uint iType =0; iType < 2; iType++)
-          {
-                h_rings_new[iType][0]->Fill(rings[iType][0]);
-		h_rings_new[iType][1]->Fill(rings[iType][1]+rings[iType][2]);
-		h_rings_new[iType][2]->Fill(rings[iType][3]+rings[iType][4]);
-          }
-	for(uint iRing=0; iRing < 3; iRing++)
-	  {
-	    h_rings_new[2][0]->Fill(rings[0][0]+rings[1][0]);
-	    h_rings_new[2][1]->Fill(rings[0][1]+rings[0][2]+rings[1][1]+rings[1][2]);
-	    h_rings_new[2][2]->Fill(rings[0][3]+rings[0][4]+rings[1][3]+rings[1][4]);
-	  }
+	// for(uint iType =0; iType < 2; iType++)
+        //   {
+        //         h_rings_new[iType][0]->Fill(rings[iType][0]);
+	// 	h_rings_new[iType][1]->Fill(rings[iType][1]+rings[iType][2]);
+	// 	h_rings_new[iType][2]->Fill(rings[iType][3]+rings[iType][4]);
+        //   }
+	// for(uint iRing=0; iRing < 3; iRing++)
+	//   {
+	//     h_rings_new[2][0]->Fill(rings[0][0]+rings[1][0]);
+	//     h_rings_new[2][1]->Fill(rings[0][1]+rings[0][2]+rings[1][1]+rings[1][2]);
+	//     h_rings_new[2][2]->Fill(rings[0][3]+rings[0][4]+rings[1][3]+rings[1][4]);
+	//   }
 	
-	if(resultMVA>0.863)
-	  {
-	    for(uint iType =0; iType < 2; iType++)
-	      {
-                h_rings_new_mva_pass[iType][0]->Fill(rings[iType][0]);
-                h_rings_new_mva_pass[iType][1]->Fill(rings[iType][1]+rings[iType][2]);
-                h_rings_new_mva_pass[iType][2]->Fill(rings[iType][3]+rings[iType][4]);
-	      }
-	    for(uint iRing=0; iRing < 3; iRing++)
-	      {
-		h_rings_new_mva_pass[2][0]->Fill(rings[0][0]+rings[1][0]);
-		h_rings_new_mva_pass[2][1]->Fill(rings[0][1]+rings[0][2]+rings[1][1]+rings[1][2]);
-		h_rings_new_mva_pass[2][2]->Fill(rings[0][3]+rings[0][4]+rings[1][3]+rings[1][4]);
-	      }
-	  }else{
-	  for(uint iType =0; iType < 2; iType++)
-	    {
-	      h_rings_new_mva_fail[iType][0]->Fill(rings[iType][0]);
-	      h_rings_new_mva_fail[iType][1]->Fill(rings[iType][1]+rings[iType][2]);
-	      h_rings_new_mva_fail[iType][2]->Fill(rings[iType][3]+rings[iType][4]);
-	    }
-	  for(uint iRing=0; iRing < 3; iRing++)
-	    {
-	      h_rings_new_mva_fail[2][0]->Fill(rings[0][0]+rings[1][0]);
-	      h_rings_new_mva_fail[2][1]->Fill(rings[0][1]+rings[0][2]+rings[1][1]+rings[1][2]);
-	      h_rings_new_mva_fail[2][2]->Fill(rings[0][3]+rings[0][4]+rings[1][3]+rings[1][4]);
-	    }
-	}
+	// if(resultMVA>0.863)
+	//   {
+	//     for(uint iType =0; iType < 2; iType++)
+	//       {
+        //         h_rings_new_mva_pass[iType][0]->Fill(rings[iType][0]);
+        //         h_rings_new_mva_pass[iType][1]->Fill(rings[iType][1]+rings[iType][2]);
+        //         h_rings_new_mva_pass[iType][2]->Fill(rings[iType][3]+rings[iType][4]);
+	//       }
+	//     for(uint iRing=0; iRing < 3; iRing++)
+	//       {
+	// 	h_rings_new_mva_pass[2][0]->Fill(rings[0][0]+rings[1][0]);
+	// 	h_rings_new_mva_pass[2][1]->Fill(rings[0][1]+rings[0][2]+rings[1][1]+rings[1][2]);
+	// 	h_rings_new_mva_pass[2][2]->Fill(rings[0][3]+rings[0][4]+rings[1][3]+rings[1][4]);
+	//       }
+	//   }else{
+	//   for(uint iType =0; iType < 2; iType++)
+	//     {
+	//       h_rings_new_mva_fail[iType][0]->Fill(rings[iType][0]);
+	//       h_rings_new_mva_fail[iType][1]->Fill(rings[iType][1]+rings[iType][2]);
+	//       h_rings_new_mva_fail[iType][2]->Fill(rings[iType][3]+rings[iType][4]);
+	//     }
+	//   for(uint iRing=0; iRing < 3; iRing++)
+	//     {
+	//       h_rings_new_mva_fail[2][0]->Fill(rings[0][0]+rings[1][0]);
+	//       h_rings_new_mva_fail[2][1]->Fill(rings[0][1]+rings[0][2]+rings[1][1]+rings[1][2]);
+	//       h_rings_new_mva_fail[2][2]->Fill(rings[0][3]+rings[0][4]+rings[1][3]+rings[1][4]);
+	//     }
+	// }
 
-	if(pt1>1e-8){
- 	for(uint iType =0; iType < 2; iType++)
-          {
-	    h_rings_new_rel[iType][0]->Fill((rings[iType][0])/pt1);
-	    h_rings_new_rel[iType][1]->Fill((rings[iType][1]+rings[iType][2])/pt1);
-	    h_rings_new_rel[iType][2]->Fill((rings[iType][3]+rings[iType][4])/pt1);
-          }
-        for(uint iRing=0; iRing < 3; iRing++)
-          {
-            h_rings_new_rel[2][0]->Fill((rings[0][0]+rings[1][0])/pt1);
-            h_rings_new_rel[2][1]->Fill((rings[0][1]+rings[0][2]+rings[1][1]+rings[1][2])/pt1);
-            h_rings_new_rel[2][2]->Fill((rings[0][3]+rings[0][4]+rings[1][3]+rings[1][4])/pt1);
-          }
+	//	if(pt1>1e-8){
+ 	// for(uint iType =0; iType < 2; iType++)
+        //   {
+	//     h_rings_new_rel[iType][0]->Fill((rings[iType][0])/pt1);
+	//     h_rings_new_rel[iType][1]->Fill((rings[iType][1]+rings[iType][2])/pt1);
+	//     h_rings_new_rel[iType][2]->Fill((rings[iType][3]+rings[iType][4])/pt1);
+        //   }
+        // for(uint iRing=0; iRing < 3; iRing++)
+        //   {
+        //     h_rings_new_rel[2][0]->Fill((rings[0][0]+rings[1][0])/pt1);
+        //     h_rings_new_rel[2][1]->Fill((rings[0][1]+rings[0][2]+rings[1][1]+rings[1][2])/pt1);
+        //     h_rings_new_rel[2][2]->Fill((rings[0][3]+rings[0][4]+rings[1][3]+rings[1][4])/pt1);
+        //   }
         
-        if(resultMVA>0.863)
-          {
-            for(uint iType =0; iType < 2; iType++)
-              {
-                h_rings_new_rel_mva_pass[iType][0]->Fill((rings[iType][0])/pt1);
-                h_rings_new_rel_mva_pass[iType][1]->Fill((rings[iType][1]+rings[iType][2])/pt1);
-                h_rings_new_rel_mva_pass[iType][2]->Fill((rings[iType][3]+rings[iType][4])/pt1);
-              }
-            for(uint iRing=0; iRing < 3; iRing++)
-              {
-                h_rings_new_rel_mva_pass[2][0]->Fill((rings[0][0]+rings[1][0])/pt1);
-                h_rings_new_rel_mva_pass[2][1]->Fill((rings[0][1]+rings[0][2]+rings[1][1]+rings[1][2])/pt1);
-                h_rings_new_rel_mva_pass[2][2]->Fill((rings[0][3]+rings[0][4]+rings[1][3]+rings[1][4])/pt1);
-              }
-          }else{
-          for(uint iType =0; iType < 2; iType++)
-            {
-              h_rings_new_rel_mva_fail[iType][0]->Fill((rings[iType][0])/pt1);
-              h_rings_new_rel_mva_fail[iType][1]->Fill((rings[iType][1]+rings[iType][2])/pt1);
-              h_rings_new_rel_mva_fail[iType][2]->Fill((rings[iType][3]+rings[iType][4])/pt1);
-            }
-          for(uint iRing=0; iRing < 3; iRing++)
-            {
-              h_rings_new_rel_mva_fail[2][0]->Fill((rings[0][0]+rings[1][0])/pt1);
-              h_rings_new_rel_mva_fail[2][1]->Fill((rings[0][1]+rings[0][2]+rings[1][1]+rings[1][2])/pt1);
-              h_rings_new_rel_mva_fail[2][2]->Fill((rings[0][3]+rings[0][4]+rings[1][3]+rings[1][4])/pt1);
-            }
-	}
-       }
+        // if(resultMVA>0.863)
+        //   {
+        //     for(uint iType =0; iType < 2; iType++)
+        //       {
+        //         h_rings_new_rel_mva_pass[iType][0]->Fill((rings[iType][0])/pt1);
+        //         h_rings_new_rel_mva_pass[iType][1]->Fill((rings[iType][1]+rings[iType][2])/pt1);
+        //         h_rings_new_rel_mva_pass[iType][2]->Fill((rings[iType][3]+rings[iType][4])/pt1);
+        //       }
+        //     for(uint iRing=0; iRing < 3; iRing++)
+        //       {
+        //         h_rings_new_rel_mva_pass[2][0]->Fill((rings[0][0]+rings[1][0])/pt1);
+        //         h_rings_new_rel_mva_pass[2][1]->Fill((rings[0][1]+rings[0][2]+rings[1][1]+rings[1][2])/pt1);
+        //         h_rings_new_rel_mva_pass[2][2]->Fill((rings[0][3]+rings[0][4]+rings[1][3]+rings[1][4])/pt1);
+        //       }
+        //   }else{
+        //   for(uint iType =0; iType < 2; iType++)
+        //     {
+        //       h_rings_new_rel_mva_fail[iType][0]->Fill((rings[iType][0])/pt1);
+        //       h_rings_new_rel_mva_fail[iType][1]->Fill((rings[iType][1]+rings[iType][2])/pt1);
+        //       h_rings_new_rel_mva_fail[iType][2]->Fill((rings[iType][3]+rings[iType][4])/pt1);
+        //     }
+        //   for(uint iRing=0; iRing < 3; iRing++)
+        //     {
+        //       h_rings_new_rel_mva_fail[2][0]->Fill((rings[0][0]+rings[1][0])/pt1);
+        //       h_rings_new_rel_mva_fail[2][1]->Fill((rings[0][1]+rings[0][2]+rings[1][1]+rings[1][2])/pt1);
+        //       h_rings_new_rel_mva_fail[2][2]->Fill((rings[0][3]+rings[0][4]+rings[1][3]+rings[1][4])/pt1);
+        //     }
+	// }
+	  //	}
   
-      } 
+	// } 
     
       }
     }
@@ -1549,9 +1545,9 @@ if(!background_ && mcMatch_ && !useGenTaus_){
       if(verboseOutput_){
       std::cout << "********* RecoTau difference detected! *************"
           << std::endl;
-      std::cout << " Tau1 InputTag: " << src1_ << " discriminator: " << disc1_ << " result: " << result1 << " mva: " << resultMVA << " rho: " << rho_ << " DM: " << resultDM
+      std::cout << " Tau1 InputTag: " << src1_ << " discriminator: " << disc1_ << " result: " << result1 //<< " mva: " << resultMVA << " rho: " << rho_ << " DM: " << resultDM
           << std::endl;
-      std::cout << " Tau2 InputTag: " << src2_ << " discriminator: " << disc2_ << " result: " << result2 << " charged: " << resultCH << " neutral: " << resultN << " combined: " << resultCOMB
+      std::cout << " Tau2 InputTag: " << src2_ << " discriminator: " << disc2_ << " result: " << result2 //<< " charged: " << resultCH << " neutral: " << resultN << " combined: " << resultCOMB
         << std::endl;
       std::cout << "---------       Tau 1                  -------------"
           << std::endl;
