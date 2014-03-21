@@ -1,9 +1,25 @@
 #include "DataFormats/TauReco/interface/PFTau.h"
 #include "DataFormats/Common/interface/RefToPtr.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
+#include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
+#include "DataFormats/ParticleFlowCandidate/interface/PFCandidateFwd.h"
+#include "DataFormats/GsfTrackReco/interface/GsfTrack.h"
+#include "DataFormats/TrackReco/interface/Track.h"
 
 //using namespace std;
+
 namespace reco {
+
+namespace {
+  // Get the KF track if it exists.  Otherwise, see if PFCandidate has a GSF track.                                                                                                                                                  
+  const reco::TrackBaseRef getTrackRef(const PFCandidate& cand) 
+  {
+    if ( cand.trackRef().isNonnull() ) return reco::TrackBaseRef(cand.trackRef());
+    else if ( cand.gsfTrackRef().isNonnull() ) return reco::TrackBaseRef(cand.gsfTrackRef());
+    else return reco::TrackBaseRef();
+  }
+}
+
 
 PFTau::PFTau() 
 {
@@ -249,24 +265,25 @@ bool PFTau::overlap(const Candidate& theCand) const {
     return (theRecoCand!=0 && (checkOverlap(track(), theRecoCand->track())));
 }
 
+
 void PFTau::dump(std::ostream& out) const {
 
     if(!out) return;
 
-    if (pfTauTagInfoRef().isNonnull()) {
-      out << "Its TauTagInfo constituents :"<<std::endl;
-      out<<"# Tracks "<<pfTauTagInfoRef()->Tracks().size()<<std::endl;
-      out<<"# PF charged hadr. cand's "<<pfTauTagInfoRef()->PFChargedHadrCands().size()<<std::endl;
-      out<<"# PF neutral hadr. cand's "<<pfTauTagInfoRef()->PFNeutrHadrCands().size()<<std::endl;
-      out<<"# PF gamma cand's "<<pfTauTagInfoRef()->PFGammaCands().size()<<std::endl;
-    }
-    if (jetRef().isNonnull()) {
-      out << "Its constituents :"<< std::endl;
-      out<<"# PF charged hadr. cand's "<< jetRef()->chargedHadronMultiplicity()<<std::endl;
-      out<<"# PF neutral hadr. cand's "<< jetRef()->neutralHadronMultiplicity()<<std::endl;
-      out<<"# PF gamma cand's "<< jetRef()->photonMultiplicity()<<std::endl;
-      out<<"# Electron cand's "<< jetRef()->electronMultiplicity()<<std::endl;
-    }
+    // if (pfTauTagInfoRef().isNonnull()) {
+    //   out << "Its TauTagInfo constituents :"<<std::endl;
+    //   out<<"# Tracks "<<pfTauTagInfoRef()->Tracks().size()<<std::endl;
+    //   out<<"# PF charged hadr. cand's "<<pfTauTagInfoRef()->PFChargedHadrCands().size()<<std::endl;
+    //   out<<"# PF neutral hadr. cand's "<<pfTauTagInfoRef()->PFNeutrHadrCands().size()<<std::endl;
+    //   out<<"# PF gamma cand's "<<pfTauTagInfoRef()->PFGammaCands().size()<<std::endl;
+    // }
+    // if (jetRef().isNonnull()) {
+    //   out << "Its constituents :"<< std::endl;
+    //   out<<"# PF charged hadr. cand's "<< jetRef()->chargedHadronMultiplicity()<<std::endl;
+    //   out<<"# PF neutral hadr. cand's "<< jetRef()->neutralHadronMultiplicity()<<std::endl;
+    //   out<<"# PF gamma cand's "<< jetRef()->photonMultiplicity()<<std::endl;
+    //   out<<"# Electron cand's "<< jetRef()->electronMultiplicity()<<std::endl;
+    // }
     out<<"in detail :"<<std::endl;
 
     out<<"Pt of the PFTau "<<pt()<<std::endl;
@@ -282,11 +299,30 @@ void PFTau::dump(std::ostream& out) const {
         out<<"Charge of the PFTau "<<charge()<<std::endl;
         out<<"Et of the highest Et HCAL PFCluster "<<maximumHCALPFClusterEt()<<std::endl;
         out<<"Number of SignalPFChargedHadrCands = "<<signalPFChargedHadrCands().size()<<std::endl;
+	out<<"Number of SignalTauChargedHadronCandidate = " << signalTauChargedHadronCandidates().size() <<std::endl;
+	out<<"Number of SignalPiZeroCandidates = " << signalPiZeroCandidates().size() <<std::endl;
         out<<"Number of SignalPFGammaCands = "<<signalPFGammaCands().size()<<std::endl;
         out<<"Number of IsolationPFChargedHadrCands = "<<isolationPFChargedHadrCands().size()<<std::endl;
+	out<<"Loop over IsolationPFChargedHadrCands:" <<std::endl;
+	  double sumPt=0;
+	  for(unsigned int isoCand=0; isoCand < isolationPFChargedHadrCands().size(); isoCand++)
+	    {
+	      double iPt=isolationPFChargedHadrCands()[isoCand]->pt();
+              out<<" #" << isoCand+1 << " pt= " << iPt << std::endl;
+	      auto track = getTrackRef(isolationPFChargedHadrCands()[isoCand]);
+	      double TrkHits=-1.;
+	      if ( track.isNonnull() ) TrkHits=track->hitPattern().numberOfValidHits();
+	      // reco::TrackBaseRef track;
+	      // if(isolationPFChargedHadrCands()[isoCand]->trackRef().isNonnull()) track=reco::TrackBaseRef(isolationPFChargedHadrCands()[isoCand]->trackRef());
+	      // else if(isolationPFChargedHadrCands()[isoCand]->gsfTrackRef().isNonnull()) track=reco::TrackBaseRef(isolationPFChargedHadrCands()[isoCand]->gsfTrackRef());
+	      out<<"Quality: TrkHits: " << TrkHits << std::endl;
+	      sumPt+=iPt;
+	    }
+	  out<<"Total charged iso sum is " << sumPt <<std::endl;
         out<<"Number of IsolationPFGammaCands = "<<isolationPFGammaCands().size()<<std::endl;
         out<<"Sum of Pt of charged hadr. PFCandidates in isolation annulus around Lead PF = "<<isolationPFChargedHadrCandsPtSum()<<std::endl;
         out<<"Sum of Et of gamma PFCandidates in other isolation annulus around Lead PF = "<<isolationPFGammaCandsEtSum()<<std::endl;
+
 
     }
     // return out;
