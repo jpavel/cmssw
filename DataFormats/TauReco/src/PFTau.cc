@@ -11,15 +11,14 @@
 namespace reco {
 
 namespace {
-  // Get the KF track if it exists.  Otherwise, see if PFCandidate has a GSF track.                                                                                                                                                  
-  const reco::TrackBaseRef getTrackRef(const PFCandidate& cand) 
-  {
-    if ( cand.trackRef().isNonnull() ) return reco::TrackBaseRef(cand.trackRef());
-    else if ( cand.gsfTrackRef().isNonnull() ) return reco::TrackBaseRef(cand.gsfTrackRef());
-    else return reco::TrackBaseRef();
-  }
+   // Get the KF track if it exists.  Otherwise, see if PFCandidate has a GSF track.
+   const reco::TrackBaseRef getTrackRef(const PFCandidate& cand) 
+    {
+       if ( cand.trackRef().isNonnull() ) return reco::TrackBaseRef(cand.trackRef());
+       else if ( cand.gsfTrackRef().isNonnull() ) return reco::TrackBaseRef(cand.gsfTrackRef());
+       else return reco::TrackBaseRef();
+    }
 }
-
 
 PFTau::PFTau() 
 {
