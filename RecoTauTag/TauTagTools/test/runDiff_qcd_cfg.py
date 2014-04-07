@@ -2,7 +2,7 @@ import FWCore.ParameterSet.Config as cms
 
 procName="DMtest"
 
-eMax = -1
+eMax = 200
 
 sEvents=0
 
@@ -133,6 +133,8 @@ process.tauDifferenceAnalyzer = cms.EDFilter("RecoTauDifferenceAnalyzer",
                                              nIso2 = cms.InputTag("hpsPFTauMVA3IsolationNeutralIsoPtSum","","RECO"),
                                              PUIso1 = cms.InputTag("hpsPFTauMVA3IsolationPUcorrPtSum","",procName),
                                              PUIso2 = cms.InputTag("hpsPFTauMVA3IsolationPUcorrPtSum","","RECO"),
+                                             cmbIso1 = cms.InputTag("hpsPFTauDiscriminationByRawCombinedIsolationDBSumPtCorr3Hits","",procName),
+                                             cmbIso2 = cms.InputTag("hpsPFTauDiscriminationByRawCombinedIsolationDBSumPtCorr3Hits","","RECO"),
                                              genSrc = cms.InputTag("genParticles"),
                                              genTauSrc = cms.InputTag("ak5GenJets"),
                                              mcMatch = cms.bool(True),
@@ -151,6 +153,11 @@ process.tauDifferenceAnalyzer = cms.EDFilter("RecoTauDifferenceAnalyzer",
 process.tauDifferenceAnalyzer.qualityCuts.isolationQualityCuts.minTrackHits = cms.uint32(3)
 process.tauDifferenceAnalyzer.qualityCuts.isolationQualityCuts.minTrackPt = cms.double(0.5)
 process.tauDifferenceAnalyzer.qualityCuts.isolationQualityCuts.minGammaEt = cms.double(0.5)
+
+process.hpsPFTauMVA3IsolationNeutralIsoPtSum.customOuterCone = cms.double(0.5)
+process.hpsPFTauMVA3IsolationPUcorrPtSum.customOuterCone = cms.double(0.5)
+process.hpsPFTauMVA3IsolationChargedIsoPtSum.customOuterCone = cms.double(0.5)
+
 
 ## let it run
 

@@ -97,7 +97,8 @@ class RecoTauDifferenceAnalyzer : public edm::EDFilter {
   edm::InputTag nIso2_;
   edm::InputTag PUIso1_;
   edm::InputTag PUIso2_;
-
+  edm::InputTag cmbIso1_;
+  edm::InputTag cmbIso2_;
 
     TProfile* h_eff_pt_1;
     TProfile* h_eff_pt_2;
@@ -183,6 +184,15 @@ class RecoTauDifferenceAnalyzer : public edm::EDFilter {
   TH1D* h_discRawN_sum2;
   TH1D* h_discRawCH_sum2;
   TH1D* h_discPU_sum2;
+
+  TH1D* h_discRaw_sum_ctrl1;
+  TH1D* h_discRawN_sum_ctrl1;
+  TH1D* h_discRawCH_sum_ctrl1;
+  
+  TH1D* h_discRaw_sum_ctrl2;
+  TH1D* h_discRawN_sum_ctrl2;
+  TH1D* h_discRawCH_sum_ctrl2;
+
 
   TProfile* h_discRaw_pt;
   TProfile* h_discRawN_pt;
@@ -349,6 +359,9 @@ RecoTauDifferenceAnalyzer::RecoTauDifferenceAnalyzer(
   nIso2_ = pset.exists("nIso2") ? pset.getParameter<edm::InputTag>("nIso2"): pset.getParameter<edm::InputTag>("disc2");
   PUIso1_ = pset.exists("PUIso1") ? pset.getParameter<edm::InputTag>("PUIso1"): pset.getParameter<edm::InputTag>("disc1");
   PUIso2_ = pset.exists("PUIso2") ? pset.getParameter<edm::InputTag>("PUIso2"): pset.getParameter<edm::InputTag>("disc2");
+  cmbIso1_ = pset.exists("cmbIso1") ? pset.getParameter<edm::InputTag>("cmbIso1"): pset.getParameter<edm::InputTag>("disc1");
+  cmbIso2_ = pset.exists("cmbIso2") ? pset.getParameter<edm::InputTag>("cmbIso2"): pset.getParameter<edm::InputTag>("disc2");
+
 
 
   edm::Service<TFileService> fs;
@@ -519,6 +532,15 @@ RecoTauDifferenceAnalyzer::RecoTauDifferenceAnalyzer(
   h_discRaw_sum2 = fs->make<TH1D>("h_discRaw2","All p_{T};combined isolation [GeV]",500,0.0,50.0);
   h_discRawN_sum2 = fs->make<TH1D>("h_discRawN2","All p_{T};neutral isolation [GeV]",500,0.0,50.0);
   h_discRawCH_sum2 = fs->make<TH1D>("h_discRawCH2","All p_{T};charged isolation [GeV]",500,0.0,50.0);
+
+  h_discRaw_sum_ctrl1 = fs->make<TH1D>("h_discRaw_ctrl1","All p_{T};combined isolation [GeV]",500,0.0,50.0);
+  h_discRawN_sum_ctrl1 = fs->make<TH1D>("h_discRawN_ctrl1","All p_{T};neutral isolation [GeV]",500,0.0,50.0);
+  h_discRawCH_sum_ctrl1 = fs->make<TH1D>("h_discRawCH_ctrl1","All p_{T};charged isolation [GeV]",500,0.0,50.0);
+
+  h_discRaw_sum_ctrl2 = fs->make<TH1D>("h_discRaw_ctrl2","All p_{T};combined isolation [GeV]",500,0.0,50.0);
+  h_discRawN_sum_ctrl2 = fs->make<TH1D>("h_discRawN_ctrl2","All p_{T};neutral isolation [GeV]",500,0.0,50.0);
+  h_discRawCH_sum_ctrl2 = fs->make<TH1D>("h_discRawCH_ctrl2","All p_{T};charged isolation [GeV]",500,0.0,50.0);
+
 
 
   h_discMVA_pt = fs->make<TProfile>("h_discMVA_pt","MVA;tau p_{T} [GeV];MVA score",100,0.0,100.0);
@@ -801,6 +823,10 @@ bool RecoTauDifferenceAnalyzer::filter(
   evt.getByLabel(PUIso1_,PUIso1);
   edm::Handle<reco::PFTauDiscriminator> PUIso2;
   evt.getByLabel(PUIso2_,PUIso2);
+  edm::Handle<reco::PFTauDiscriminator> cmbIso1;
+  evt.getByLabel(cmbIso1_,cmbIso1);
+  edm::Handle<reco::PFTauDiscriminator> cmbIso2;
+  evt.getByLabel(cmbIso2_,cmbIso2);
 
   edm::Handle<reco::VertexCollection> verticesH_;
   evt.getByLabel(vertexTag_, verticesH_);
@@ -1096,6 +1122,8 @@ if(!background_ && mcMatch_ && !useGenTaus_){
     double ResultNIso2 = (*nIso2)[bestMatch];
     double ResultPUIso1 = (*PUIso1)[tau1];
     double ResultPUIso2 = (*PUIso2)[bestMatch];
+    double ResultCmbIso1 = (*cmbIso1)[tau1];
+    double ResultCmbIso2 = (*cmbIso2)[bestMatch];
 
     // bool resultAntiEl = ((*discAntiEl)[tau1]>0.5);
     // bool resultAntiMu = ((*discAntiMu)[tau1]>0.5);
@@ -1382,16 +1410,21 @@ if(!background_ && mcMatch_ && !useGenTaus_){
     // h_discComparisonRawCH_sum->Fill(resultMVA,resultCH);
 
     if(pt1>20.){
+      //      std::cout << " tau1: Ch, N, PU, CMB iso is" << ResultChIso1 << " " << ResultNIso1 << " " << ResultPUIso1 << " " << ResultCmbIso1 << std::endl;
+      //      std::cout << " tau2: Ch, N, PU, CMB iso is" << ResultChIso2 << " " << ResultNIso2 << " " << ResultPUIso2 << " " << ResultCmbIso2 << std::endl;
+      
     h_discPU_sum1->Fill(ResultPUIso1);
-    h_discRaw_sum1->Fill(ResultChIso1+ResultNIso1);
+    h_discRaw_sum1->Fill(ResultCmbIso1);
     h_discRawN_sum1->Fill(ResultNIso1);
     h_discRawCH_sum1->Fill(ResultChIso1);
 
     h_discPU_sum2->Fill(ResultPUIso2);
-    h_discRaw_sum2->Fill(ResultChIso2+ResultNIso2);
+    h_discRaw_sum2->Fill(ResultCmbIso2);
     h_discRawN_sum2->Fill(ResultNIso2);
     h_discRawCH_sum2->Fill(ResultChIso2);
 
+    double CtrlChIso1,CtrlNIso1,CtrlChIso2,CtrlNIso2;
+    CtrlChIso1=CtrlNIso1=CtrlChIso2=CtrlNIso2=0.0;
     // filling space distribution
     reco::VertexRef pv = vertexAssociator_->associatedVertex(*tau1);
     qcuts_.setPV(pv);
@@ -1403,6 +1436,7 @@ if(!background_ && mcMatch_ && !useGenTaus_){
 	double pt = candP4.pt();
 	double dR=deltaR(tau1->p4(),candP4);
 	h_discRawCH_dR1->Fill(dR,pt);
+	CtrlChIso1+=pt;
       }
     
     for(unsigned int isoCand=0; isoCand < tau1->isolationPFGammaCands().size(); isoCand++)
@@ -1412,6 +1446,7 @@ if(!background_ && mcMatch_ && !useGenTaus_){
         double pt = candP4.pt();
         double dR=deltaR(tau1->p4(),candP4);
         h_discRawN_dR1->Fill(dR,pt);
+	CtrlNIso1+=pt;
       }
 
     for(unsigned int isoCand=0; isoCand < bestMatch->isolationPFChargedHadrCands().size(); isoCand++)
@@ -1421,6 +1456,7 @@ if(!background_ && mcMatch_ && !useGenTaus_){
         double pt = candP4.pt();
         double dR=deltaR(bestMatch->p4(),candP4);
         h_discRawCH_dR2->Fill(dR,pt);
+	CtrlChIso2+=pt;
       }
     
     for(unsigned int isoCand=0; isoCand < bestMatch->isolationPFGammaCands().size(); isoCand++)
@@ -1430,7 +1466,26 @@ if(!background_ && mcMatch_ && !useGenTaus_){
         double pt = candP4.pt();
         double dR=deltaR(bestMatch->p4(),candP4);
         h_discRawN_dR2->Fill(dR,pt);
+	CtrlNIso2+=pt;
       }
+    double ak4dBeta = 0.0494/0.1687;
+    double ak5dBeta = 0.0772/0.1687;
+    double CtrlIso1= ((ResultPUIso1*ak5dBeta) < CtrlNIso1 ) ? CtrlChIso1+CtrlNIso1-ResultPUIso1*ak5dBeta : CtrlChIso1;
+    h_discRaw_sum_ctrl1->Fill(CtrlIso1);
+    h_discRawN_sum_ctrl1->Fill(CtrlNIso1);
+    h_discRawCH_sum_ctrl1->Fill(CtrlChIso1);
+
+    double CtrlIso2= ((ResultPUIso2*ak4dBeta) < CtrlNIso2 ) ? CtrlChIso2+CtrlNIso2-ResultPUIso2*ak4dBeta : CtrlChIso2;
+    h_discRaw_sum_ctrl2->Fill(CtrlIso2);
+    h_discRawN_sum_ctrl2->Fill(CtrlNIso2);
+    h_discRawCH_sum_ctrl2->Fill(CtrlChIso2);
+    if(fabs(CtrlChIso1-ResultChIso1)>0.01 || fabs(CtrlNIso2-ResultNIso2)>0.01){
+            std::cout << " tau1: Ch, N, PU, CMB iso is" << ResultChIso1 << " " << ResultNIso1 << " " << ResultPUIso1 << " " << ResultCmbIso1 << std::endl;
+            std::cout << " tau2: Ch, N, PU, CMB iso is" << ResultChIso2 << " " << ResultNIso2 << " " << ResultPUIso2 << " " << ResultCmbIso2 << std::endl;
+        std::cout << "CTRL: tau1: Ch, N, CMB iso is" << CtrlChIso1 << " " << CtrlNIso1 << " " << CtrlIso1 << std::endl;
+        std::cout << "CTRL: tau2: Ch, N, CMB iso is" << CtrlChIso2 << " " << CtrlNIso2 << " " << CtrlIso2 << std::endl;
+    }
+
    
     }
 
