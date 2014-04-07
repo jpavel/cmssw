@@ -1,6 +1,8 @@
 #include "FWCore/Framework/interface/EDFilter.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
+#include "RecoTauTag/RecoTau/interface/RecoTauQualityCuts.h"
+#include "RecoTauTag/RecoTau/interface/RecoTauVertexAssociator.h"
 
 #include "DataFormats/Math/interface/deltaR.h"
 #include "DataFormats/TauReco/interface/PFTau.h"
@@ -45,6 +47,8 @@ class RecoTauDifferenceAnalyzer : public edm::EDFilter {
     virtual bool filter(edm::Event& evt, const edm::EventSetup& es);
     virtual void endJob();
   private:
+    reco::tau::RecoTauQualityCuts qcuts_;
+  std::auto_ptr<reco::tau::RecoTauVertexAssociator> vertexAssociator_;
     edm::InputTag src1_;
     edm::InputTag src2_;
     edm::InputTag disc1_;
@@ -86,6 +90,13 @@ class RecoTauDifferenceAnalyzer : public edm::EDFilter {
   edm::InputTag discLoose_3_;
   edm::InputTag discMedium_3_;
   edm::InputTag discTight_3_;
+
+  edm::InputTag chIso1_;
+  edm::InputTag chIso2_;
+  edm::InputTag nIso1_;
+  edm::InputTag nIso2_;
+  edm::InputTag PUIso1_;
+  edm::InputTag PUIso2_;
 
 
     TProfile* h_eff_pt_1;
@@ -163,20 +174,27 @@ class RecoTauDifferenceAnalyzer : public edm::EDFilter {
   TH2D* h_discComparisonRaw_sum;
   TH2D* h_discComparisonRawN_sum;
   TH2D* h_discComparisonRawCH_sum;
-  TH1D* h_discRaw_sum;
-  TH1D* h_discRawN_sum;
-  TH1D* h_discRawCH_sum;
-  TH1D* h_discMVA_sum;
+  TH1D* h_discRaw_sum1;
+  TH1D* h_discRawN_sum1;
+  TH1D* h_discRawCH_sum1;
+  TH1D* h_discPU_sum1;
   
-  TH1D* h_discRaw_sum_pass;
-  TH1D* h_discRawN_sum_pass;
-  TH1D* h_discRawCH_sum_pass;
-
+  TH1D* h_discRaw_sum2;
+  TH1D* h_discRawN_sum2;
+  TH1D* h_discRawCH_sum2;
+  TH1D* h_discPU_sum2;
 
   TProfile* h_discRaw_pt;
   TProfile* h_discRawN_pt;
   TProfile* h_discRawCH_pt;
   TProfile* h_discMVA_pt;
+
+  TProfile* h_discRawN_dR1;
+  TProfile* h_discRawCH_dR1;
+  TProfile* h_discRawN_dR2;
+  TProfile* h_discRawCH_dR2;
+
+
 
   TProfile* h_discRaw_eta;
   TProfile* h_discRawN_eta;
@@ -275,11 +293,16 @@ class RecoTauDifferenceAnalyzer : public edm::EDFilter {
 };
 
 RecoTauDifferenceAnalyzer::RecoTauDifferenceAnalyzer(
-						     const edm::ParameterSet& pset) {
+						     const edm::ParameterSet& pset): qcuts_(pset.exists("qualityCuts") ? pset.getParameterSet("qualityCuts").getParameterSet("isolationQualityCuts") : pset.getParameterSet("qualityCuts"))
+ {
   src1_ = pset.getParameter<edm::InputTag>("src1");
   src2_ = pset.getParameter<edm::InputTag>("src2");
   disc1_ = pset.getParameter<edm::InputTag>("disc1");
   disc2_ = pset.getParameter<edm::InputTag>("disc2");
+  
+  vertexAssociator_.reset(
+			  new reco::tau::RecoTauVertexAssociator(pset.getParameterSet("qualityCuts"),consumesCollector()));
+  
   eventsExamined_ = 0;
   tausExamined_ = 0;
   tausMatched_ = 0;
@@ -319,6 +342,13 @@ RecoTauDifferenceAnalyzer::RecoTauDifferenceAnalyzer(
   discLoose_3_ = pset.exists("discLoose_3") ? pset.getParameter<edm::InputTag>("discLoose_3"): pset.getParameter<edm::InputTag>("disc1");
   discMedium_3_ = pset.exists("discMedium_3") ? pset.getParameter<edm::InputTag>("discMedium_3"): pset.getParameter<edm::InputTag>("disc1");
   discTight_3_ = pset.exists("discTight_3") ? pset.getParameter<edm::InputTag>("discTight_3"): pset.getParameter<edm::InputTag>("disc1");
+
+  chIso1_ = pset.exists("chIso1") ? pset.getParameter<edm::InputTag>("chIso1"): pset.getParameter<edm::InputTag>("disc1");
+  chIso2_ = pset.exists("chIso2") ? pset.getParameter<edm::InputTag>("chIso2"): pset.getParameter<edm::InputTag>("disc2");
+  nIso1_ = pset.exists("nIso1") ? pset.getParameter<edm::InputTag>("nIso1"): pset.getParameter<edm::InputTag>("disc1");
+  nIso2_ = pset.exists("nIso2") ? pset.getParameter<edm::InputTag>("nIso2"): pset.getParameter<edm::InputTag>("disc2");
+  PUIso1_ = pset.exists("PUIso1") ? pset.getParameter<edm::InputTag>("PUIso1"): pset.getParameter<edm::InputTag>("disc1");
+  PUIso2_ = pset.exists("PUIso2") ? pset.getParameter<edm::InputTag>("PUIso2"): pset.getParameter<edm::InputTag>("disc2");
 
 
   edm::Service<TFileService> fs;
@@ -480,20 +510,28 @@ RecoTauDifferenceAnalyzer::RecoTauDifferenceAnalyzer(
   h_discComparisonRawN_sum = fs->make<TH2D>("h_discComparisonRawN","All p_{T};MVA score;neutral isolation [GeV]",100,-1.0,1.0,500,0.0,50.0);
   h_discComparisonRawCH_sum = fs->make<TH2D>("h_discComparisonRawCH","All p_{T};MVA score;charged isolation [GeV]",100,-1.0,1.0,500,0.0,50.0);
  
-  h_discMVA_sum = fs->make<TH1D>("h_discMVA","All p_{T};MVA score",100,-1.0,1.0);
-  h_discRaw_sum = fs->make<TH1D>("h_discRaw","All p_{T};combined isolation [GeV]",500,0.0,50.0);
-  h_discRawN_sum = fs->make<TH1D>("h_discRawN","All p_{T};neutral isolation [GeV]",500,0.0,50.0);
-  h_discRawCH_sum = fs->make<TH1D>("h_discRawCH","All p_{T};charged isolation [GeV]",500,0.0,50.0);
+  h_discPU_sum1 = fs->make<TH1D>("h_discPU1","All p_{T};pileup isolation",500,0.0,50.0);
+  h_discRaw_sum1 = fs->make<TH1D>("h_discRaw1","All p_{T};combined isolation [GeV]",500,0.0,50.0);
+  h_discRawN_sum1 = fs->make<TH1D>("h_discRawN1","All p_{T};neutral isolation [GeV]",500,0.0,50.0);
+  h_discRawCH_sum1 = fs->make<TH1D>("h_discRawCH1","All p_{T};charged isolation [GeV]",500,0.0,50.0);
 
-  h_discRaw_sum_pass = fs->make<TH1D>("h_discRaw_pass","All p_{T};combined isolation [GeV]",500,0.0,50.0);
-  h_discRawN_sum_pass = fs->make<TH1D>("h_discRawN_pass","All p_{T};neutral isolation [GeV]",500,0.0,50.0);
-  h_discRawCH_sum_pass = fs->make<TH1D>("h_discRawCH_pass","All p_{T};charged isolation [GeV]",500,0.0,50.0);
+  h_discPU_sum2 = fs->make<TH1D>("h_discPU2","All p_{T};pileup isolation",500,0.0,50.0);
+  h_discRaw_sum2 = fs->make<TH1D>("h_discRaw2","All p_{T};combined isolation [GeV]",500,0.0,50.0);
+  h_discRawN_sum2 = fs->make<TH1D>("h_discRawN2","All p_{T};neutral isolation [GeV]",500,0.0,50.0);
+  h_discRawCH_sum2 = fs->make<TH1D>("h_discRawCH2","All p_{T};charged isolation [GeV]",500,0.0,50.0);
 
 
   h_discMVA_pt = fs->make<TProfile>("h_discMVA_pt","MVA;tau p_{T} [GeV];MVA score",100,0.0,100.0);
   h_discRaw_pt = fs->make<TProfile>("h_discRaw_pt","Combined;tau p_{T} [GeV];combined isolation [GeV]",100,0.0,100.0);
   h_discRawN_pt = fs->make<TProfile>("h_discRawN_pt","Neutral;tau p_{T} [GeV];neutral isolation [GeV]",100,0.0,100.0);
   h_discRawCH_pt = fs->make<TProfile>("h_discRawCH_pt","Charged;tau p_{T} [GeV];charged isolation [GeV]",100,0.0,100.0);
+
+  h_discRawN_dR1 = fs->make<TProfile>("h_discRawN_dR1","Neutral;#Delta R to lead;neutral isolation [GeV]",100,0.0,1.0);
+  h_discRawCH_dR1 = fs->make<TProfile>("h_discRawCH_dR1","Charged;#Delta R to lead;charged isolation [GeV]",100,0.0,1.0);
+
+  h_discRawN_dR2 = fs->make<TProfile>("h_discRawN_dR2","Neutral;#Delta R to lead;neutral isolation [GeV]",100,0.0,1.0);
+  h_discRawCH_dR2 = fs->make<TProfile>("h_discRawCH_dR2","Charged;#Delta R to lead;charged isolation [GeV]",100,0.0,1.0);
+
 
   h_discMVA_eta = fs->make<TProfile>("h_discMVA_eta","MVA;tau #eta;MVA score",100,-3.0,3.0);
   h_discRaw_eta = fs->make<TProfile>("h_discRaw_eta","Combined;tau #eta;combined isolation [GeV]",100,-3.0,3.0);
@@ -751,12 +789,24 @@ bool RecoTauDifferenceAnalyzer::filter(
   // evt.getByLabel(discMedium_3_, discMedium_3);
   // edm::Handle<reco::PFTauDiscriminator> discTight_3;
   // evt.getByLabel(discTight_3_, discTight_3);
-
+  edm::Handle<reco::PFTauDiscriminator> chIso1;
+  evt.getByLabel(chIso1_,chIso1);
+  edm::Handle<reco::PFTauDiscriminator> chIso2;
+  evt.getByLabel(chIso2_,chIso2);
+  edm::Handle<reco::PFTauDiscriminator> nIso1;
+  evt.getByLabel(nIso1_,nIso1);
+  edm::Handle<reco::PFTauDiscriminator> nIso2;
+  evt.getByLabel(nIso2_,nIso2);
+  edm::Handle<reco::PFTauDiscriminator> PUIso1;
+  evt.getByLabel(PUIso1_,PUIso1);
+  edm::Handle<reco::PFTauDiscriminator> PUIso2;
+  evt.getByLabel(PUIso2_,PUIso2);
 
   edm::Handle<reco::VertexCollection> verticesH_;
   evt.getByLabel(vertexTag_, verticesH_);
   int nVx = verticesH_->size();
   // h_nVx->Fill(nVx);
+  vertexAssociator_->setEvent(evt);
   
   bool differenceFound = false;
   // Loop over first collection
@@ -925,7 +975,7 @@ if(!background_ && mcMatch_ && !useGenTaus_){
     tausExamined_++;
     reco::PFTauRef tau1(taus1, iTau1);
     // Find the best match in the other collection
-    if(verboseOutputMC_ && mcMatch_) std::cout << "Finding true match!" << std::endl;
+    if(verboseOutputMC_ && mcMatch_) std::cout << "Finding true match for tau with pt " << tau1->pt() << " !" << std::endl;
     bool matched = false;
     if(background_) matched = true;
     if(!background_ && !useGenTaus_){
@@ -959,7 +1009,7 @@ if(!background_ && mcMatch_ && !useGenTaus_){
     }
     if(useGenTaus_)
       {
-	for(size_t iMC = 0; iMC < genTaus->size(); ++ iMC) {
+	for(size_t iMC = 0; iMC < genTaus->size() && matched==false; ++ iMC) {
 	  if(!Zmumu_ && !background_ && onlyHadronic_ && !isHadronic.at(iMC))
 	    {
 	      if(verboseOutputMC_) std::cout << "Not hadronic tau!" << std::endl;
@@ -975,6 +1025,7 @@ if(!background_ && mcMatch_ && !useGenTaus_){
 		pt_vis=pt_visible.at(iMC);
 		eta_vis = eta_visible.at(iMC);
 		phi_vis = phi_visible.at(iMC);
+		if(verboseOutputMC_) std::cout << "This reco tau is matched to a true tau with pt " << pt_vis << std::endl;
 	      }
 	      else matched = false;
 	      matchIndex=iMC;
@@ -997,20 +1048,25 @@ if(!background_ && mcMatch_ && !useGenTaus_){
     if((mcMatch_ && !matched)||(matchToJets_&& !matched)) continue;
     tausMatched_++; nMatched++;
     reco::PFTauRef bestMatch;
-    double bestDeltaR = -1;
+    double bestDeltaR = 0.5;
     reco::PFJetRef jet1,jet2;
+    if(verboseOutputMC_) std::cout << "----> Now matching reco tau from reference collection" << std::endl;
     for (size_t iTau2 = 0; iTau2 < taus2->size(); ++iTau2) {
       reco::PFTauRef tau2(taus2, iTau2);
       jet1 = getJetRef(*tau1);
       jet2 = getJetRef(*tau2);
       double deltaRVal = deltaR(jet2->p4(), jet1->p4());
-    
+      if(verboseOutputMC_) std::cout << "#" << iTau2 << ": dR= " << deltaRVal << std::endl;
      if (bestMatch.isNull() || deltaRVal < bestDeltaR) {
+       if(verboseOutputMC_) std::cout << "  ->current best match" << std::endl;
         bestMatch = tau2;
         bestDeltaR = deltaRVal;
       }
     }
     jet2 = getJetRef(*bestMatch);
+    if(verboseOutputMC_) std::cout << "The best match for tau (jet) pt/eta/phi: " << tau1->pt() << "/" << tau1->eta() << "/" << tau1->phi() <<
+			   "(" << jet1->pt() << "/" << jet1->eta() << "/" << jet1->phi() << ") is tau (jet) : " << bestMatch->pt() << "/" << bestMatch->eta() << "/" << bestMatch->phi() <<
+			   "(" << jet2->pt() << "/" << jet2->eta() << "/" << jet2->phi() << ")" << std::endl;
     // See what's up with the discriminators
     bool result1 = ((*disc1)[tau1] > 0.5);
     bool result2 = ((*disc2)[bestMatch] > 0.5);
@@ -1034,6 +1090,13 @@ if(!background_ && mcMatch_ && !useGenTaus_){
     double eta2 = bestMatch->eta();
     double pt_mon, eta_mon, phi_mon;
     size_t nCharged,nPi0;
+    double ResultChIso1 = (*chIso1)[tau1];
+    double ResultChIso2 = (*chIso2)[bestMatch];
+    double ResultNIso1 = (*nIso1)[tau1];
+    double ResultNIso2 = (*nIso2)[bestMatch];
+    double ResultPUIso1 = (*PUIso1)[tau1];
+    double ResultPUIso2 = (*PUIso2)[bestMatch];
+
     // bool resultAntiEl = ((*discAntiEl)[tau1]>0.5);
     // bool resultAntiMu = ((*discAntiMu)[tau1]>0.5);
     nCharged = tau1->signalPFChargedHadrCands().size();
@@ -1318,10 +1381,58 @@ if(!background_ && mcMatch_ && !useGenTaus_){
     // h_discComparisonRawN_sum->Fill(resultMVA,resultN);
     // h_discComparisonRawCH_sum->Fill(resultMVA,resultCH);
 
-    // h_discMVA_sum->Fill(resultMVA);
-    // h_discRaw_sum->Fill(resultCOMB);
-    // h_discRawN_sum->Fill(resultN);
-    // h_discRawCH_sum->Fill(resultCH);
+    if(pt1>20.){
+    h_discPU_sum1->Fill(ResultPUIso1);
+    h_discRaw_sum1->Fill(ResultChIso1+ResultNIso1);
+    h_discRawN_sum1->Fill(ResultNIso1);
+    h_discRawCH_sum1->Fill(ResultChIso1);
+
+    h_discPU_sum2->Fill(ResultPUIso2);
+    h_discRaw_sum2->Fill(ResultChIso2+ResultNIso2);
+    h_discRawN_sum2->Fill(ResultNIso2);
+    h_discRawCH_sum2->Fill(ResultChIso2);
+
+    // filling space distribution
+    reco::VertexRef pv = vertexAssociator_->associatedVertex(*tau1);
+    qcuts_.setPV(pv);
+    qcuts_.setLeadTrack(tau1->leadPFChargedHadrCand());
+    for(unsigned int isoCand=0; isoCand < tau1->isolationPFChargedHadrCands().size(); isoCand++)
+      {
+	if(!(qcuts_.filterCandRef(tau1->isolationPFChargedHadrCands()[isoCand]))) continue;
+	reco::Particle::LorentzVector candP4=tau1->isolationPFChargedHadrCands()[isoCand]->p4();
+	double pt = candP4.pt();
+	double dR=deltaR(tau1->p4(),candP4);
+	h_discRawCH_dR1->Fill(dR,pt);
+      }
+    
+    for(unsigned int isoCand=0; isoCand < tau1->isolationPFGammaCands().size(); isoCand++)
+      {
+        if(!(qcuts_.filterCandRef(tau1->isolationPFGammaCands()[isoCand]))) continue;
+	reco::Particle::LorentzVector candP4=tau1->isolationPFGammaCands()[isoCand]->p4();
+        double pt = candP4.pt();
+        double dR=deltaR(tau1->p4(),candP4);
+        h_discRawN_dR1->Fill(dR,pt);
+      }
+
+    for(unsigned int isoCand=0; isoCand < bestMatch->isolationPFChargedHadrCands().size(); isoCand++)
+      {
+        if(!(qcuts_.filterCandRef(bestMatch->isolationPFChargedHadrCands()[isoCand]))) continue;
+	reco::Particle::LorentzVector candP4=bestMatch->isolationPFChargedHadrCands()[isoCand]->p4();
+        double pt = candP4.pt();
+        double dR=deltaR(bestMatch->p4(),candP4);
+        h_discRawCH_dR2->Fill(dR,pt);
+      }
+    
+    for(unsigned int isoCand=0; isoCand < bestMatch->isolationPFGammaCands().size(); isoCand++)
+      {
+        if(!(qcuts_.filterCandRef(bestMatch->isolationPFGammaCands()[isoCand]))) continue;
+	reco::Particle::LorentzVector candP4=bestMatch->isolationPFGammaCands()[isoCand]->p4();
+        double pt = candP4.pt();
+        double dR=deltaR(bestMatch->p4(),candP4);
+        h_discRawN_dR2->Fill(dR,pt);
+      }
+   
+    }
 
     // h_discMVA_pt->Fill(pt1,resultMVA);
     // h_discRaw_pt->Fill(pt1,resultCOMB);
@@ -1542,7 +1653,7 @@ if(!background_ && mcMatch_ && !useGenTaus_){
       passed1_ += result1;
       passed2_ += result2;
       differences_++;
-      if(verboseOutput_){
+      if(verboseOutput_ && tau1->pt() > 15.){
       std::cout << "********* RecoTau difference detected! *************"
           << std::endl;
       std::cout << " Tau1 InputTag: " << src1_ << " discriminator: " << disc1_ << " result: " << result1 //<< " mva: " << resultMVA << " rho: " << rho_ << " DM: " << resultDM
@@ -1560,7 +1671,7 @@ if(!background_ && mcMatch_ && !useGenTaus_){
           << std::endl;
       } else
         std::cout << "lead track ref is null!" << std::endl;
-
+      std::cout << "Charged iso is " << ResultChIso1 << std::endl;
       std::cout << "---------       Tau 2                  -------------"
           << std::endl;
       std::cout << *bestMatch << std::endl;
@@ -1573,7 +1684,9 @@ if(!background_ && mcMatch_ && !useGenTaus_){
 
       } else
         std::cout << "lead track ref is null!" << std::endl;
-      bestMatch->dump(std::cout);}
+      bestMatch->dump(std::cout);
+      std::cout << "Charged iso is " << ResultChIso2 << std::endl;
+      }
     }
   }
   if(nMatched < goodCands.size())
