@@ -37,6 +37,8 @@
 #include "TH1F.h"
 #include "TH2D.h"
 #include "TH1D.h"
+#include "TTree.h"
+#include "TFile.h"
 
 typedef edm::View<reco::GenJet> GenJetView;
 
@@ -204,6 +206,11 @@ class RecoTauDifferenceAnalyzer : public edm::EDFilter {
   TProfile* h_discRawN_dR2;
   TProfile* h_discRawCH_dR2;
 
+  TProfile2D* h_discRawN_dPhidEta1;
+  TProfile2D* h_discRawCH_dPhidEta1;
+  TProfile2D* h_discRawN_dPhidEta2;
+  TProfile2D* h_discRawCH_dPhidEta2;
+
 
 
   TProfile* h_discRaw_eta;
@@ -299,6 +306,31 @@ class RecoTauDifferenceAnalyzer : public edm::EDFilter {
   TH1D* h_trkAvgDist_n_pass;
   TH1D* h_trkAvgDist_ch;
   TH1D* h_trkAvgDist_ch_pass;
+
+  TTree* isoTuple_;
+
+  //branches
+  
+  Float_t  _pt_;
+  ULong64_t _eventNum_;
+  Float_t _eta_;
+  Float_t _phi_;
+  Float_t _m_;
+  UChar_t _nVx_;
+  Float_t _chIso_;
+  Float_t _nIso_;
+  Float_t _puIso_;
+  Float_t _cmbIso_;
+
+  Float_t  _pt2_;
+  Float_t _eta2_;
+  Float_t _phi2_;
+  Float_t _m2_;
+  Float_t _chIso2_;
+  Float_t _nIso2_;
+  Float_t _puIso2_;
+  Float_t _cmbIso2_;
+
 
 };
 
@@ -554,6 +586,13 @@ RecoTauDifferenceAnalyzer::RecoTauDifferenceAnalyzer(
   h_discRawN_dR2 = fs->make<TProfile>("h_discRawN_dR2","Neutral;#Delta R to lead;neutral isolation [GeV]",100,0.0,1.0);
   h_discRawCH_dR2 = fs->make<TProfile>("h_discRawCH_dR2","Charged;#Delta R to lead;charged isolation [GeV]",100,0.0,1.0);
 
+  h_discRawN_dPhidEta1 = fs->make<TProfile2D>("h_discRawN_dPhidEta1","Neutral;#Delta #phi;#Delta #eta;neutral isolation [GeV]",64,-3.2,3.2,200,-1.0,1.0);
+  h_discRawCH_dPhidEta1 = fs->make<TProfile2D>("h_discRawCH_dPhidEta1","Charged;#Delta #phi;#Delta #eta;charged isolation [GeV]",64,-3.2,3.2,200,-1.0,1.0);
+
+  h_discRawN_dPhidEta2 = fs->make<TProfile2D>("h_discRawN_dPhidEta2","Neutral;#Delta #phi;#Delta #eta;neutral isolation [GeV]",64,-3.2,3.2,200,-1.0,1.0);
+  h_discRawCH_dPhidEta2 = fs->make<TProfile2D>("h_discRawCH_dPhidEta2","Charged;#Delta #phi;#Delta #eta;charged isolation [GeV]",64,-3.2,3.2,200,-1.0,1.0);
+
+
 
   h_discMVA_eta = fs->make<TProfile>("h_discMVA_eta","MVA;tau #eta;MVA score",100,-3.0,3.0);
   h_discRaw_eta = fs->make<TProfile>("h_discRaw_eta","Combined;tau #eta;combined isolation [GeV]",100,-3.0,3.0);
@@ -745,7 +784,26 @@ RecoTauDifferenceAnalyzer::RecoTauDifferenceAnalyzer(
   h_trkAvgDist_ch=fs->make<TH1D>("h_trkAvgDist_ch","Average constituent distance (charged)", 200, 0.0, 2.0);
   h_trkAvgDist_ch_pass=fs->make<TH1D>("h_trkAvgDist_ch_pass","Average constituent distance (charged)", 200, 0.0, 2.0);
 
-  
+  isoTuple_= new TTree("isoTuple","isolation ntuple");
+  isoTuple_->Branch("pt",&_pt_,"_pt_/F");
+  isoTuple_->Branch("_eventNum_",&_eventNum_,"_eventNum_/l");
+  isoTuple_->Branch("eta", &_eta_,"_eta_/F");
+  isoTuple_->Branch("phi",&_phi_, "_phi_/F");
+  isoTuple_->Branch("m",&_m_, "_m_/F");
+  isoTuple_->Branch("nVx",&_nVx_, "_nVx_/b");
+  isoTuple_->Branch("chIso",&_chIso_, "_chIso_/F");
+  isoTuple_->Branch("nIso",&_nIso_, "_nIso_/F");
+  isoTuple_->Branch("puIso",&_puIso_, "_puIso_/F");
+  isoTuple_->Branch("cmbIso",&_cmbIso_, "_cmbIso_/F");
+
+  isoTuple_->Branch("pt2",&_pt2_,"_pt2_/F");
+  isoTuple_->Branch("eta", &_eta2_,"_eta2_/F");
+  isoTuple_->Branch("phi2",&_phi2_, "_phi2_/F");
+  isoTuple_->Branch("m2",&_m2_, "_m2_/F");
+  isoTuple_->Branch("chIso2",&_chIso2_, "_chIso2_/F");
+  isoTuple_->Branch("nIso2",&_nIso2_, "_nIso2_/F");
+  isoTuple_->Branch("puIso2",&_puIso2_, "_puIso2_/F");
+  isoTuple_->Branch("cmbIso2",&_cmbIso2_, "_cmbIso2_/F");
 
 }
 
@@ -1434,8 +1492,13 @@ if(!background_ && mcMatch_ && !useGenTaus_){
 	if(!(qcuts_.filterCandRef(tau1->isolationPFChargedHadrCands()[isoCand]))) continue;
 	reco::Particle::LorentzVector candP4=tau1->isolationPFChargedHadrCands()[isoCand]->p4();
 	double pt = candP4.pt();
+	double eta = candP4.eta();
+	double phi = candP4.phi();
 	double dR=deltaR(tau1->p4(),candP4);
+	double dEta=eta-tau1->eta();
+	double dPhi=phi-tau1->phi();
 	h_discRawCH_dR1->Fill(dR,pt);
+	h_discRawCH_dPhidEta1->Fill(dPhi,dEta,pt);
 	CtrlChIso1+=pt;
       }
     
@@ -1444,8 +1507,13 @@ if(!background_ && mcMatch_ && !useGenTaus_){
         if(!(qcuts_.filterCandRef(tau1->isolationPFGammaCands()[isoCand]))) continue;
 	reco::Particle::LorentzVector candP4=tau1->isolationPFGammaCands()[isoCand]->p4();
         double pt = candP4.pt();
+	double eta = candP4.eta();
+        double phi = candP4.phi();
         double dR=deltaR(tau1->p4(),candP4);
+        double dEta=eta-tau1->eta();
+        double dPhi=phi-tau1->phi();
         h_discRawN_dR1->Fill(dR,pt);
+	h_discRawN_dPhidEta1->Fill(dPhi,dEta,pt);
 	CtrlNIso1+=pt;
       }
 
@@ -1454,8 +1522,13 @@ if(!background_ && mcMatch_ && !useGenTaus_){
         if(!(qcuts_.filterCandRef(bestMatch->isolationPFChargedHadrCands()[isoCand]))) continue;
 	reco::Particle::LorentzVector candP4=bestMatch->isolationPFChargedHadrCands()[isoCand]->p4();
         double pt = candP4.pt();
+	double eta = candP4.eta();
+        double phi = candP4.phi();
         double dR=deltaR(bestMatch->p4(),candP4);
+	double dEta=eta-bestMatch->eta();
+        double dPhi=phi-bestMatch->phi();
         h_discRawCH_dR2->Fill(dR,pt);
+	h_discRawCH_dPhidEta2->Fill(dPhi,dEta,pt);
 	CtrlChIso2+=pt;
       }
     
@@ -1464,8 +1537,13 @@ if(!background_ && mcMatch_ && !useGenTaus_){
         if(!(qcuts_.filterCandRef(bestMatch->isolationPFGammaCands()[isoCand]))) continue;
 	reco::Particle::LorentzVector candP4=bestMatch->isolationPFGammaCands()[isoCand]->p4();
         double pt = candP4.pt();
+	double eta = candP4.eta();
+        double phi = candP4.phi();
         double dR=deltaR(bestMatch->p4(),candP4);
+        double dEta=eta-bestMatch->eta();
+        double dPhi=phi-bestMatch->phi();
         h_discRawN_dR2->Fill(dR,pt);
+	h_discRawN_dPhidEta2->Fill(dPhi,dEta,pt);
 	CtrlNIso2+=pt;
       }
     double ak4dBeta = 0.0494/0.1687;
@@ -1479,14 +1557,36 @@ if(!background_ && mcMatch_ && !useGenTaus_){
     h_discRaw_sum_ctrl2->Fill(CtrlIso2);
     h_discRawN_sum_ctrl2->Fill(CtrlNIso2);
     h_discRawCH_sum_ctrl2->Fill(CtrlChIso2);
-    if(fabs(CtrlChIso1-ResultChIso1)>0.01 || fabs(CtrlNIso2-ResultNIso2)>0.01){
-            std::cout << " tau1: Ch, N, PU, CMB iso is" << ResultChIso1 << " " << ResultNIso1 << " " << ResultPUIso1 << " " << ResultCmbIso1 << std::endl;
-            std::cout << " tau2: Ch, N, PU, CMB iso is" << ResultChIso2 << " " << ResultNIso2 << " " << ResultPUIso2 << " " << ResultCmbIso2 << std::endl;
-        std::cout << "CTRL: tau1: Ch, N, CMB iso is" << CtrlChIso1 << " " << CtrlNIso1 << " " << CtrlIso1 << std::endl;
-        std::cout << "CTRL: tau2: Ch, N, CMB iso is" << CtrlChIso2 << " " << CtrlNIso2 << " " << CtrlIso2 << std::endl;
-    }
 
-   
+    // if(fabs(CtrlChIso1-ResultChIso1)>0.01 || fabs(CtrlNIso2-ResultNIso2)>0.01){
+    //         std::cout << " tau1: Ch, N, PU, CMB iso is" << ResultChIso1 << " " << ResultNIso1 << " " << ResultPUIso1 << " " << ResultCmbIso1 << std::endl;
+    //         std::cout << " tau2: Ch, N, PU, CMB iso is" << ResultChIso2 << " " << ResultNIso2 << " " << ResultPUIso2 << " " << ResultCmbIso2 << std::endl;
+    //     std::cout << "CTRL: tau1: Ch, N, CMB iso is" << CtrlChIso1 << " " << CtrlNIso1 << " " << CtrlIso1 << std::endl;
+    //     std::cout << "CTRL: tau2: Ch, N, CMB iso is" << CtrlChIso2 << " " << CtrlNIso2 << " " << CtrlIso2 << std::endl;
+    // }
+  
+    // ntuple filling
+    _pt_ = Float_t(tau1->pt());
+    _eventNum_ = ULong64_t(evt.id().event());
+    _eta_  = Float_t(tau1->eta());
+    _phi_  = Float_t(tau1->phi());
+    _m_    = Float_t(tau1->mass());
+    _nVx_  = UChar_t(nVx);
+    _chIso_= Float_t(CtrlChIso1);
+    _nIso_ = Float_t(CtrlNIso1);
+    _puIso_= Float_t(ResultPUIso1);
+    _cmbIso_=Float_t(ResultCmbIso1);
+
+    _pt2_ = Float_t(bestMatch->pt());
+    _eta2_  = Float_t(bestMatch->eta());
+    _phi2_  = Float_t(bestMatch->phi());
+    _m2_    = Float_t(bestMatch->mass());
+    _chIso2_= Float_t(CtrlChIso2);
+    _nIso2_ = Float_t(CtrlNIso2);
+    _puIso2_= Float_t(ResultPUIso2);
+    _cmbIso2_=Float_t(ResultCmbIso2);
+
+    isoTuple_->Fill();
     }
 
     // h_discMVA_pt->Fill(pt1,resultMVA);
@@ -1763,6 +1863,7 @@ if(!background_ && mcMatch_ && !useGenTaus_){
 }
 
 void RecoTauDifferenceAnalyzer::endJob() {
+  isoTuple_->Print();
   if(verboseOutput_){
   std::cout <<  " RECO TAU DIFFERENCE SUMMARY: " << std::endl;
   std::cout <<  " Examined " << tausExamined_ << " taus in "
@@ -1783,6 +1884,13 @@ void RecoTauDifferenceAnalyzer::endJob() {
   h_summary->SetBinContent(5,passed1_);
   h_summary->SetBinContent(6,allPassed2_);
   h_summary->SetBinContent(7,passed2_);
+  TTree *savetree = isoTuple_->CloneTree();
+  TFile* file = new TFile("ntuple.root","recreate");
+  savetree->Write(); 
+  file->Close();
+  delete savetree;
+  delete isoTuple_;
+  //    isoTuple_->Write();
 }
 
 
