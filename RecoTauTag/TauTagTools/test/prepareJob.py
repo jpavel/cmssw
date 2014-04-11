@@ -22,25 +22,39 @@ if cont!='Y' :
 
 from subprocess import call
 call(["mkdir","-p",jobName]) # make dir if not exist
-call(["cp",cfgScript,jobName])
+#call(["cp",cfgScript,jobName])
 
 f=open(batchScript)
 batchCommands=f.readlines()
 f.close()
 
-cmd_f=open(jobName+'/'+batchScript,'w')
-cmd_f.write('dir='+currDir+'/'+jobName+'\n')
-for line in batchCommands:
-  cmd_f.write(line)
+# cmd_f=open(jobName+'/'+batchScript,'w')
+# cmd_f.write('dir='+currDir+'/'+jobName+'\n')
+# for line in batchCommands:
+#   cmd_f.write(line)
 
-cmd_f.close()
-skipEvents=0
+# cmd_f.close()
+# skipEvents=0
 for j_number in range(int(numberOfJobs)):
   print j_number
   skipEvents=j_number*int(eventsPerJob)
-  command=currDir+'/'+jobName+'/'+batchScript+' '+str(eventsPerJob)+' '+str(skipEvents)+' '+str(j_number)
+  call(["mkdir","-p",jobName+"/job_"+str(j_number)])
+  command=currDir+'/'+jobName+'/job_'+str(j_number)+'/'+batchScript+' '+str(eventsPerJob)+' '+str(skipEvents)+' '+str(j_number)
   print command
+  call(["cp",cfgScript,jobName+"/job_"+str(j_number)])
+  os.chdir(jobName+"/job_"+str(j_number))
+  print os.getcwd()
+  cmd_f=open(batchScript,'w')
+  cmd_f.write('dir='+currDir+'/'+jobName+'/job_'+str(j_number)+'\n')
+  for line in batchCommands:
+    cmd_f.write(line)
+  cmd_f.close()
+  call(["chmod","+x",batchScript])
+  call(["bsub","-q","1nh",command])
+  os.chdir(currDir)
+
+print os.getcwd()
   #  bsub -q test -W 1:00 '/afs/cern.ch/work/j/jez/private/CMS/validation/140402_AK4FRproblem/ak5/CMSSW_7_1_0_pre4/src/test_batch/ak4Job.sh 1000 0 1
   #submission
   #call(["bsub","-q","8nm","-W","0:01",command])
-  call(["bsub","-q","8nm",command])
+#  call(["bsub","-q","8nm",command])
