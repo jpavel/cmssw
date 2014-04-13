@@ -851,24 +851,24 @@ bool RecoTauDifferenceAnalyzer::filter(
   // evt.getByLabel("hpsPFTauDiscriminationByLooseElectronRejection",discAntiEl);
   // edm::Handle<reco::PFTauDiscriminator> discAntiMu;
   // evt.getByLabel("hpsPFTauDiscriminationByMediumMuonRejection",discAntiMu);
-  // edm::Handle<reco::PFTauDiscriminator> discLoose;
-  // evt.getByLabel(discLoose_, discLoose);
-  // edm::Handle<reco::PFTauDiscriminator> discMedium;
-  // evt.getByLabel(discMedium_, discMedium);
-  // edm::Handle<reco::PFTauDiscriminator> discTight;
-  // evt.getByLabel(discTight_, discTight);
-  // edm::Handle<reco::PFTauDiscriminator> discLoose_2;
-  // evt.getByLabel(discLoose_2_, discLoose_2);
-  // edm::Handle<reco::PFTauDiscriminator> discMedium_2;
-  // evt.getByLabel(discMedium_2_, discMedium_2);
-  // edm::Handle<reco::PFTauDiscriminator> discTight_2;
-  // evt.getByLabel(discTight_2_, discTight_2);
-  // edm::Handle<reco::PFTauDiscriminator> discLoose_3;
-  // evt.getByLabel(discLoose_3_, discLoose_3);
-  // edm::Handle<reco::PFTauDiscriminator> discMedium_3;
-  // evt.getByLabel(discMedium_3_, discMedium_3);
-  // edm::Handle<reco::PFTauDiscriminator> discTight_3;
-  // evt.getByLabel(discTight_3_, discTight_3);
+  edm::Handle<reco::PFTauDiscriminator> discLoose;
+  evt.getByLabel(discLoose_, discLoose);
+  edm::Handle<reco::PFTauDiscriminator> discMedium;
+  evt.getByLabel(discMedium_, discMedium);
+  edm::Handle<reco::PFTauDiscriminator> discTight;
+  evt.getByLabel(discTight_, discTight);
+  edm::Handle<reco::PFTauDiscriminator> discLoose_2;
+  evt.getByLabel(discLoose_2_, discLoose_2);
+  edm::Handle<reco::PFTauDiscriminator> discMedium_2;
+  evt.getByLabel(discMedium_2_, discMedium_2);
+  edm::Handle<reco::PFTauDiscriminator> discTight_2;
+  evt.getByLabel(discTight_2_, discTight_2);
+  edm::Handle<reco::PFTauDiscriminator> discLoose_3;
+  evt.getByLabel(discLoose_3_, discLoose_3);
+  edm::Handle<reco::PFTauDiscriminator> discMedium_3;
+  evt.getByLabel(discMedium_3_, discMedium_3);
+  edm::Handle<reco::PFTauDiscriminator> discTight_3;
+  evt.getByLabel(discTight_3_, discTight_3);
   edm::Handle<reco::PFTauDiscriminator> chIso1;
   evt.getByLabel(chIso1_,chIso1);
   edm::Handle<reco::PFTauDiscriminator> chIso2;
@@ -1154,15 +1154,15 @@ if(!background_ && mcMatch_ && !useGenTaus_){
     // See what's up with the discriminators
     bool result1 = ((*disc1)[tau1] > 0.5);
     bool result2 = ((*disc2)[bestMatch] > 0.5);
-    // bool resultLoose = ((*discLoose)[tau1] > 0.5);
-    // bool resultMedium = ((*discMedium)[tau1] > 0.5);
-    // bool resultTight = ((*discTight)[tau1] > 0.5);
-    // bool resultLoose_2 = ((*discLoose_2)[tau1] > 0.5);
-    // bool resultMedium_2 = ((*discMedium_2)[tau1] > 0.5);
-    // bool resultTight_2 = ((*discTight_2)[tau1] > 0.5);
-    // bool resultLoose_3 = ((*discLoose_3)[tau1] > 0.5);
-    // bool resultMedium_3 = ((*discMedium_3)[tau1] > 0.5);
-    // bool resultTight_3 = ((*discTight_3)[tau1] > 0.5);
+    bool resultLoose = ((*discLoose)[tau1] > 0.5);
+    bool resultMedium = ((*discMedium)[tau1] > 0.5);
+    bool resultTight = ((*discTight)[tau1] > 0.5);
+    bool resultLoose_2 = ((*discLoose_2)[tau1] > 0.5);
+    bool resultMedium_2 = ((*discMedium_2)[tau1] > 0.5);
+    bool resultTight_2 = ((*discTight_2)[tau1] > 0.5);
+    bool resultLoose_3 = ((*discLoose_3)[tau1] > 0.5);
+    bool resultMedium_3 = ((*discMedium_3)[tau1] > 0.5);
+    bool resultTight_3 = ((*discTight_3)[tau1] > 0.5);
     // double resultMVA = 0.0; // (*discMVA)[tau1];
     // double resultCH = (*discCH)[tau1];
     // double resultN = (*discN)[tau1];
@@ -1294,131 +1294,131 @@ if(!background_ && mcMatch_ && !useGenTaus_){
       h_eff_vx_1->Fill(nVx,0);
     }
 
-    // if(resultLoose && pt1 > 20.0 && pt_mon > 5.0){
-    //   h_eff_id_pt_loose->Fill(pt_mon,1);
-    //   h_eff_id_eta_loose->Fill(eta_mon,1);
-    //   h_eff_id_vx_loose->Fill(nVx,1);    
-    //   h_eff_id_phi_loose->Fill(phi_mon,1);
-    // }else if(pt1 > 20.0 && pt_mon > 5.0){
-    //   h_eff_id_pt_loose->Fill(pt_mon,0);
-    //   h_eff_id_eta_loose->Fill(eta_mon,0);
-    //   h_eff_id_vx_loose->Fill(nVx,0);
-    //   h_eff_id_phi_loose->Fill(phi_mon,0);
-    // }else if(pt_mon>5.0){
-    //   h_eff_id_pt_loose->Fill(pt_mon,0);
-    // }
+    if(resultLoose && pt1 > 20.0 && pt_mon > 5.0){
+      h_eff_id_pt_loose->Fill(pt_mon,1);
+      h_eff_id_eta_loose->Fill(eta_mon,1);
+      h_eff_id_vx_loose->Fill(nVx,1);    
+      h_eff_id_phi_loose->Fill(phi_mon,1);
+    }else if(pt1 > 20.0 && pt_mon > 5.0){
+      h_eff_id_pt_loose->Fill(pt_mon,0);
+      h_eff_id_eta_loose->Fill(eta_mon,0);
+      h_eff_id_vx_loose->Fill(nVx,0);
+      h_eff_id_phi_loose->Fill(phi_mon,0);
+    }else if(pt_mon>5.0){
+      h_eff_id_pt_loose->Fill(pt_mon,0);
+    }
 
-    // if(resultMedium && pt1 > 20.0 ){
-    //   h_eff_id_pt_medium->Fill(pt_mon,1);
-    //   h_eff_id_eta_medium->Fill(eta_mon,1);
-    //   h_eff_id_vx_medium->Fill(nVx,1);    
-    //   h_eff_id_phi_medium->Fill(phi_mon,1);
-    // }else if(pt1 > 20.0){
-    //   h_eff_id_pt_medium->Fill(pt_mon,0);
-    //   h_eff_id_eta_medium->Fill(eta_mon,0);
-    //   h_eff_id_vx_medium->Fill(nVx,0);
-    //   h_eff_id_phi_medium->Fill(phi_mon,0);
-    // }else{
-    //   h_eff_id_pt_medium->Fill(pt_mon,0);
-    // }
+    if(resultMedium && pt1 > 20.0 ){
+      h_eff_id_pt_medium->Fill(pt_mon,1);
+      h_eff_id_eta_medium->Fill(eta_mon,1);
+      h_eff_id_vx_medium->Fill(nVx,1);    
+      h_eff_id_phi_medium->Fill(phi_mon,1);
+    }else if(pt1 > 20.0){
+      h_eff_id_pt_medium->Fill(pt_mon,0);
+      h_eff_id_eta_medium->Fill(eta_mon,0);
+      h_eff_id_vx_medium->Fill(nVx,0);
+      h_eff_id_phi_medium->Fill(phi_mon,0);
+    }else{
+      h_eff_id_pt_medium->Fill(pt_mon,0);
+    }
 
-    // if(resultTight && pt1 > 20.0){
-    //   h_eff_id_pt_tight->Fill(pt_mon,1);
-    //   h_eff_id_eta_tight->Fill(eta_mon,1);
-    //   h_eff_id_vx_tight->Fill(nVx,1);    
-    //   h_eff_id_phi_tight->Fill(phi_mon,1);
-    // }else if(pt1 > 20.0){
-    //   h_eff_id_pt_tight->Fill(pt_mon,0);
-    //   h_eff_id_eta_tight->Fill(eta_mon,0);
-    //   h_eff_id_vx_tight->Fill(nVx,0);
-    //   h_eff_id_phi_tight->Fill(phi_mon,0);
-    // }else{
-    //   h_eff_id_pt_tight->Fill(pt_mon,0);
-    // }
+    if(resultTight && pt1 > 20.0){
+      h_eff_id_pt_tight->Fill(pt_mon,1);
+      h_eff_id_eta_tight->Fill(eta_mon,1);
+      h_eff_id_vx_tight->Fill(nVx,1);    
+      h_eff_id_phi_tight->Fill(phi_mon,1);
+    }else if(pt1 > 20.0){
+      h_eff_id_pt_tight->Fill(pt_mon,0);
+      h_eff_id_eta_tight->Fill(eta_mon,0);
+      h_eff_id_vx_tight->Fill(nVx,0);
+      h_eff_id_phi_tight->Fill(phi_mon,0);
+    }else{
+      h_eff_id_pt_tight->Fill(pt_mon,0);
+    }
 
-    // if(resultLoose_2 && pt1 > 20.0){
-    //   h_eff_id_pt_loose_2->Fill(pt_mon,1);
-    //   h_eff_id_eta_loose_2->Fill(eta_mon,1);
-    //   h_eff_id_vx_loose_2->Fill(nVx,1); 
-    //   h_eff_id_phi_loose_2->Fill(phi_mon,1);
-    // }else if(pt1 > 20.0){
-    //   h_eff_id_pt_loose_2->Fill(pt_mon,0);
-    //   h_eff_id_eta_loose_2->Fill(eta_mon,0);
-    //   h_eff_id_vx_loose_2->Fill(nVx,0);
-    //   h_eff_id_phi_loose_2->Fill(phi_mon,0);
-    // }else{
-    //   h_eff_id_pt_loose_2->Fill(pt_mon,0);
-    // }
+    if(resultLoose_2 && pt1 > 20.0){
+      h_eff_id_pt_loose_2->Fill(pt_mon,1);
+      h_eff_id_eta_loose_2->Fill(eta_mon,1);
+      h_eff_id_vx_loose_2->Fill(nVx,1); 
+      h_eff_id_phi_loose_2->Fill(phi_mon,1);
+    }else if(pt1 > 20.0){
+      h_eff_id_pt_loose_2->Fill(pt_mon,0);
+      h_eff_id_eta_loose_2->Fill(eta_mon,0);
+      h_eff_id_vx_loose_2->Fill(nVx,0);
+      h_eff_id_phi_loose_2->Fill(phi_mon,0);
+    }else{
+      h_eff_id_pt_loose_2->Fill(pt_mon,0);
+    }
 
-    // if(resultMedium_2 && pt1 > 20.0){
-    //   h_eff_id_pt_medium_2->Fill(pt_mon,1);
-    //   h_eff_id_eta_medium_2->Fill(eta_mon,1);
-    //   h_eff_id_vx_medium_2->Fill(nVx,1);
-    //   h_eff_id_phi_medium_2->Fill(phi_mon,1);
-    // }else if(pt1 > 20.0){
-    //   h_eff_id_pt_medium_2->Fill(pt_mon,0);
-    //   h_eff_id_eta_medium_2->Fill(eta_mon,0);
-    //   h_eff_id_vx_medium_2->Fill(nVx,0);
-    //   h_eff_id_phi_medium_2->Fill(phi_mon,0);
-    // }else{
-    //   h_eff_id_pt_medium_2->Fill(pt_mon,0);
-    // }
+    if(resultMedium_2 && pt1 > 20.0){
+      h_eff_id_pt_medium_2->Fill(pt_mon,1);
+      h_eff_id_eta_medium_2->Fill(eta_mon,1);
+      h_eff_id_vx_medium_2->Fill(nVx,1);
+      h_eff_id_phi_medium_2->Fill(phi_mon,1);
+    }else if(pt1 > 20.0){
+      h_eff_id_pt_medium_2->Fill(pt_mon,0);
+      h_eff_id_eta_medium_2->Fill(eta_mon,0);
+      h_eff_id_vx_medium_2->Fill(nVx,0);
+      h_eff_id_phi_medium_2->Fill(phi_mon,0);
+    }else{
+      h_eff_id_pt_medium_2->Fill(pt_mon,0);
+    }
 
-    // if(resultTight_2 && pt1 > 20.0){
-    //   h_eff_id_pt_tight_2->Fill(pt_mon,1);
-    //   h_eff_id_eta_tight_2->Fill(eta_mon,1);
-    //   h_eff_id_vx_tight_2->Fill(nVx,1);    
-    //   h_eff_id_phi_tight_2->Fill(phi_mon,1);
-    // }else if(pt1 > 20.0){
-    //   h_eff_id_pt_tight_2->Fill(pt_mon,0);
-    //   h_eff_id_eta_tight_2->Fill(eta_mon,0);
-    //   h_eff_id_vx_tight_2->Fill(nVx,0);
-    //   h_eff_id_phi_tight_2->Fill(phi_mon,0);
-    // }else{
-    //   h_eff_id_pt_tight_2->Fill(pt_mon,0);
-    // }
+    if(resultTight_2 && pt1 > 20.0){
+      h_eff_id_pt_tight_2->Fill(pt_mon,1);
+      h_eff_id_eta_tight_2->Fill(eta_mon,1);
+      h_eff_id_vx_tight_2->Fill(nVx,1);    
+      h_eff_id_phi_tight_2->Fill(phi_mon,1);
+    }else if(pt1 > 20.0){
+      h_eff_id_pt_tight_2->Fill(pt_mon,0);
+      h_eff_id_eta_tight_2->Fill(eta_mon,0);
+      h_eff_id_vx_tight_2->Fill(nVx,0);
+      h_eff_id_phi_tight_2->Fill(phi_mon,0);
+    }else{
+      h_eff_id_pt_tight_2->Fill(pt_mon,0);
+    }
 
-    // if(resultLoose_3 && pt1 > 20.0){
-    //   h_eff_id_pt_loose_3->Fill(pt_mon,1);
-    //   h_eff_id_eta_loose_3->Fill(eta_mon,1);
-    //   h_eff_id_vx_loose_3->Fill(nVx,1);
-    //   h_eff_id_phi_loose_3->Fill(phi_mon,1);
-    // }else if(pt1 > 20.0){
-    //   h_eff_id_pt_loose_3->Fill(pt_mon,0);
-    //   h_eff_id_eta_loose_3->Fill(eta_mon,0);
-    //   h_eff_id_vx_loose_3->Fill(nVx,0);
-    //   h_eff_id_phi_loose_3->Fill(phi_mon,0);
-    // }else{
-    //   h_eff_id_pt_loose_3->Fill(pt_mon,0);
-    // }
+    if(resultLoose_3 && pt1 > 20.0){
+      h_eff_id_pt_loose_3->Fill(pt_mon,1);
+      h_eff_id_eta_loose_3->Fill(eta_mon,1);
+      h_eff_id_vx_loose_3->Fill(nVx,1);
+      h_eff_id_phi_loose_3->Fill(phi_mon,1);
+    }else if(pt1 > 20.0){
+      h_eff_id_pt_loose_3->Fill(pt_mon,0);
+      h_eff_id_eta_loose_3->Fill(eta_mon,0);
+      h_eff_id_vx_loose_3->Fill(nVx,0);
+      h_eff_id_phi_loose_3->Fill(phi_mon,0);
+    }else{
+      h_eff_id_pt_loose_3->Fill(pt_mon,0);
+    }
 
-    // if(resultMedium_3 && pt1 > 20.0){
-    //   h_eff_id_pt_medium_3->Fill(pt_mon,1);
-    //   h_eff_id_eta_medium_3->Fill(eta_mon,1);
-    //   h_eff_id_vx_medium_3->Fill(nVx,1);  
-    //   h_eff_id_phi_medium_3->Fill(phi_mon,1);
-    // }else if(pt1 > 20.0){
-    //   h_eff_id_pt_medium_3->Fill(pt_mon,0);
-    //   h_eff_id_eta_medium_3->Fill(eta_mon,0);
-    //   h_eff_id_vx_medium_3->Fill(nVx,0);
-    //   h_eff_id_phi_medium_3->Fill(phi_mon,0);
-    // }else{
-    //   h_eff_id_pt_medium_3->Fill(pt_mon,0);
-    // }
+    if(resultMedium_3 && pt1 > 20.0){
+      h_eff_id_pt_medium_3->Fill(pt_mon,1);
+      h_eff_id_eta_medium_3->Fill(eta_mon,1);
+      h_eff_id_vx_medium_3->Fill(nVx,1);  
+      h_eff_id_phi_medium_3->Fill(phi_mon,1);
+    }else if(pt1 > 20.0){
+      h_eff_id_pt_medium_3->Fill(pt_mon,0);
+      h_eff_id_eta_medium_3->Fill(eta_mon,0);
+      h_eff_id_vx_medium_3->Fill(nVx,0);
+      h_eff_id_phi_medium_3->Fill(phi_mon,0);
+    }else{
+      h_eff_id_pt_medium_3->Fill(pt_mon,0);
+    }
 
-    // if(resultTight_3 && pt1 > 20.0){
-    //   h_eff_id_pt_tight_3->Fill(pt_mon,1);
-    //   h_eff_id_eta_tight_3->Fill(eta_mon,1);
-    //   h_eff_id_vx_tight_3->Fill(nVx,1);    
-    //   h_eff_id_phi_tight_3->Fill(phi_mon,1);
-    // }else if(pt1 > 20.0){
-    //   h_eff_id_pt_tight_3->Fill(pt_mon,0);
-    //   h_eff_id_eta_tight_3->Fill(eta_mon,0);
-    //   h_eff_id_vx_tight_3->Fill(nVx,0);
-    //   h_eff_id_phi_tight_3->Fill(phi_mon,0);
-    // }else{
-    //   h_eff_id_pt_tight_3->Fill(pt_mon,0);
-    // }
+    if(resultTight_3 && pt1 > 20.0){
+      h_eff_id_pt_tight_3->Fill(pt_mon,1);
+      h_eff_id_eta_tight_3->Fill(eta_mon,1);
+      h_eff_id_vx_tight_3->Fill(nVx,1);    
+      h_eff_id_phi_tight_3->Fill(phi_mon,1);
+    }else if(pt1 > 20.0){
+      h_eff_id_pt_tight_3->Fill(pt_mon,0);
+      h_eff_id_eta_tight_3->Fill(eta_mon,0);
+      h_eff_id_vx_tight_3->Fill(nVx,0);
+      h_eff_id_phi_tight_3->Fill(phi_mon,0);
+    }else{
+      h_eff_id_pt_tight_3->Fill(pt_mon,0);
+    }
 
     if(background_){
       pt_mon=jet2->pt();

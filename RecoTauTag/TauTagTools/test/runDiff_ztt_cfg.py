@@ -99,17 +99,8 @@ process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 ## Source
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-         '/store/relval/CMSSW_7_1_0_pre5/RelValQCD_FlatPt_15_3000HS_13/GEN-SIM-RECO/POSTLS171_V1-v1/00000/065CA478-17B6-E311-83AE-0025905A611C.root',
-       '/store/relval/CMSSW_7_1_0_pre5/RelValQCD_FlatPt_15_3000HS_13/GEN-SIM-RECO/POSTLS171_V1-v1/00000/08492532-1BB6-E311-90F7-0025905938AA.root',
-       '/store/relval/CMSSW_7_1_0_pre5/RelValQCD_FlatPt_15_3000HS_13/GEN-SIM-RECO/POSTLS171_V1-v1/00000/0ACD0B5C-E3B6-E311-B784-003048679076.root',
-       '/store/relval/CMSSW_7_1_0_pre5/RelValQCD_FlatPt_15_3000HS_13/GEN-SIM-RECO/POSTLS171_V1-v1/00000/242FEF51-0CB6-E311-8DD3-0025905938B4.root',
-       '/store/relval/CMSSW_7_1_0_pre5/RelValQCD_FlatPt_15_3000HS_13/GEN-SIM-RECO/POSTLS171_V1-v1/00000/247306DB-0EB6-E311-8073-0025905A611C.root',
-       '/store/relval/CMSSW_7_1_0_pre5/RelValQCD_FlatPt_15_3000HS_13/GEN-SIM-RECO/POSTLS171_V1-v1/00000/28945BC0-22B6-E311-A3CF-0026189438A0.root',
-       '/store/relval/CMSSW_7_1_0_pre5/RelValQCD_FlatPt_15_3000HS_13/GEN-SIM-RECO/POSTLS171_V1-v1/00000/86A79188-2BB6-E311-AC16-003048678B7C.root',
-       '/store/relval/CMSSW_7_1_0_pre5/RelValQCD_FlatPt_15_3000HS_13/GEN-SIM-RECO/POSTLS171_V1-v1/00000/8A45DEC0-18B6-E311-B9BB-0025905A60B6.root',
-       '/store/relval/CMSSW_7_1_0_pre5/RelValQCD_FlatPt_15_3000HS_13/GEN-SIM-RECO/POSTLS171_V1-v1/00000/B4BA04DD-EAB6-E311-B255-0025905A6136.root',
-       '/store/relval/CMSSW_7_1_0_pre5/RelValQCD_FlatPt_15_3000HS_13/GEN-SIM-RECO/POSTLS171_V1-v1/00000/C03E8E1C-15B6-E311-A7FE-0025905A48F2.root',
-       '/store/relval/CMSSW_7_1_0_pre5/RelValQCD_FlatPt_15_3000HS_13/GEN-SIM-RECO/POSTLS171_V1-v1/00000/ECE6D91F-15B6-E311-80B2-0025905A6082.root' 
+ '/store/relval/CMSSW_7_1_0_pre5/RelValZTT_13/GEN-SIM-RECO/POSTLS171_V1-v1/00000/8E8B2309-E6B6-E311-A8C6-002618943896.root',
+ '/store/relval/CMSSW_7_1_0_pre5/RelValZTT_13/GEN-SIM-RECO/POSTLS171_V1-v1/00000/E84A5F0C-E3B6-E311-8515-003048D3C010.root'
 ),
 #'file:/afs/cern.ch/work/j/jez/ntuples/tauID/relval/CMSSW_7_1_0_pre4_AK4/RelValQCD_FlatPt_15_3000HS_13/GEN-SIM-RECO/POSTLS171_V1-v2/00000/08F63CD1-30B5-E311-B53E-003048B835A2.root'),
 #'/store/relval/CMSSW_7_1_0_pre4/RelValZTT_13/GEN-SIM-RECO/POSTLS171_V1-v2/00000/D4AF85E0-85AA-E311-95E5-02163E00E782.root'),
@@ -165,12 +156,12 @@ process.tauDifferenceAnalyzer = cms.EDFilter("RecoTauDifferenceAnalyzer",
                                              cmbIso1 = cms.InputTag("hpsPFTauDiscriminationByRawCombinedIsolationDBSumPtCorr3Hits","",procName),
                                              cmbIso2 = cms.InputTag("hpsPFTauDiscriminationByRawCombinedIsolationDBSumPtCorr3Hits","","RECO"),
                                              genSrc = cms.InputTag("genParticles"),
-                                             genTauSrc = cms.InputTag("ak5GenJets"),
+                                             genTauSrc = cms.InputTag("tauGenJets"),
                                              mcMatch = cms.bool(True),
                                              primaryVertexSrc = cms.InputTag("offlinePrimaryVertices"),
                                              verboseOutput = cms.bool(True),
                                              verboseOutputMC = cms.bool(False),
-                                             matchingDistance = cms.double(0.5),
+                                             matchingDistance = cms.double(0.1),
                                              background = cms.bool(False),
                                              rhoProducer = cms.InputTag("fixedGridRhoFastjetAll"),
                                              requireDecayMode = cms.int32(decayMode),
@@ -186,9 +177,7 @@ process.tauDifferenceAnalyzer.qualityCuts.isolationQualityCuts.minGammaEt = cms.
 ## let it run
 
 process.p = cms.Path(
-#        process.tauGenJets*
-        process.genParticlesForJets*
-        process.ak5GenJets*
+        process.tauGenJets*
         process.PFTau*
         process.tauDifferenceAnalyzer
 #            process.patDefaultSequence
