@@ -99,8 +99,10 @@ process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 ## Source
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
- '/store/relval/CMSSW_7_1_0_pre5/RelValZTT_13/GEN-SIM-RECO/POSTLS171_V1-v1/00000/8E8B2309-E6B6-E311-A8C6-002618943896.root',
- '/store/relval/CMSSW_7_1_0_pre5/RelValZTT_13/GEN-SIM-RECO/POSTLS171_V1-v1/00000/E84A5F0C-E3B6-E311-8515-003048D3C010.root'
+ '/store/relval/CMSSW_7_1_0_pre6/RelValZTT_13/GEN-SIM-RECO/PRE_LS171_V3-v1/00000/7AC27528-32C7-E311-95C9-003048FFD770.root',
+ '/store/relval/CMSSW_7_1_0_pre6/RelValZTT_13/GEN-SIM-RECO/PRE_LS171_V3-v1/00000/C42C13E7-30C7-E311-B583-003048678DD6.root'
+# '/store/relval/CMSSW_7_1_0_pre5/RelValZTT_13/GEN-SIM-RECO/POSTLS171_V1-v1/00000/8E8B2309-E6B6-E311-A8C6-002618943896.root',
+# '/store/relval/CMSSW_7_1_0_pre5/RelValZTT_13/GEN-SIM-RECO/POSTLS171_V1-v1/00000/E84A5F0C-E3B6-E311-8515-003048D3C010.root'
 ),
 #'file:/afs/cern.ch/work/j/jez/ntuples/tauID/relval/CMSSW_7_1_0_pre4_AK4/RelValQCD_FlatPt_15_3000HS_13/GEN-SIM-RECO/POSTLS171_V1-v2/00000/08F63CD1-30B5-E311-B53E-003048B835A2.root'),
 #'/store/relval/CMSSW_7_1_0_pre4/RelValZTT_13/GEN-SIM-RECO/POSTLS171_V1-v2/00000/D4AF85E0-85AA-E311-95E5-02163E00E782.root'),
@@ -167,7 +169,7 @@ process.tauDifferenceAnalyzer = cms.EDFilter("RecoTauDifferenceAnalyzer",
                                              requireDecayMode = cms.int32(decayMode),
                                              checkMother = cms.bool(False),
                                              Zmumu=cms.bool(False),
-                                             onlyHadronic=cms.bool(False),
+                                             onlyHadronic=cms.bool(True),
                                              qualityCuts=PFTauQualityCuts
                                                                             )
 process.tauDifferenceAnalyzer.qualityCuts.isolationQualityCuts.minTrackHits = cms.uint32(3)

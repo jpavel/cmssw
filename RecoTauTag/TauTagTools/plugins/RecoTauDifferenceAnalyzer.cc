@@ -61,6 +61,7 @@ class RecoTauDifferenceAnalyzer : public edm::EDFilter {
     double maxDeltaR_;
     size_t eventsExamined_;
     size_t tausExamined_;
+    size_t trueTaus_;
     size_t tausMatched_;
     size_t differences_;
     size_t passed1_;
@@ -132,6 +133,18 @@ class RecoTauDifferenceAnalyzer : public edm::EDFilter {
   TProfile* h_eff_id_phi_loose;
   TProfile* h_eff_id_phi_medium;
   TProfile* h_eff_id_phi_tight;
+
+  TProfile* h_eff_id_pt_DM;
+  TProfile* h_eff_id_eta_DM;
+  TProfile* h_eff_id_vx_DM;
+  TProfile* h_eff_id_phi_DM;
+
+  TProfile* h_eff_id_pt_DMall;
+  TProfile* h_eff_id_eta_DMall;
+  TProfile* h_eff_id_vx_DMall;
+  TProfile* h_eff_id_phi_DMall;
+
+
 
   TProfile* h_eff_id_pt_loose_2;
   TProfile* h_eff_id_eta_loose_2;
@@ -348,6 +361,7 @@ RecoTauDifferenceAnalyzer::RecoTauDifferenceAnalyzer(
   eventsExamined_ = 0;
   tausExamined_ = 0;
   tausMatched_ = 0;
+  trueTaus_ = 0;
   differences_ = 0;
   passed1_ = 0;
   passed2_ = 0;
@@ -465,6 +479,16 @@ RecoTauDifferenceAnalyzer::RecoTauDifferenceAnalyzer(
   h_eff_id_phi_loose_3 = fs->make<TProfile>("h_eff_id_phi_loose_3" , "Efficiency w.r.t reco; true visible #phi" , 100 , -3.2 , 3.2 );
   h_eff_id_phi_medium_3 = fs->make<TProfile>("h_eff_id_phi_medium_3" , "Efficiency w.r.t reco; true visible #phi" , 100 , -3.2 , 3.2 );
   h_eff_id_phi_tight_3 = fs->make<TProfile>("h_eff_id_phi_tight_3" , "Efficiency w.r.t reco; true visible #phi" , 100 , -3.2 , 3.2 );
+
+  h_eff_id_pt_DM = fs->make<TProfile>("h_eff_id_pt_DM" , "Efficiency w.r.t truth; true visible p_{T}" , 1500 , 0.0 , 1500.0 );
+  h_eff_id_eta_DM = fs->make<TProfile>("h_eff_id_eta_DM" , "Efficiency w.r.t truth; true visible #eta" , 100 , -3.0 , 3.0 );
+  h_eff_id_vx_DM = fs->make<TProfile>("h_eff_id_vx_DM" , "Efficiency w.r.t truth; reconstructed vertices" , 40 , -0.5 , 39.5 );
+  h_eff_id_phi_DM = fs->make<TProfile>("h_eff_id_phi_DM" , "Efficiency w.r.t truth; true visible #phi" , 100 , -3.2 , 3.2 );
+
+  h_eff_id_pt_DMall = fs->make<TProfile>("h_eff_id_pt_DMall" , "Efficiency w.r.t truth; true visible p_{T}" , 1500 , 0.0 , 1500.0 );
+  h_eff_id_eta_DMall = fs->make<TProfile>("h_eff_id_eta_DMall" , "Efficiency w.r.t truth; true visible #eta" , 100 , -3.0 , 3.0 );
+  h_eff_id_vx_DMall = fs->make<TProfile>("h_eff_id_vx_DMall" , "Efficiency w.r.t truth; reconstructed vertices" , 40 , -0.5 , 39.5 );
+  h_eff_id_phi_DMall = fs->make<TProfile>("h_eff_id_phi_DMall" , "Efficiency w.r.t truth; true visible #phi" , 100 , -3.2 , 3.2 );
 
 
   h_nVx = fs->make<TH1D>("h_nVx" , "Number of vertices; Reconstructed vertices" , 40 , -0.5 , 39.5 );
@@ -1024,6 +1048,7 @@ if(!background_ && mcMatch_ && !useGenTaus_){
        if(abs(mRefs[igTauD]->pdgId())==11) decayMode = 1;
        if(abs(mRefs[igTauD]->pdgId())==13) decayMode = 2;
      }
+     if(decayMode==0) trueTaus_++;
      h_decayMode->Fill(decayMode);
      h_mc_pt->Fill(((*genTaus)[i]).pt());
      h_mc_eta->Fill(((*genTaus)[i]).eta());
@@ -1255,9 +1280,7 @@ if(!background_ && mcMatch_ && !useGenTaus_){
     // trkAvgDist[0] = isoptsum[0] >0 ? trkAvgDist[0]/isoptsum[0] : -1;
     // trkAvgDist[1] = isoptsum[1] >0 ? trkAvgDist[1]/isoptsum[1] : -1;
     // trkAvgDist[2] = (isoptsum[0] + isoptsum[1]) >0 ? (trkAvgDist[0] + trkAvgDist[1])/(isoptsum[0]+isoptsum[1]) : -1;
-  
-    if(requireDecayMode_>=0 && resultDM){
-      if(requireDecayMode_ == 0 || (requireDecayMode_ == 1 && nCharged == 1 && nPi0 ==0) || (requireDecayMode_ == 2 && nCharged ==1 && nPi0 > 0) || (requireDecayMode_==3 && nCharged == 3)){
+
     if(background_){
       pt_mon=jet1->pt();
       eta_mon = jet1->eta();
@@ -1267,9 +1290,40 @@ if(!background_ && mcMatch_ && !useGenTaus_){
       eta_mon=eta_vis;
       phi_mon=phi_vis;
     }
-    
-    
+
+
+    if(resultDM ){
+      h_eff_id_pt_DMall->Fill(pt_mon,1);
+      h_eff_id_eta_DMall->Fill(eta_mon,1);
+      h_eff_id_vx_DMall->Fill(nVx,1);    
+      h_eff_id_phi_DMall->Fill(phi_mon,1);
+    }else {
+      h_eff_id_pt_DMall->Fill(pt_mon,0);
+      h_eff_id_eta_DMall->Fill(eta_mon,0);
+      h_eff_id_vx_DMall->Fill(nVx,0);
+      h_eff_id_phi_DMall->Fill(phi_mon,0);
+    }
+
     if(pt_mon < 5.0) continue;
+
+    if(resultDM && pt1 > 20.0 && pt_mon > 5.0){
+      h_eff_id_pt_DM->Fill(pt_mon,1);
+      h_eff_id_eta_DM->Fill(eta_mon,1);
+      h_eff_id_vx_DM->Fill(nVx,1);    
+      h_eff_id_phi_DM->Fill(phi_mon,1);
+    }else if(pt1 > 20.0 && pt_mon > 5.0){
+      h_eff_id_pt_DM->Fill(pt_mon,0);
+      h_eff_id_eta_DM->Fill(eta_mon,0);
+      h_eff_id_vx_DM->Fill(nVx,0);
+      h_eff_id_phi_DM->Fill(phi_mon,0);
+    }else if(pt_mon>5.0){
+      h_eff_id_pt_DM->Fill(pt_mon,0);
+    }
+  
+    if(requireDecayMode_>=0 && resultDM){
+      if(requireDecayMode_ == 0 || (requireDecayMode_ == 1 && nCharged == 1 && nPi0 ==0) || (requireDecayMode_ == 2 && nCharged ==1 && nPi0 > 0) || (requireDecayMode_==3 && nCharged == 3)){
+    
+    
 
     if(result1 && pt1 > 20.0 && pt_mon > 5.0){
       h_eff_pt_1->Fill(pt_mon,1);
@@ -1844,7 +1898,7 @@ if(!background_ && mcMatch_ && !useGenTaus_){
       }
     }
   }
-  if(nMatched < goodCands.size())
+  if(nMatched < goodCands.size() || nMatched < genTaus->size())
     {
       if(verboseOutput_) std::cout<< "Not all true taus matched!" << std::endl;
       for( size_t iMatch = 0; iMatch < isMatched.size(); ++iMatch)
@@ -1856,6 +1910,12 @@ if(!background_ && mcMatch_ && !useGenTaus_){
             h_eff_eta_2->Fill(eta_visible.at(iMatch),0);
 	    h_eff_vx_1->Fill(nVx,0);
             h_eff_vx_2->Fill(nVx,0);
+
+	    h_eff_id_pt_DMall->Fill(pt_visible.at(iMatch),0);
+	    h_eff_id_eta_DMall->Fill(eta_visible.at(iMatch),0);
+	    h_eff_id_vx_DMall->Fill(nVx,0);
+	    h_eff_id_phi_DMall->Fill(phi_visible.at(iMatch),0);
+
 	  }
 	}
     }
@@ -1868,6 +1928,7 @@ void RecoTauDifferenceAnalyzer::endJob() {
   std::cout <<  " RECO TAU DIFFERENCE SUMMARY: " << std::endl;
   std::cout <<  " Examined " << tausExamined_ << " taus in "
     << eventsExamined_ << " events." << std::endl;
+  std::cout << " There were " << trueTaus_ << " true hadronic taus " << std::endl;
   std::cout << " There were " << tausMatched_ << " taus matched to MC." << std::endl; 
   std::cout << " There were " << differences_ << " differences." << std::endl;
   std::cout << src1_ << "," << disc1_ << " had "
