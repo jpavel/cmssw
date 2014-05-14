@@ -99,9 +99,9 @@ process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 ## Source
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-        '/store/relval/CMSSW_7_1_0_pre4_AK4/RelValZTT_13/GEN-SIM-RECO/POSTLS171_V1-v2/00000/2491D051-51B5-E311-BFA1-003048679168.root',
-       '/store/relval/CMSSW_7_1_0_pre4_AK4/RelValZTT_13/GEN-SIM-RECO/POSTLS171_V1-v2/00000/BEC396FA-4CB5-E311-B68C-002354EF3BDD.root',
-       '/store/relval/CMSSW_7_1_0_pre4_AK4/RelValZTT_13/GEN-SIM-RECO/POSTLS171_V1-v2/00000/E8DA9320-52B5-E311-AB3B-0025905A6088.root'
+        '/store/relval/CMSSW_7_1_0_pre4_AK4/RelValZEE_13/GEN-SIM-RECO/POSTLS171_V1-v2/00000/2E0724D0-4AB5-E311-AFB0-0025905A613C.root',
+       '/store/relval/CMSSW_7_1_0_pre4_AK4/RelValZEE_13/GEN-SIM-RECO/POSTLS171_V1-v2/00000/64640CDF-4CB5-E311-99AC-0026189438FE.root',
+       '/store/relval/CMSSW_7_1_0_pre4_AK4/RelValZEE_13/GEN-SIM-RECO/POSTLS171_V1-v2/00000/BADDC106-50B5-E311-9212-002618FDA287.root'
 # '/store/relval/CMSSW_7_1_0_pre6/RelValZTT_13/GEN-SIM-RECO/PRE_LS171_V3-v1/00000/7AC27528-32C7-E311-95C9-003048FFD770.root',
 # '/store/relval/CMSSW_7_1_0_pre6/RelValZTT_13/GEN-SIM-RECO/PRE_LS171_V3-v1/00000/C42C13E7-30C7-E311-B583-003048678DD6.root'
 # '/store/relval/CMSSW_7_1_0_pre5/RelValZTT_13/GEN-SIM-RECO/POSTLS171_V1-v1/00000/8E8B2309-E6B6-E311-A8C6-002618943896.root',
@@ -172,8 +172,10 @@ process.tauDifferenceAnalyzer = cms.EDFilter("RecoTauDifferenceAnalyzer",
                                              requireDecayMode = cms.int32(decayMode),
                                              checkMother = cms.bool(True),
                                              Zmumu=cms.bool(False),
-                                             onlyHadronic=cms.bool(True),
-                                             qualityCuts=PFTauQualityCuts
+                                             Zee=cms.bool(True),
+                                             onlyHadronic=cms.bool(False),
+                                             qualityCuts=PFTauQualityCuts,
+                                             useGenTaus=cms.bool(False)
                                                                             )
 process.tauDifferenceAnalyzer.qualityCuts.isolationQualityCuts.minTrackHits = cms.uint32(3)
 process.tauDifferenceAnalyzer.qualityCuts.isolationQualityCuts.minTrackPt = cms.double(0.5)

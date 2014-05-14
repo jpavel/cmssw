@@ -77,6 +77,7 @@ class RecoTauDifferenceAnalyzer : public edm::EDFilter {
   bool verboseOutputMC_;
   bool background_;
   bool Zmumu_;
+  bool Zee_;
   bool onlyHadronic_;
   int requireDecayMode_;
   bool checkMother_;
@@ -386,7 +387,8 @@ RecoTauDifferenceAnalyzer::RecoTauDifferenceAnalyzer(
   requireDecayMode_ = pset.exists("requireDecayMode") ? pset.getParameter<int>("requireDecayMode"): 0; // -1 No requirement; 0 = any DM; 1 = 1p; 2 = 1p+X; 3=3p
   checkMother_ = pset.exists("checkMother") ? pset.getParameter<bool>("checkMother"): 1;
   Zmumu_ = pset.exists("Zmumu") ? pset.getParameter<bool>("Zmumu"): false;
-  
+  Zee_ = pset.exists("Zee") ? pset.getParameter<bool>("Zee"): false;
+
   discLoose_ = pset.exists("discLoose") ? pset.getParameter<edm::InputTag>("discLoose"): pset.getParameter<edm::InputTag>("disc1");
   discMedium_ = pset.exists("discMedium") ? pset.getParameter<edm::InputTag>("discMedium"): pset.getParameter<edm::InputTag>("disc1");
   discTight_ = pset.exists("discTight") ? pset.getParameter<edm::InputTag>("discTight"): pset.getParameter<edm::InputTag>("disc1");
@@ -943,7 +945,7 @@ bool RecoTauDifferenceAnalyzer::filter(
     }
     }
     }
-    if( abs(ParticleCand.pdgId())==15 && ParticleCand.status() == 2 && !Zmumu_)
+    if( abs(ParticleCand.pdgId())==15 && ParticleCand.status() == 2 && !Zmumu_ && !Zee_)
       {
 	if(verboseOutputMC_) std::cout << "  tau candidate!" << std::endl;
 	if(background_ || ! checkMother_ ) goodCands.push_back(i);
@@ -963,7 +965,7 @@ bool RecoTauDifferenceAnalyzer::filter(
 	if(mother==23) goodCands.push_back(i);
 	}
       }
-    if( abs(ParticleCand.pdgId())==13 && ParticleCand.status() == 1 && Zmumu_)
+    if( abs(ParticleCand.pdgId())==13 && ParticleCand.status() == 1 && Zmumu_ && !Zee_)
 	  {
 	    if(verboseOutputMC_) std::cout << "  mu candidate!" << std::endl;
 	    if(background_ || ! checkMother_ ) goodCands.push_back(i);
@@ -983,10 +985,33 @@ bool RecoTauDifferenceAnalyzer::filter(
 	      if(mother==23) goodCands.push_back(i);
 	    }
 	  }
+    if( abs(ParticleCand.pdgId())==11 && ParticleCand.status() == 1 && Zee_ && !Zmumu_)
+      {
+	if(verboseOutputMC_) std::cout << "  e candidate!" << std::endl;
+	if(background_ || ! checkMother_ ) goodCands.push_back(i);
+	else{
+	  int mother = 0;
+	  bool final = false;
+	  int myKey = i;
+	  while(mother!=23 && !final)
+	    {
+	      const reco::GenParticleRefVector& mRefs = ((*genParticles)[myKey]).motherRefVector();
+	      if(mRefs.size()==0){final=true; break;}
+	      for(reco::GenParticleRefVector::const_iterator imr = mRefs.begin(); imr!= mRefs.end(); ++imr) {
+		if((*imr)->pdgId()==23){ mother = 23; break;}
+		if(abs(ParticleCand.pdgId())==11){  myKey =(*imr).key(); break;}
+	      }
+	    }
+	  if(mother==23) goodCands.push_back(i);
+	}
+      }
+
+
   }
   }
-    if(verboseOutputMC_ && !Zmumu_) std::cout << "There were " << goodCands.size() << " good taus." << std::endl; 
-    if(verboseOutputMC_ && Zmumu_) std::cout << "There were " << goodCands.size() << " good mus." << std::endl; 
+    if(verboseOutputMC_ && !Zmumu_ && !Zee_) std::cout << "There were " << goodCands.size() << " good taus." << std::endl; 
+    if(verboseOutputMC_ && Zmumu_ && !Zee_) std::cout << "There were " << goodCands.size() << " good mus." << std::endl; 
+    if(verboseOutputMC_ && Zee_ && !Zmumu_) std::cout << "There were " << goodCands.size() << " good els." << std::endl;
  
 if(!background_ && mcMatch_ && !useGenTaus_){
  //calculate visible pt
@@ -1096,7 +1121,7 @@ if(!background_ && mcMatch_ && !useGenTaus_){
     double phi_vis = -999.;
     int matchIndex = -1;
     for(size_t iMC = 0; iMC < goodCands.size(); ++iMC){
-      if(!Zmumu_ && !background_ && onlyHadronic_ && !isHadronic.at(iMC))
+      if(!Zmumu_ && !Zee_ && !background_ && onlyHadronic_ && !isHadronic.at(iMC))
 	{
 	  if(verboseOutputMC_) std::cout << "Not hadronic tau!" << std::endl;
 	    continue;
@@ -1119,7 +1144,7 @@ if(!background_ && mcMatch_ && !useGenTaus_){
     if(useGenTaus_)
       {
 	for(size_t iMC = 0; iMC < genTaus->size() && matched==false; ++ iMC) {
-	  if(!Zmumu_ && !background_ && onlyHadronic_ && !isHadronic.at(iMC))
+	  if(!Zmumu_ && !Zee_ && !background_ && onlyHadronic_ && !isHadronic.at(iMC))
 	    {
 	      if(verboseOutputMC_) std::cout << "Not hadronic tau!" << std::endl;
 	      continue;
