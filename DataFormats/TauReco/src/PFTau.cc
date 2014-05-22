@@ -22,6 +22,7 @@ PFTau::PFTau()
     caloComp_ = NAN;
     segComp_ = NAN;
     muonDecision_ = NAN;
+    decayMode_=kNull;
 }
 
 PFTau::PFTau(Charge q, const LorentzVector& p4, const Point& vtx) 
@@ -44,6 +45,7 @@ PFTau::PFTau(Charge q, const LorentzVector& p4, const Point& vtx)
    caloComp_ = NAN;
    segComp_ = NAN;
    muonDecision_ = NAN;
+   decayMode_=kNull;
 }
 
 PFTau* PFTau::clone() const { return new PFTau(*this); }
@@ -86,6 +88,7 @@ const std::vector<PFCandidatePtr>& PFTau::isolationPFNeutrHadrCands() const { re
 void PFTau::setisolationPFNeutrHadrCands(const std::vector<PFCandidatePtr>& myParts)  { selectedIsolationPFNeutrHadrCands_ = myParts; }
 const std::vector<PFCandidatePtr>& PFTau::isolationPFGammaCands() const { return selectedIsolationPFGammaCands_; }
 void PFTau::setisolationPFGammaCands(const std::vector<PFCandidatePtr>& myParts)  { selectedIsolationPFGammaCands_ = myParts; }
+
 
 // PiZero and decay mode information
 const std::vector<RecoTauPiZero>& PFTau::signalPiZeroCandidates() const {
@@ -173,9 +176,11 @@ void PFTau::setIsolationTauChargedHadronCandidatesRefs(const PFRecoTauChargedHad
   isolationTauChargedHadronCandidatesRefs_ = cands;
 }
 
-PFTau::hadronicDecayMode PFTau::decayMode() const {
+PFTau::hadronicDecayMode PFTau::decayMode() const { return decayMode_;}
+PFTau::hadronicDecayMode PFTau::calculateDecayMode() const {
   unsigned int nCharged = signalTauChargedHadronCandidates().size();
   unsigned int nPiZeros = signalPiZeroCandidates().size();
+  std::cout << "calculating DM! nCH=" << nCharged << " nPi0=" << nPiZeros << std::endl;
   // If no tracks exist, this is definitely not a tau!
   if ( !nCharged ) return kNull;
   // Find the maximum number of PiZeros our parameterization can hold
@@ -185,9 +190,12 @@ PFTau::hadronicDecayMode PFTau::decayMode() const {
   // Check if we handle the given number of tracks
   if ( trackIndex >= kRareDecayMode ) return kRareDecayMode;
   
-  nPiZeros = ( nPiZeros <= maxPiZeros ) ? nPiZeros : maxPiZeros;
+  if(nPiZeros>maxPiZeros) nPiZeros=maxPiZeros;
+  std::cout << "Prospective DM is " << trackIndex << " + " << nPiZeros << std::endl;
   return static_cast<PFTau::hadronicDecayMode>(trackIndex + nPiZeros);
 }
+void PFTau::setDecayMode(const PFTau::hadronicDecayMode& dm){ decayMode_=dm;}
+  
 
 // Setting information about the isolation region
 float PFTau::isolationPFChargedHadrCandsPtSum() const {return isolationPFChargedHadrCandsPtSum_;}
