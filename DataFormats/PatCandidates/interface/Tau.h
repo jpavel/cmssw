@@ -288,8 +288,8 @@ namespace pat {
       reco::CandidatePtrVector isolationGammaCands() const;
 
       /// setters for the PtrVectors (for miniAOD)
-      void setSignalCands(const reco::CandidatePtrVector &ptrs) { signalCandPtrs_ = ptrs; }
-      void setIsolationCands(const reco::CandidatePtrVector &ptrs) { isolationCandPtrs_ = ptrs; }
+      void setSignalCands(const reco::CandidatePtrVector &ptrs) { std::cout << "miniAOD: matching signal cands" << std::endl; signalCandPtrs_ = ptrs; }
+      void setIsolationCands(const reco::CandidatePtrVector &ptrs) { std::cout << "miniAOD: matching iso cands" << std::endl; isolationCandPtrs_ = ptrs; }
 
       /// ----- Top Projection business ------- 
       /// get the number of non-null PFCandidates

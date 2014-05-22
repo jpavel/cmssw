@@ -147,6 +147,7 @@ PATTauProducer::~PATTauProducer()
 
 void PATTauProducer::produce(edm::Event & iEvent, const edm::EventSetup & iSetup)
 {
+  std::cout << ">>> producing pat tau" << std::endl;
   // switch off embedding (in unschedules mode)
   if (iEvent.isRealData()){
     addGenMatch_    = false;
@@ -202,8 +203,24 @@ void PATTauProducer::produce(edm::Event & iEvent, const edm::EventSetup & iSetup
   for (size_t idx = 0, ntaus = anyTaus->size(); idx < ntaus; ++idx) {
     edm::RefToBase<reco::BaseTau> tausRef = anyTaus->refAt(idx);
     edm::Ptr<reco::BaseTau> tausPtr = anyTaus->ptrAt(idx);
-
+    std::cout << idx << ":Making pat tau from PFtau with pt/eta" << tausPtr->pt() << " " << tausPtr->eta() << std::endl; 
     Tau aTau(tausRef);
+    const reco::PFTau * pfTau = dynamic_cast<const reco::PFTau *>(tausRef.get());
+    
+    std::cout << "  Produced pat tau " << aTau << " " << aTau.pt() << " dm " << aTau.decayMode() << std::endl;
+    std::cout << " signal/iso cands: " << aTau.signalCands().size() << "/" << aTau.isolationCands().size() << std::endl;
+    std::cout << " PFTau signal cand composition: " << (pfTau->signalPFCands()).size() << "=" << (pfTau->signalPFChargedHadrCands()).size() << "+" << (pfTau->signalPFGammaCands()).size() << "+" << (pfTau->signalPFNeutrHadrCands()).size() << std::endl;
+    std::cout << " PFTau decay mode is " << pfTau->decayMode() << std::endl;
+    for (size_t iCand=0; iCand < (pfTau->signalPFCands()).size(); iCand++)
+      {
+	std::cout << "Cand # " << iCand+1 << ": " << (pfTau->signalPFCands())[iCand] << " " << (pfTau->signalPFCands())[iCand]->pt() << std::endl;
+      }
+    std::cout << " PFTau iso cand composition: " << (pfTau->isolationPFCands()).size() << "=" << (pfTau->isolationPFChargedHadrCands()).size() << "+" << (pfTau->isolationPFGammaCands()).size() << "+" << (pfTau->isolationPFNeutrHadrCands()).size() << std::endl;
+    std::cout << "PAT composition" << std::endl;
+    for (size_t iCand=0; iCand < (aTau.signalCands()).size(); iCand++)
+      {
+	std::cout << "Cand # " << iCand+1 << ": " << (aTau.signalCands())[iCand]->pt() << std::endl;
+      }
     if (embedLeadTrack_)       aTau.embedLeadTrack();
     if (embedSignalTracks_)    aTau.embedSignalTracks();
     if (embedIsolationTracks_) aTau.embedIsolationTracks();
@@ -226,6 +243,7 @@ void PATTauProducer::produce(edm::Event & iEvent, const edm::EventSetup & iSetup
 	edm::LogWarning("Type Error") << "Embedding a PFTau-specific information into a pat::Tau which wasn't made from a reco::PFTau is impossible.\n";
     }
     if (embedSignalPFCands_) {
+      std::cout << "now embedding the PF signal candidates" << std::endl;
       if (aTau.isPFTau() )
 	aTau.embedSignalPFCands();
       else
@@ -273,6 +291,12 @@ void PATTauProducer::produce(edm::Event & iEvent, const edm::EventSetup & iSetup
       else
 	edm::LogWarning("Type Error") << "Embedding a PFTau-specific information into a pat::Tau which wasn't made from a reco::PFTau is impossible.\n";
     }
+    std::cout << "PAT composition after embedding" << std::endl;
+    for (size_t iCand=0; iCand < (aTau.signalCands()).size(); iCand++)
+      {
+	std::cout << "Cand # " << iCand+1 << ": " << (aTau.signalCands())[iCand]->pt() << std::endl;
+      }
+
 
     if (addTauJetCorrFactors_) {
       // add additional JetCorrs to the jet

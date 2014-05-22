@@ -53,11 +53,16 @@ pat::PATTauSlimmer::produce(edm::Event & iEvent, const edm::EventSetup & iSetup)
 
     auto_ptr<vector<pat::Tau> >  out(new vector<pat::Tau>());
     out->reserve(src->size());
-
+    std::cout << "Now making slimmed tau collection" << std::endl;
     for (View<pat::Tau>::const_iterator it = src->begin(), ed = src->end(); it != ed; ++it) {
+      std::cout << " pushing tau to slimmedTauCollection" << *it << std::endl;
         out->push_back(*it);
         if (linkToPackedPF_) {
             pat::Tau & tau = out->back();
+	    std::cout << "number of source signal cands are " << tau.numberOfSourceCandidatePtrs() << " or " << tau.signalCands().size() << std::endl;
+	    std::cout << "number of source isolation cands are " << tau.isolationCands().size() << std::endl;
+	    
+	    std::cout << "linking to packedPF " << tau << std::endl;
             reco::CandidatePtrVector signalPtrs, isolationPtrs;
             for (const reco::PFCandidatePtr &p : tau.signalPFCands()) {
                 signalPtrs.push_back(edm::refToPtr((*pf2pc)[p]));
@@ -67,6 +72,9 @@ pat::PATTauSlimmer::produce(edm::Event & iEvent, const edm::EventSetup & iSetup)
                 isolationPtrs.push_back(edm::refToPtr((*pf2pc)[p]));
             }
             tau.setIsolationCands(isolationPtrs);
+	    std::cout << "  After linking: " << std::endl;
+	    std::cout << "   number of source signal cands are " << tau.numberOfSourceCandidatePtrs() << " or " << tau.signalCands().size() << std::endl;
+	    std::cout << "number of source isolation cands are " << tau.isolationCands().size() << std::endl;
         }
     }
 
