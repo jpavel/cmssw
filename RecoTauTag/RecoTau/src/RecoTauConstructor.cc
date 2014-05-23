@@ -334,13 +334,19 @@ std::auto_ptr<reco::PFTau> RecoTauConstructor::get(bool setupLeadingObjects)
 
   // Set P4
   tau_->setP4(p4_);
+
+  // Set Decay Mode
+  PFTau::hadronicDecayMode dm = tau_->calculateDecayMode();
+  tau_->setDecayMode(dm);
+
 //  tau_->setP4(
 //      sumPFCandP4(
 //        getCollection(kSignal, kAll)->begin(),
 //        getCollection(kSignal, kAll)->end()
 //        )
 //      );
-  LogDebug("TauConstructorGet") << "Pt = " << tau_->pt() << ", eta = " << tau_->eta() << ", phi = " << tau_->phi() << ", mass = " << tau_->mass() ;
+//  LogDebug("TauConstructorGet") 
+  std::cout << "Pt = " << tau_->pt() << ", eta = " << tau_->eta() << ", phi = " << tau_->phi() << ", mass = " << tau_->mass() << ", dm = " << tau_->decayMode() << std::endl ;
 
   // Set charged isolation quantities
   tau_->setisolationPFChargedHadrCandsPtSum(
