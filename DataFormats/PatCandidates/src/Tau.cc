@@ -684,12 +684,12 @@ Tau Tau::correctedTauJet(const unsigned int& level, const unsigned int& set) con
 
 /// ----- Methods returning associated PFCandidates that work on PAT+AOD, PAT+embedding and miniAOD -----
 /// return the PFCandidate if available (reference or embedded), or the PackedPFCandidate on miniAOD 
+// return the leading candidate from signal(PF)ChargedHadrCandPtrs_ collection
 const reco::CandidatePtr Tau::leadChargedHadrCand() const {
     const reco::PFCandidatePtr leadPF = leadPFChargedHadrCand();
-    if (leadPF.isAvailable() || signalCandPtrs_.isNull()) return leadPF;
+    if (leadPF.isAvailable() || signalChargedHadrCandPtrs_.isNull()) return leadPF;
     reco::CandidatePtr ret;
-    for (const reco::CandidatePtr & p : signalCandPtrs_) {
-        if (p->charge() == 0) continue;
+    for (const reco::CandidatePtr & p : signalChargedHadrCandPtrs_) {
         if (ret.isNull() || (p->pt() > ret->pt())) ret = p;
     }
     return ret;
@@ -699,10 +699,9 @@ const reco::CandidatePtr Tau::leadChargedHadrCand() const {
 /// return the PFCandidate if available (reference or embedded), or the PackedPFCandidate on miniAOD 
 const reco::CandidatePtr Tau::leadNeutralCand() const {
     const reco::PFCandidatePtr leadPF = leadPFNeutralCand();
-    if (leadPF.isAvailable() || signalCandPtrs_.isNull()) return leadPF;
+    if (leadPF.isAvailable() || signalNeutralHadrCandPtrs_.isNull()) return leadPF;
     reco::CandidatePtr ret;
-    for (const reco::CandidatePtr & p : signalCandPtrs_) {
-        if (p->charge() != 0) continue;
+    for (const reco::CandidatePtr & p : signalNeutralHadrCandPtrs_) {
         if (ret.isNull() || (p->pt() > ret->pt())) ret = p;
     }
     return ret;
@@ -736,46 +735,41 @@ reco::CandidatePtrVector Tau::signalCands() const {
 /// return the PFCandidates if available (reference or embedded), or the PackedPFCandidate on miniAOD 
 /// note that the vector is returned by value.
 reco::CandidatePtrVector Tau::signalChargedHadrCands() const {
-   reco::CandidatePtrVector ret;
    std::vector<reco::PFCandidatePtr> r0 = signalPFChargedHadrCands();
-   if (r0.empty() || r0.front().isAvailable() || signalCandPtrs_.isNull()) {
+   if (r0.empty() || r0.front().isAvailable() || signalChargedHadrCandPtrs_.isNull()) {
+        reco::CandidatePtrVector ret;
         for (const auto & p : r0) ret.push_back(p);
+	return ret;
    } else {
-        for (const auto & p : signalCandPtrs_) {
-            if (p->charge() != 0) ret.push_back(p);
-        }
+        return signalChargedHadrCandPtrs_;
    }
-   return ret;
 }
+
 
 /// return the PFCandidates if available (reference or embedded), or the PackedPFCandidate on miniAOD 
 /// note that the vector is returned by value.
 reco::CandidatePtrVector Tau::signalNeutrHadrCands() const {
-   reco::CandidatePtrVector ret;
    std::vector<reco::PFCandidatePtr> r0 = signalPFNeutrHadrCands();
-   if (r0.empty() || r0.front().isAvailable() || signalCandPtrs_.isNull()) {
+   if (r0.empty() || r0.front().isAvailable() || signalNeutralHadrCandPtrs_.isNull()) {
+        reco::CandidatePtrVector ret;
         for (const auto & p : r0) ret.push_back(p);
+	return ret;
    } else {
-        for (const auto & p : signalCandPtrs_) {
-            if (p->charge() == 0 && p->pdgId() != 22) ret.push_back(p);
-        }
+        return signalNeutralHadrCandPtrs_;
    }
-   return ret;
 }
 
 /// return the PFCandidates if available (reference or embedded), or the PackedPFCandidate on miniAOD 
 /// note that the vector is returned by value.
 reco::CandidatePtrVector Tau::signalGammaCands() const {
-   reco::CandidatePtrVector ret;
    std::vector<reco::PFCandidatePtr> r0 = signalPFGammaCands();
-   if (r0.empty() || r0.front().isAvailable() || signalCandPtrs_.isNull()) {
+   if (r0.empty() || r0.front().isAvailable() || signalGammaCandPtrs_.isNull()) {
+        reco::CandidatePtrVector ret;
         for (const auto & p : r0) ret.push_back(p);
+	return ret;
    } else {
-        for (const auto & p : signalCandPtrs_) {
-            if (p->charge() == 0 && p->pdgId() == 22) ret.push_back(p);
-        }
+        return signalGammaCandPtrs_;
    }
-   return ret;
 }
 
 /// return the PFCandidates if available (reference or embedded), or the PackedPFCandidate on miniAOD 
@@ -794,16 +788,14 @@ reco::CandidatePtrVector Tau::isolationCands() const {
 /// return the PFCandidates if available (reference or embedded), or the PackedPFCandidate on miniAOD 
 /// note that the vector is returned by value.
 reco::CandidatePtrVector Tau::isolationChargedHadrCands() const {
-   reco::CandidatePtrVector ret;
    std::vector<reco::PFCandidatePtr> r0 = isolationPFChargedHadrCands();
-   if (r0.empty() || r0.front().isAvailable() || isolationCandPtrs_.isNull()) {
+   if (r0.empty() || r0.front().isAvailable() || isolationChargedHadrCandPtrs_.isNull()) {
+        reco::CandidatePtrVector ret;
         for (const auto & p : r0) ret.push_back(p);
+	return ret;
    } else {
-        for (const auto & p : isolationCandPtrs_) {
-            if (p->charge() != 0) ret.push_back(p);
-        }
+        return isolationChargedHadrCandPtrs_;
    }
-   return ret;
 }
 
 /// return the PFCandidates if available (reference or embedded), or the PackedPFCandidate on miniAOD 
@@ -811,29 +803,26 @@ reco::CandidatePtrVector Tau::isolationChargedHadrCands() const {
 reco::CandidatePtrVector Tau::isolationNeutrHadrCands() const {
    reco::CandidatePtrVector ret;
    std::vector<reco::PFCandidatePtr> r0 = isolationPFNeutrHadrCands();
-   if (r0.empty() || r0.front().isAvailable() || isolationCandPtrs_.isNull()) {
+   if (r0.empty() || r0.front().isAvailable() || isolationNeutralHadrCandPtrs_.isNull()) {
+        reco::CandidatePtrVector ret;
         for (const auto & p : r0) ret.push_back(p);
+	return ret;
    } else {
-        for (const auto & p : isolationCandPtrs_) {
-            if (p->charge() == 0 && p->pdgId() != 22) ret.push_back(p);
-        }
+        return isolationNeutralHadrCandPtrs_;
    }
-   return ret;
 }
 
 /// return the PFCandidates if available (reference or embedded), or the PackedPFCandidate on miniAOD 
 /// note that the vector is returned by value.
 reco::CandidatePtrVector Tau::isolationGammaCands() const {
-   reco::CandidatePtrVector ret;
    std::vector<reco::PFCandidatePtr> r0 = isolationPFGammaCands();
-   if (r0.empty() || r0.front().isAvailable() || isolationCandPtrs_.isNull()) {
+   if (r0.empty() || r0.front().isAvailable() || isolationGammaCandPtrs_.isNull()) {
+        reco::CandidatePtrVector ret;
         for (const auto & p : r0) ret.push_back(p);
+	return ret;
    } else {
-        for (const auto & p : isolationCandPtrs_) {
-            if (p->charge() == 0 && p->pdgId() == 22) ret.push_back(p);
-        }
+        return isolationGammaCandPtrs_;
    }
-   return ret;
 }
 
 
