@@ -289,7 +289,13 @@ namespace pat {
 
       /// setters for the PtrVectors (for miniAOD)
       void setSignalCands(const reco::CandidatePtrVector &ptrs) { std::cout << "miniAOD: matching signal cands" << std::endl; signalCandPtrs_ = ptrs; }
+      void setSignalChargedHadrCands(const reco::CandidatePtrVector &ptrs) { std::cout << "miniAOD: matching signal chHadron cands" << std::endl; signalChargedHadrCandPtrs_ = ptrs;}
+      void setSignalNeutralHadrCands(const reco::CandidatePtrVector &ptrs) { std::cout << "miniAOD: matching signal chHadron cands" << std::endl; signalNeutralHadrCandPtrs_ = ptrs;}
+      void setSignalGammaCands(const reco::CandidatePtrVector &ptrs) { std::cout << "miniAOD: matching signal chHadron cands" << std::endl; signalGammaCandPtrs_ = ptrs;}
       void setIsolationCands(const reco::CandidatePtrVector &ptrs) { std::cout << "miniAOD: matching iso cands" << std::endl; isolationCandPtrs_ = ptrs; }
+      void setIsolationChargedHadrCands(const reco::CandidatePtrVector &ptrs) { std::cout << "miniAOD: matching isolation chHadron cands" << std::endl; isolationChargedHadrCandPtrs_ = ptrs;}
+      void setIsolationNeutralHadrCands(const reco::CandidatePtrVector &ptrs) { std::cout << "miniAOD: matching isolation chHadron cands" << std::endl; isolationNeutralHadrCandPtrs_ = ptrs;}
+      void setIsolationGammaCands(const reco::CandidatePtrVector &ptrs) { std::cout << "miniAOD: matching isolation chHadron cands" << std::endl; isolationGammaCandPtrs_ = ptrs;}
 
       /// ----- Top Projection business ------- 
       /// get the number of non-null PFCandidates
@@ -481,7 +487,14 @@ namespace pat {
 
       // ---- references to packed pf candidates -----
       reco::CandidatePtrVector signalCandPtrs_;
+      reco::CandidatePtrVector signalChargedHadrCandPtrs_;
+      reco::CandidatePtrVector signalNeutralHadrCandPtrs_;
+      reco::CandidatePtrVector signalGammaCandPtrs_;
+
       reco::CandidatePtrVector isolationCandPtrs_;
+      reco::CandidatePtrVector isolationChargedHadrCandPtrs_;
+      reco::CandidatePtrVector isolationNeutralHadrCandPtrs_;
+      reco::CandidatePtrVector isolationGammaCandPtrs_;
 
 
   };
