@@ -345,8 +345,7 @@ std::auto_ptr<reco::PFTau> RecoTauConstructor::get(bool setupLeadingObjects)
 //        getCollection(kSignal, kAll)->end()
 //        )
 //      );
-//  LogDebug("TauConstructorGet") 
-  std::cout << "Pt = " << tau_->pt() << ", eta = " << tau_->eta() << ", phi = " << tau_->phi() << ", mass = " << tau_->mass() << ", dm = " << tau_->decayMode() << std::endl ;
+  LogDebug("TauConstructorGet")  << "Pt = " << tau_->pt() << ", eta = " << tau_->eta() << ", phi = " << tau_->phi() << ", mass = " << tau_->mass() << ", dm = " << tau_->decayMode() ;
 
   // Set charged isolation quantities
   tau_->setisolationPFChargedHadrCandsPtSum(
