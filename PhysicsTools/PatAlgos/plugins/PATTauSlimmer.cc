@@ -58,15 +58,47 @@ pat::PATTauSlimmer::produce(edm::Event & iEvent, const edm::EventSetup & iSetup)
         out->push_back(*it);
         if (linkToPackedPF_) {
             pat::Tau & tau = out->back();
-            reco::CandidatePtrVector signalPtrs, isolationPtrs;
+            reco::CandidatePtrVector signalPtrs, signalChHPtrs, signalNHPtrs, signalGammaPtrs, isolationPtrs, isolationChHPtrs, isolationNHPtrs, isolationGammaPtrs;
             for (const reco::PFCandidatePtr &p : tau.signalPFCands()) {
                 signalPtrs.push_back(edm::refToPtr((*pf2pc)[p]));
             }
             tau.setSignalCands(signalPtrs);
-            for (const reco::PFCandidatePtr &p : tau.isolationPFCands()) {
+
+	    for (const reco::PFCandidatePtr &p : tau.signalChargedHadrPFCands()) {
+	      signalChHPtrs.push_back(edm::refToPtr((*pf2pc)[p]));
+            }
+            tau.setSignalChargedHadronCands(signalChHPtrs);
+
+	    for (const reco::PFCandidatePtr &p : tau.signalNeutralHadrPFCands()) {
+              signalNHPtrs.push_back(edm::refToPtr((*pf2pc)[p]));
+            }
+            tau.setSignalNeutralHadronCands(signalNHPtrs);
+
+	    for (const reco::PFCandidatePtr &p : tau.signalGammaPFCands()) {
+              signalGammaPtrs.push_back(edm::refToPtr((*pf2pc)[p]));
+            }
+            tau.setSignalGammaCands(signalGammaPtrs);
+
+	    for (const reco::PFCandidatePtr &p : tau.isolationPFCands()) {
                 isolationPtrs.push_back(edm::refToPtr((*pf2pc)[p]));
             }
             tau.setIsolationCands(isolationPtrs);
+
+	    for (const reco::PFCandidatePtr &p : tau.isolationChargedHadrPFCands()) {
+              isolationChHPtrs.push_back(edm::refToPtr((*pf2pc)[p]));
+            }
+            tau.setIsolationChargedHadronCands(isolationChHPtrs);
+
+            for (const reco::PFCandidatePtr &p : tau.isolationNeutralHadrPFCands()) {
+              isolationNHPtrs.push_back(edm::refToPtr((*pf2pc)[p]));
+            }
+            tau.setIsolationNeutralHadronCands(isolationNHPtrs);
+
+            for (const reco::PFCandidatePtr &p : tau.isolationGammaPFCands()) {
+              isolationGammaPtrs.push_back(edm::refToPtr((*pf2pc)[p]));
+            }
+            tau.setIsolationGammaCands(isolationGammaPtrs);
+
         }
     }
 
