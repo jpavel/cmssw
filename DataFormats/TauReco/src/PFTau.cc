@@ -180,7 +180,6 @@ PFTau::hadronicDecayMode PFTau::decayMode() const { return decayMode_;}
 PFTau::hadronicDecayMode PFTau::calculateDecayMode() const {
   unsigned int nCharged = signalTauChargedHadronCandidates().size();
   unsigned int nPiZeros = signalPiZeroCandidates().size();
-  std::cout << "calculating DM! nCH=" << nCharged << " nPi0=" << nPiZeros << std::endl;
   // If no tracks exist, this is definitely not a tau!
   if ( !nCharged ) return kNull;
   // Find the maximum number of PiZeros our parameterization can hold
@@ -191,7 +190,6 @@ PFTau::hadronicDecayMode PFTau::calculateDecayMode() const {
   if ( trackIndex >= kRareDecayMode ) return kRareDecayMode;
   
   if(nPiZeros>maxPiZeros) nPiZeros=maxPiZeros;
-  std::cout << "Prospective DM is " << trackIndex << " + " << nPiZeros << std::endl;
   return static_cast<PFTau::hadronicDecayMode>(trackIndex + nPiZeros);
 }
 void PFTau::setDecayMode(const PFTau::hadronicDecayMode& dm){ decayMode_=dm;}

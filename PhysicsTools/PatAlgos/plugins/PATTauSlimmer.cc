@@ -59,8 +59,16 @@ pat::PATTauSlimmer::produce(edm::Event & iEvent, const edm::EventSetup & iSetup)
         out->push_back(*it);
         if (linkToPackedPF_) {
             pat::Tau & tau = out->back();
-	    std::cout << "number of source signal cands are " << tau.numberOfSourceCandidatePtrs() << " or " << tau.signalCands().size() << std::endl;
-	    std::cout << "number of source isolation cands are " << tau.isolationCands().size() << std::endl;
+	    std::cout << "number of source signal (PF) cands are " << tau.signalPFCands() << " / " << tau.signalCands().size() << std::endl;
+	    std::cout << "number of source signalChargedHadr (PF) cands are " << tau.signalChargedHadrPFCands() << " / " << tau.signalChargedHadrCands().size() << std::endl;
+	    std::cout << "number of source signalNeutrHadr (PF) cands are " << tau.signalNeutrHadrPFCands() << " / " << tau.signalNeutrHadrCands().size() << std::endl;
+	    std::cout << "number of source signalGamma (PF) cands are " << tau.signalGammaPFCands() << " / " << tau.signalGammaCands().size() << std::endl;
+
+	    std::cout << "number of source isolation (PF) cands are " << tau.isolationPFCands() << " / " << tau.isolationCands().size() << std::endl;
+	    std::cout << "number of source isolationChargedHadr (PF) cands are " << tau.isolationChargedHadrPFCands() << " / " << tau.isolationChargedHadrCands().size() << std::endl;
+	    std::cout << "number of source isolationNeutrHadr (PF) cands are " << tau.isolationNeutrHadrPFCands() << " / " << tau.isolationNeutrHadrCands().size() << std::endl;
+	    std::cout << "number of source isolationGamma (PF) cands are " << tau.isolationGammaPFCands() << " / " << tau.isolationGammaCands().size() << std::endl;
+
 	    
 	    std::cout << "linking to packedPF " << tau << std::endl;
             reco::CandidatePtrVector signalPtrs, isolationPtrs;
