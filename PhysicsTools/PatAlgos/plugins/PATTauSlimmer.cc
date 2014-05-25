@@ -53,7 +53,7 @@ pat::PATTauSlimmer::produce(edm::Event & iEvent, const edm::EventSetup & iSetup)
 
     auto_ptr<vector<pat::Tau> >  out(new vector<pat::Tau>());
     out->reserve(src->size());
-    std::cout << "Now making slimmed tau collection" << std::endl;
+    std::cout << "Now making slimmed tau collection from " << src->size() << " selected taus " << std::endl;
     for (View<pat::Tau>::const_iterator it = src->begin(), ed = src->end(); it != ed; ++it) {
       std::cout << " pushing tau to slimmedTauCollection" << *it << std::endl;
         out->push_back(*it);
