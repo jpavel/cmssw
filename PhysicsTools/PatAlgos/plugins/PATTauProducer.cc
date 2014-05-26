@@ -211,16 +211,66 @@ void PATTauProducer::produce(edm::Event & iEvent, const edm::EventSetup & iSetup
     std::cout << " signal/iso cands: " << aTau.signalCands().size() << "/" << aTau.isolationCands().size() << std::endl;
     std::cout << " PFTau signal cand composition: " << (pfTau->signalPFCands()).size() << "=" << (pfTau->signalPFChargedHadrCands()).size() << "+" << (pfTau->signalPFGammaCands()).size() << "+" << (pfTau->signalPFNeutrHadrCands()).size() << std::endl;
     std::cout << " PFTau decay mode is " << pfTau->decayMode() << std::endl;
+    std::cout << "signal cands: " << std::endl;
     for (size_t iCand=0; iCand < (pfTau->signalPFCands()).size(); iCand++)
       {
 	std::cout << "Cand # " << iCand+1 << ": " << (pfTau->signalPFCands())[iCand] << " " << (pfTau->signalPFCands())[iCand]->pt() << std::endl;
+
+      }
+    std::cout << "signalChargedHadr cands: " << std::endl;
+    for (size_t iCand=0; iCand < (pfTau->signalPFChargedHadrCands()).size(); iCand++)
+      {
+	std::cout << "Cand # " << iCand+1 << ": " << (pfTau->signalPFChargedHadrCands())[iCand] << " " << (pfTau->signalPFChargedHadrCands())[iCand]->pt() << std::endl;
+
+      }
+    std::cout << "signalNeutrHadr cands: " << std::endl;
+    for (size_t iCand=0; iCand < (pfTau->signalPFNeutrHadrCands()).size(); iCand++)
+      {
+	std::cout << "Cand # " << iCand+1 << ": " << (pfTau->signalPFNeutrHadrCands())[iCand] << " " << (pfTau->signalPFNeutrHadrCands())[iCand]->pt() << std::endl;
+
+      }
+    std::cout << "signalPFGamma cands: " << std::endl;
+    for (size_t iCand=0; iCand < (pfTau->signalPFGammaCands()).size(); iCand++)
+      {
+	std::cout << "Cand # " << iCand+1 << ": " << (pfTau->signalPFGammaCands())[iCand] << " " << (pfTau->signalPFGammaCands())[iCand]->pt() << std::endl;
+
       }
     std::cout << " PFTau iso cand composition: " << (pfTau->isolationPFCands()).size() << "=" << (pfTau->isolationPFChargedHadrCands()).size() << "+" << (pfTau->isolationPFGammaCands()).size() << "+" << (pfTau->isolationPFNeutrHadrCands()).size() << std::endl;
-    std::cout << "PAT composition" << std::endl;
+    std::cout << "isolation cands: " << std::endl;
+    for (size_t iCand=0; iCand < (pfTau->isolationPFCands()).size(); iCand++)
+      {
+	std::cout << "Cand # " << iCand+1 << ": " << (pfTau->isolationPFCands())[iCand] << " " << (pfTau->isolationPFCands())[iCand]->pt() << std::endl;
+
+      }
+    std::cout << "isolationChargedHadr cands: " << std::endl;
+    for (size_t iCand=0; iCand < (pfTau->isolationPFChargedHadrCands()).size(); iCand++)
+      {
+	std::cout << "Cand # " << iCand+1 << ": " << (pfTau->isolationPFChargedHadrCands())[iCand] << " " << (pfTau->isolationPFChargedHadrCands())[iCand]->pt() << std::endl;
+
+      }
+    std::cout << "isolationNeutrHadr cands: " << std::endl;
+    for (size_t iCand=0; iCand < (pfTau->isolationPFNeutrHadrCands()).size(); iCand++)
+      {
+	std::cout << "Cand # " << iCand+1 << ": " << (pfTau->isolationPFNeutrHadrCands())[iCand] << " " << (pfTau->isolationPFNeutrHadrCands())[iCand]->pt() << std::endl;
+
+      }
+    std::cout << "isolationPFGamma cands: " << std::endl;
+    for (size_t iCand=0; iCand < (pfTau->isolationPFGammaCands()).size(); iCand++)
+      {
+	std::cout << "Cand # " << iCand+1 << ": " << (pfTau->isolationPFGammaCands())[iCand] << " " << (pfTau->isolationPFGammaCands())[iCand]->pt() << std::endl;
+
+      }
+    std::cout << "PAT composition - signal:" << std::endl;
     for (size_t iCand=0; iCand < (aTau.signalCands()).size(); iCand++)
       {
 	std::cout << "Cand # " << iCand+1 << ": " << (aTau.signalCands())[iCand]->pt() << std::endl;
       }
+    std::cout << "PAT composition - isolation:" << std::endl;
+    for (size_t iCand=0; iCand < (aTau.isolationCands()).size(); iCand++)
+      {
+	std::cout << "Cand # " << iCand+1 << ": " << (aTau.isolationCands())[iCand]->pt() << std::endl;
+      }
+
     if (embedLeadTrack_)       aTau.embedLeadTrack();
     if (embedSignalTracks_)    aTau.embedSignalTracks();
     if (embedIsolationTracks_) aTau.embedIsolationTracks();
