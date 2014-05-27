@@ -211,6 +211,17 @@ void PATTauProducer::produce(edm::Event & iEvent, const edm::EventSetup & iSetup
     std::cout << " signal/iso cands: " << aTau.signalCands().size() << "/" << aTau.isolationCands().size() << std::endl;
     std::cout << " PFTau signal cand composition: " << (pfTau->signalPFCands()).size() << "=" << (pfTau->signalPFChargedHadrCands()).size() << "+" << (pfTau->signalPFGammaCands()).size() << "+" << (pfTau->signalPFNeutrHadrCands()).size() << std::endl;
     std::cout << " PFTau decay mode is " << pfTau->decayMode() << std::endl;
+    std::cout << " TauChargedHadronCandidates: " << (pfTau->signalTauChargedHadronCandidates()).size() << std::endl;
+    for( size_t iCand=0; iCand < (pfTau->signalTauChargedHadronCandidates()).size(); iCand++)
+      {
+	std::cout << "# " << iCand+1 << ": " <<  (pfTau->signalTauChargedHadronCandidates())[iCand].pt() << std::endl;
+      }
+    std::cout << " PiZeroCandidates: " << (pfTau->signalPiZeroCandidates()).size() << std::endl;
+    for( size_t iCand=0; iCand < (pfTau->signalPiZeroCandidates()).size(); iCand++)
+      {
+	std::cout << "# " << iCand+1 << ": " <<  (pfTau->signalPiZeroCandidates())[iCand].pt() << std::endl;
+      }
+    
     std::cout << "signal cands: " << std::endl;
     for (size_t iCand=0; iCand < (pfTau->signalPFCands()).size(); iCand++)
       {
@@ -269,6 +280,18 @@ void PATTauProducer::produce(edm::Event & iEvent, const edm::EventSetup & iSetup
     for (size_t iCand=0; iCand < (aTau.isolationCands()).size(); iCand++)
       {
 	std::cout << "Cand # " << iCand+1 << ": " << (aTau.isolationCands())[iCand]->pt() << std::endl;
+      }
+
+    std::cout << "P.A.T. :: TauChargedHadronCandidates: " << (aTau.signalTauChargedHadronCandidates()).size() << std::endl;
+    for( size_t iCand=0; iCand < (aTau.signalTauChargedHadronCandidates()).size(); iCand++)
+      {
+	std::cout << "# " << iCand+1 << ": " <<  (aTau.signalTauChargedHadronCandidates())[iCand].pt() << std::endl;
+      }
+
+    std::cout << "P.A.T. :: PiZeroCandidates: " << (aTau.signalPiZeroCandidates()).size() << std::endl;
+    for( size_t iCand=0; iCand < (aTau.signalPiZeroCandidates()).size(); iCand++)
+      {
+	std::cout << "# " << iCand+1 << ": " <<  (aTau.signalPiZeroCandidates())[iCand].pt() << std::endl;
       }
 
     if (embedLeadTrack_)       aTau.embedLeadTrack();
