@@ -454,8 +454,14 @@ const std::vector<reco::PFCandidatePtr>& Tau::signalPFCands() const {
       signalPFCandsTransientPtrs_.set(std::move(aPtrs));
     }
     return *signalPFCandsTransientPtrs_;
-  } else
-    return pfSpecific().selectedSignalPFCands_; 
+  } else {
+    if(!pfSpecific().selectedSignalPFCands_.empty() && pfSpecific().selectedSignalPFCands_.front().isAvailable()) return pfSpecific().selectedSignalPFCands_;
+    else{ // this part of the code is called when reading patTaus from some saved patTuple
+      std::unique_ptr<std::vector<reco::PFCandidatePtr> > aPtrs{new std::vector<reco::PFCandidatePtr>{}};
+      signalPFCandsTransientPtrs_.set(std::move(aPtrs));
+      return *signalPFCandsTransientPtrs_;
+    }
+  }
 }
 
 const std::vector<reco::PFCandidatePtr>& Tau::signalPFChargedHadrCands() const {
@@ -469,8 +475,14 @@ const std::vector<reco::PFCandidatePtr>& Tau::signalPFChargedHadrCands() const {
       signalPFNeutralHadrCandsTransientPtrs_.set(std::move(aPtrs));
     }
     return *signalPFChargedHadrCandsTransientPtrs_;
-  } else
-    return pfSpecific().selectedSignalPFChargedHadrCands_;
+  } else {
+    if(!pfSpecific().selectedSignalPFChargedHadrCands_.empty() && pfSpecific().selectedSignalPFChargedHadrCands_.front().isAvailable()) return pfSpecific().selectedSignalPFChargedHadrCands_;
+    else{ // this part of the code is called when reading patTaus from some saved patTuple
+      std::unique_ptr<std::vector<reco::PFCandidatePtr> > aPtrs{new std::vector<reco::PFCandidatePtr>{}};
+      signalPFChargedHadrCandsTransientPtrs_.set(std::move(aPtrs));
+      return *signalPFChargedHadrCandsTransientPtrs_;
+    }
+  }
 } 
 
 const std::vector<reco::PFCandidatePtr>& Tau::signalPFNeutrHadrCands() const {
@@ -484,8 +496,14 @@ const std::vector<reco::PFCandidatePtr>& Tau::signalPFNeutrHadrCands() const {
       signalPFNeutralHadrCandsTransientPtrs_.set(std::move(aPtrs));
     }
     return *signalPFNeutralHadrCandsTransientPtrs_;
-  } else
-    return pfSpecific().selectedSignalPFNeutrHadrCands_;
+  } else {
+    if(!pfSpecific().selectedSignalPFNeutrHadrCands_.empty() && pfSpecific().selectedSignalPFNeutrHadrCands_.front().isAvailable()) return pfSpecific().selectedSignalPFNeutrHadrCands_;
+    else{ // this part of the code is called when reading patTaus from some saved patTuple
+      std::unique_ptr<std::vector<reco::PFCandidatePtr> > aPtrs{new std::vector<reco::PFCandidatePtr>{}};
+      signalPFNeutralHadrCandsTransientPtrs_.set(std::move(aPtrs));
+      return *signalPFNeutralHadrCandsTransientPtrs_;
+    }
+  }
 } 
 
 const std::vector<reco::PFCandidatePtr>& Tau::signalPFGammaCands() const {
@@ -499,8 +517,14 @@ const std::vector<reco::PFCandidatePtr>& Tau::signalPFGammaCands() const {
       signalPFGammaCandsTransientPtrs_.set(std::move(aPtrs));
     }
     return *signalPFGammaCandsTransientPtrs_;
-  } else
-    return pfSpecific().selectedSignalPFGammaCands_;
+  } else {
+    if(!pfSpecific().selectedSignalPFGammaCands_.empty() && pfSpecific().selectedSignalPFGammaCands_.front().isAvailable()) return pfSpecific().selectedSignalPFGammaCands_;
+    else{ // this part of the code is called when reading patTaus from some saved patTuple
+     std::unique_ptr<std::vector<reco::PFCandidatePtr> > aPtrs{new std::vector<reco::PFCandidatePtr>{}};
+      signalPFGammaCandsTransientPtrs_.set(std::move(aPtrs));
+      return *signalPFGammaCandsTransientPtrs_;
+    }
+  }
 }
 
 const std::vector<reco::PFRecoTauChargedHadron> & Tau::signalTauChargedHadronCandidates() const {
@@ -522,8 +546,14 @@ const std::vector<reco::PFCandidatePtr>& Tau::isolationPFCands() const {
       isolationPFChargedHadrCandsTransientPtrs_.set(std::move(aPtrs));
     }
     return *isolationPFCandsTransientPtrs_;
-  } else
-    return pfSpecific().selectedIsolationPFCands_;
+  } else {
+    if(!pfSpecific().selectedIsolationPFCands_.empty() && pfSpecific().selectedIsolationPFCands_.front().isAvailable()) return pfSpecific().selectedIsolationPFCands_;
+    else{ // this part of the code is called when reading patTaus from some saved patTuple
+      std::unique_ptr<std::vector<reco::PFCandidatePtr> > aPtrs{new std::vector<reco::PFCandidatePtr>{}};
+      isolationPFCandsTransientPtrs_.set(std::move(aPtrs));
+      return *isolationPFCandsTransientPtrs_;
+    }
+  }
 } 
 
 const std::vector<reco::PFCandidatePtr>& Tau::isolationPFChargedHadrCands() const {
@@ -537,9 +567,15 @@ const std::vector<reco::PFCandidatePtr>& Tau::isolationPFChargedHadrCands() cons
       isolationPFChargedHadrCandsTransientPtrs_.set(std::move(aPtrs));
     }
     return *isolationPFChargedHadrCandsTransientPtrs_;
-  } else
-    return pfSpecific().selectedIsolationPFChargedHadrCands_;
-} 
+  } else {
+    if(!pfSpecific().selectedIsolationPFChargedHadrCands_.empty() && pfSpecific().selectedIsolationPFChargedHadrCands_.front().isAvailable()) return pfSpecific().selectedIsolationPFChargedHadrCands_;
+    else{ // this part of the code is called when reading patTaus from some saved patTuple
+      std::unique_ptr<std::vector<reco::PFCandidatePtr> > aPtrs{new std::vector<reco::PFCandidatePtr>{}};
+      isolationPFChargedHadrCandsTransientPtrs_.set(std::move(aPtrs));
+      return *isolationPFChargedHadrCandsTransientPtrs_;
+    }
+  }
+}
 
 const std::vector<reco::PFCandidatePtr>& Tau::isolationPFNeutrHadrCands() const {
   if (embeddedIsolationPFNeutralHadrCands_) {
@@ -552,8 +588,14 @@ const std::vector<reco::PFCandidatePtr>& Tau::isolationPFNeutrHadrCands() const 
       isolationPFGammaCandsTransientPtrs_.set(std::move(aPtrs));
     }
     return *isolationPFNeutralHadrCandsTransientPtrs_;
-  } else
-    return pfSpecific().selectedIsolationPFNeutrHadrCands_;
+  } else {
+    if(!pfSpecific().selectedIsolationPFNeutrHadrCands_.empty() && pfSpecific().selectedIsolationPFNeutrHadrCands_.front().isAvailable()) return pfSpecific().selectedIsolationPFNeutrHadrCands_;
+    else{ // this part of the code is called when reading patTaus from some saved patTuple
+      std::unique_ptr<std::vector<reco::PFCandidatePtr> > aPtrs{new std::vector<reco::PFCandidatePtr>{}};
+      isolationPFNeutralHadrCandsTransientPtrs_.set(std::move(aPtrs));
+      return *isolationPFNeutralHadrCandsTransientPtrs_;
+    }
+  }
 } 
 
 const std::vector<reco::PFCandidatePtr>& Tau::isolationPFGammaCands() const {
@@ -567,8 +609,14 @@ const std::vector<reco::PFCandidatePtr>& Tau::isolationPFGammaCands() const {
       isolationPFGammaCandsTransientPtrs_.set(std::move(aPtrs));
     }
     return *isolationPFGammaCandsTransientPtrs_;
-  } else
-    return pfSpecific().selectedIsolationPFGammaCands_;
+  } else {
+    if(!pfSpecific().selectedIsolationPFGammaCands_.empty() && pfSpecific().selectedIsolationPFGammaCands_.front().isAvailable()) return pfSpecific().selectedIsolationPFGammaCands_;
+    else{ // this part of the code is called when reading patTaus from some saved patTuple
+      std::unique_ptr<std::vector<reco::PFCandidatePtr> > aPtrs{new std::vector<reco::PFCandidatePtr>{}};
+      isolationPFGammaCandsTransientPtrs_.set(std::move(aPtrs));
+      return *isolationPFGammaCandsTransientPtrs_;
+    }
+  }
 }
 
 const std::vector<reco::PFRecoTauChargedHadron> & Tau::isolationTauChargedHadronCandidates() const {
