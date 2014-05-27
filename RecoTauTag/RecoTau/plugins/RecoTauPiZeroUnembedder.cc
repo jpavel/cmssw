@@ -23,6 +23,7 @@
 #include "DataFormats/TauReco/interface/RecoTauPiZero.h"
 #include "DataFormats/TauReco/interface/RecoTauPiZeroFwd.h"
 
+
 class RecoTauPiZeroUnembedder : public edm::stream::EDProducer<> {
   public:
     RecoTauPiZeroUnembedder(const edm::ParameterSet& pset);
@@ -37,11 +38,13 @@ RecoTauPiZeroUnembedder::RecoTauPiZeroUnembedder(const edm::ParameterSet& pset) 
   src_ = pset.getParameter<edm::InputTag>("src");
   token = consumes<reco::CandidateView>(src_);
   produces<reco::RecoTauPiZeroCollection>("pizeros");
+  produces<reco::PFRecoTauChargedHadronCollection>("recoTauChHadrons");
   produces<reco::PFTauCollection>();
 }
 void RecoTauPiZeroUnembedder::produce(edm::Event& evt, const edm::EventSetup& es) {
   std::auto_ptr<reco::RecoTauPiZeroCollection> piZerosOut(
       new reco::RecoTauPiZeroCollection);
+  std::auto_ptr<reco::PFRecoTauChargedHadronCollection> chHadronsOut( new reco::PFRecoTauChargedHadronCollection);
   std::auto_ptr<reco::PFTauCollection> tausOut(new reco::PFTauCollection);
 
   edm::Handle<reco::CandidateView> tauView;
@@ -50,9 +53,11 @@ void RecoTauPiZeroUnembedder::produce(edm::Event& evt, const edm::EventSetup& es
   reco::PFTauRefVector taus =
       reco::tau::castView<reco::PFTauRefVector>(tauView);
 
-  // Get the reference to the product of where the final pizeros will end up
+  // Get the reference to the products of where the final pizeros and chHadrons will end up
   reco::RecoTauPiZeroRefProd piZeroProd =
     evt.getRefBeforePut<reco::RecoTauPiZeroCollection>("pizeros");
+
+  reco::PFRecoTauChargedHadronRefProd chHadronProd = evt.getRefBeforePut<reco::PFRecoTauChargedHadronCollection>("recoTauChHadrons");
 
   for (size_t iTau = 0; iTau < taus.size(); ++iTau) {
     // Make a copy
@@ -61,7 +66,10 @@ void RecoTauPiZeroUnembedder::produce(edm::Event& evt, const edm::EventSetup& es
     reco::RecoTauPiZeroRefVector signalPiZeroRefs;
     reco::RecoTauPiZeroRefVector isolationPiZeroRefs;
 
-    // Copy the PiZeros into the new vector, while updating what refs they will
+    reco::PFRecoTauChargedHadronRefVector signalTauChargedHadronRefs;
+    reco::PFRecoTauChargedHadronRefVector isolationTauChargedHadronRefs;
+
+    // Copy the PiZeros and chHadrons into the new vectors, while updating what refs they will
     // have
     const reco::RecoTauPiZeroCollection& signalPiZeros =
       myTau.signalPiZeroCandidates();
@@ -73,6 +81,17 @@ void RecoTauPiZeroUnembedder::produce(edm::Event& evt, const edm::EventSetup& es
           reco::RecoTauPiZeroRef(piZeroProd, piZerosOut->size()-1));
     }
 
+    const reco::PFRecoTauChargedHadronCollection& signalChHadrons = 
+      myTau.signalTauChargedHadronCandidates();
+
+    for (size_t iChHadron = 0; iChHadron < signalChHadrons.size(); ++iChHadron) {
+      std::cout << "HEH, UNEMBEDDING DUDE..." << iChHadron << " pt= " << signalChHadrons[iChHadron].pt() << std::endl;
+      chHadronsOut->push_back(signalChHadrons[iChHadron]);
+      // Figure out what the ref for this chHadron will be in the new coll.
+      signalTauChargedHadronRefs.push_back(
+				 reco::PFRecoTauChargedHadronRef(chHadronProd, chHadronsOut->size()-1));
+    }
+
     const reco::RecoTauPiZeroCollection& isolationPiZeroCandidates =
       myTau.isolationPiZeroCandidates();
     for (size_t iPiZero = 0; iPiZero < isolationPiZeroCandidates.size(); ++iPiZero) {
@@ -82,13 +101,27 @@ void RecoTauPiZeroUnembedder::produce(edm::Event& evt, const edm::EventSetup& es
           reco::RecoTauPiZeroRef(piZeroProd, piZerosOut->size()-1));
     }
 
+    const reco::PFRecoTauChargedHadronCollection& isolationChHadrons = 
+      myTau.isolationTauChargedHadronCandidates();
+
+    for (size_t iChHadron = 0; iChHadron < isolationChHadrons.size(); ++iChHadron) {
+      std::cout << "HEH, UNEMBEDDING isoDUDE..." << iChHadron << " pt= " << isolationChHadrons[iChHadron].pt() << std::endl;
+      chHadronsOut->push_back(isolationChHadrons[iChHadron]);
+      // Figure out what the ref for this chHadron will be in the new coll.
+      isolationTauChargedHadronRefs.push_back(
+					reco::PFRecoTauChargedHadronRef(chHadronProd, chHadronsOut->size()-1));
+    }
+
     myTau.setSignalPiZeroCandidatesRefs(signalPiZeroRefs);
     myTau.setIsolationPiZeroCandidatesRefs(isolationPiZeroRefs);
+    myTau.setSignalTauChargedHadronCandidatesRefs(signalTauChargedHadronRefs);
+    myTau.setIsolationTauChargedHadronCandidatesRefs(isolationTauChargedHadronRefs);
 
     tausOut->push_back(myTau);
   }
 
   evt.put(piZerosOut, "pizeros");
+  evt.put(chHadronsOut, "recoTauChHadrons");
   evt.put(tausOut);
 }
 
