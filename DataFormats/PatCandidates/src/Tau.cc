@@ -771,7 +771,7 @@ const reco::CandidatePtr Tau::leadCand() const {
 /// note that the vector is returned by value.
 reco::CandidatePtrVector Tau::signalCands() const {
    std::vector<reco::PFCandidatePtr> r0 = signalPFCands();
-   if (r0.empty() || r0.front().isAvailable() || signalCandPtrs_.isNull()) {
+   if(signalCandPtrs_.isNull() || (!r0.empty() && r0.front().isAvailable())) {
         reco::CandidatePtrVector ret;
         for (const auto & p : r0) ret.push_back(p);
         return ret;
@@ -784,7 +784,7 @@ reco::CandidatePtrVector Tau::signalCands() const {
 /// note that the vector is returned by value.
 reco::CandidatePtrVector Tau::signalChargedHadrCands() const {
    std::vector<reco::PFCandidatePtr> r0 = signalPFChargedHadrCands();
-   if (r0.empty() || r0.front().isAvailable() || signalChargedHadrCandPtrs_.isNull()) {
+   if(signalChargedHadrCandPtrs_.isNull() || (!r0.empty() && r0.front().isAvailable())) {
         reco::CandidatePtrVector ret;
         for (const auto & p : r0) ret.push_back(p);
 	return ret;
@@ -798,7 +798,7 @@ reco::CandidatePtrVector Tau::signalChargedHadrCands() const {
 /// note that the vector is returned by value.
 reco::CandidatePtrVector Tau::signalNeutrHadrCands() const {
    std::vector<reco::PFCandidatePtr> r0 = signalPFNeutrHadrCands();
-   if (r0.empty() || r0.front().isAvailable() || signalNeutralHadrCandPtrs_.isNull()) {
+   if(signalNeutralHadrCandPtrs_.isNull() || (!r0.empty() && r0.front().isAvailable())) {
         reco::CandidatePtrVector ret;
         for (const auto & p : r0) ret.push_back(p);
 	return ret;
@@ -811,7 +811,7 @@ reco::CandidatePtrVector Tau::signalNeutrHadrCands() const {
 /// note that the vector is returned by value.
 reco::CandidatePtrVector Tau::signalGammaCands() const {
    std::vector<reco::PFCandidatePtr> r0 = signalPFGammaCands();
-   if (r0.empty() || r0.front().isAvailable() || signalGammaCandPtrs_.isNull()) {
+   if(signalGammaCandPtrs_.isNull() || (!r0.empty() && r0.front().isAvailable())) {
         reco::CandidatePtrVector ret;
         for (const auto & p : r0) ret.push_back(p);
 	return ret;
@@ -824,7 +824,7 @@ reco::CandidatePtrVector Tau::signalGammaCands() const {
 /// note that the vector is returned by value.
 reco::CandidatePtrVector Tau::isolationCands() const {
    std::vector<reco::PFCandidatePtr> r0 = isolationPFCands();
-   if (r0.empty() || r0.front().isAvailable() || isolationCandPtrs_.isNull()) {
+   if(isolationCandPtrs_.isNull() || (!r0.empty() && r0.front().isAvailable())) {
         reco::CandidatePtrVector ret;
         for (const auto & p : r0) ret.push_back(p);
         return ret;
@@ -837,7 +837,7 @@ reco::CandidatePtrVector Tau::isolationCands() const {
 /// note that the vector is returned by value.
 reco::CandidatePtrVector Tau::isolationChargedHadrCands() const {
    std::vector<reco::PFCandidatePtr> r0 = isolationPFChargedHadrCands();
-   if (r0.empty() || r0.front().isAvailable() || isolationChargedHadrCandPtrs_.isNull()) {
+   if(isolationChargedHadrCandPtrs_.isNull() || (!r0.empty() && r0.front().isAvailable())) {
         reco::CandidatePtrVector ret;
         for (const auto & p : r0) ret.push_back(p);
 	return ret;
@@ -851,7 +851,7 @@ reco::CandidatePtrVector Tau::isolationChargedHadrCands() const {
 reco::CandidatePtrVector Tau::isolationNeutrHadrCands() const {
    reco::CandidatePtrVector ret;
    std::vector<reco::PFCandidatePtr> r0 = isolationPFNeutrHadrCands();
-   if (r0.empty() || r0.front().isAvailable() || isolationNeutralHadrCandPtrs_.isNull()) {
+   if(isolationNeutralHadrCandPtrs_.isNull() || (!r0.empty() && r0.front().isAvailable())) {
         reco::CandidatePtrVector ret;
         for (const auto & p : r0) ret.push_back(p);
 	return ret;
@@ -864,7 +864,7 @@ reco::CandidatePtrVector Tau::isolationNeutrHadrCands() const {
 /// note that the vector is returned by value.
 reco::CandidatePtrVector Tau::isolationGammaCands() const {
    std::vector<reco::PFCandidatePtr> r0 = isolationPFGammaCands();
-   if (r0.empty() || r0.front().isAvailable() || isolationGammaCandPtrs_.isNull()) {
+   if(isolationGammaCandPtrs_.isNull() || (!r0.empty() && r0.front().isAvailable())) {
         reco::CandidatePtrVector ret;
         for (const auto & p : r0) ret.push_back(p);
 	return ret;
