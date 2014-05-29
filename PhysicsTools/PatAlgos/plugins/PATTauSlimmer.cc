@@ -59,12 +59,7 @@ pat::PATTauSlimmer::produce(edm::Event & iEvent, const edm::EventSetup & iSetup)
         if (linkToPackedPF_) {
             pat::Tau & tau = out->back();
 
-            reco::CandidatePtrVector signalPtrs, signalChHPtrs, signalNHPtrs, signalGammaPtrs, isolationPtrs, isolationChHPtrs, isolationNHPtrs, isolationGammaPtrs;
-
-            for (const reco::PFCandidatePtr &p : tau.signalPFCands()) {
-                signalPtrs.push_back(edm::refToPtr((*pf2pc)[p]));
-            }
-            tau.setSignalCands(signalPtrs);
+            reco::CandidatePtrVector signalChHPtrs, signalNHPtrs, signalGammaPtrs, isolationChHPtrs, isolationNHPtrs, isolationGammaPtrs;
 
 	    for (const reco::PFCandidatePtr &p : tau.signalPFChargedHadrCands()) {
 	      signalChHPtrs.push_back(edm::refToPtr((*pf2pc)[p]));
@@ -80,11 +75,6 @@ pat::PATTauSlimmer::produce(edm::Event & iEvent, const edm::EventSetup & iSetup)
               signalGammaPtrs.push_back(edm::refToPtr((*pf2pc)[p]));
             }
             tau.setSignalGammaCands(signalGammaPtrs);
-
-	    for (const reco::PFCandidatePtr &p : tau.isolationPFCands()) {
-                isolationPtrs.push_back(edm::refToPtr((*pf2pc)[p]));
-            }
-            tau.setIsolationCands(isolationPtrs);
 
 	    for (const reco::PFCandidatePtr &p : tau.isolationPFChargedHadrCands()) {
               isolationChHPtrs.push_back(edm::refToPtr((*pf2pc)[p]));
