@@ -52,7 +52,7 @@
    <field name="isolationPFChargedHadrCandsTransientPtrs_" transient="true"/>
    <field name="isolationPFNeutralHadrCandsTransientPtrs_" transient="true"/>
    <field name="isolationPFGammaCandsTransientPtrs_" transient="true"/>
-   <version ClassVersion="15" checksum="713365064"/>
+   <version ClassVersion="15" checksum="819164614"/>
    <version ClassVersion="14" checksum="3966509354"/>
    <version ClassVersion="13" checksum="2969928320"/>
    <version ClassVersion="12" checksum="2900944238"/>

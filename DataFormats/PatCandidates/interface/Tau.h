@@ -419,6 +419,10 @@ namespace pat {
       void addJECFactors(const TauJetCorrFactors& jec) {jec_.push_back(jec); };
       /// initialize the jet to a given JEC level during creation starting from Uncorrected
       void initializeJEC(unsigned int level, const unsigned int set = 0);
+      // ---- PFTau specific variables  ----
+      /// holder for PFTau info, or empty vector if CaloTau
+      std::vector<pat::tau::TauPFSpecific> pfSpecific_;
+
 
   private:
       // ---- for content embedding ----
@@ -472,10 +476,6 @@ namespace pat {
       // ---- CaloTau specific variables  ----
       /// holder for CaloTau info, or empty vector if PFTau
       std::vector<pat::tau::TauCaloSpecific> caloSpecific_;
-
-      // ---- PFTau specific variables  ----
-      /// holder for PFTau info, or empty vector if CaloTau
-      std::vector<pat::tau::TauPFSpecific> pfSpecific_;
 
       // ---- energy scale correction factors ----
       // energy scale correction factors; the string carries a potential label if

@@ -27,6 +27,9 @@ namespace pat {
       edm::EDGetTokenT<edm::View<pat::Tau> > src_;
       bool linkToPackedPF_;
       edm::EDGetTokenT<edm::Association<pat::PackedCandidateCollection>> pf2pc_;
+      bool dropPiZeroRefs_;
+      bool dropTauChargedHadronRefs_;
+
 
   };
 
@@ -38,6 +41,9 @@ pat::PATTauSlimmer::PATTauSlimmer(const edm::ParameterSet & iConfig) :
 {
     produces<std::vector<pat::Tau> >();
     if (linkToPackedPF_) pf2pc_ = consumes<edm::Association<pat::PackedCandidateCollection>>(iConfig.getParameter<edm::InputTag>("packedPFCandidates"));
+    dropPiZeroRefs_ = iConfig.exists("dropPiZeroRefs") ? iConfig.getParameter<bool>("dropPiZeroRefs") : true;
+    dropTauChargedHadronRefs_ = iConfig.exists("dropTauChargedHadronRefs") ? iConfig.getParameter<bool>("dropTauChargedHadronRefs") : true;
+
 }
 
 void 
@@ -56,8 +62,8 @@ pat::PATTauSlimmer::produce(edm::Event & iEvent, const edm::EventSetup & iSetup)
 
     for (View<pat::Tau>::const_iterator it = src->begin(), ed = src->end(); it != ed; ++it) {
         out->push_back(*it);
+	pat::Tau & tau = out->back();
         if (linkToPackedPF_) {
-            pat::Tau & tau = out->back();
 
             reco::CandidatePtrVector signalChHPtrs, signalNHPtrs, signalGammaPtrs, isolationChHPtrs, isolationNHPtrs, isolationGammaPtrs;
 
@@ -92,6 +98,15 @@ pat::PATTauSlimmer::produce(edm::Event & iEvent, const edm::EventSetup & iSetup)
             tau.setIsolationGammaCands(isolationGammaPtrs);
 
         }
+     if(dropPiZeroRefs_){ 
+         tau.pfSpecific_[0].signalPiZeroCandidates_.clear();
+         tau.pfSpecific_[0].isolationPiZeroCandidates_.clear();
+       }
+     if(dropTauChargedHadronRefs_){ 
+          tau.pfSpecific_[0].signalTauChargedHadronCandidates_.clear();
+          tau.pfSpecific_[0].isolationTauChargedHadronCandidates_.clear();
+        }
+
     }
 
     iEvent.put(out);
