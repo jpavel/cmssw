@@ -43,10 +43,12 @@ namespace pat {
 namespace reco {
   /// pipe operator (introduced to use pat::Tau with PFTopProjectors)
   std::ostream& operator<<(std::ostream& out, const pat::Tau& obj);
+  //  bool sortByPt(const CandidatePtrVector::const_iterator &lhs, const CandidatePtrVector::const_iterator &rhs) { return (*lhs)->pt() < (*rhs)->pt(); }
 }
 
 // Class definition
 namespace pat {
+  
 
   class PATTauSlimmer;
 
@@ -264,6 +266,8 @@ namespace pat {
       const reco::CandidatePtr leadCand() const;
       /// return the PFCandidates if available (reference or embedded), or the PackedPFCandidate on miniAOD 
       /// note that the vector is returned by value.
+      bool ExistSignalCands() const;
+      bool ExistIsolationCands() const;
       reco::CandidatePtrVector signalCands() const;
       /// return the PFCandidates if available (reference or embedded), or the PackedPFCandidate on miniAOD 
       /// note that the vector is returned by value.
@@ -288,11 +292,9 @@ namespace pat {
       reco::CandidatePtrVector isolationGammaCands() const;
 
       /// setters for the PtrVectors (for miniAOD)
-      void setSignalCands(const reco::CandidatePtrVector &ptrs) {  signalCandPtrs_ = ptrs; }
       void setSignalChargedHadrCands(const reco::CandidatePtrVector &ptrs) { signalChargedHadrCandPtrs_ = ptrs;}
       void setSignalNeutralHadrCands(const reco::CandidatePtrVector &ptrs) { signalNeutralHadrCandPtrs_ = ptrs;}
       void setSignalGammaCands(const reco::CandidatePtrVector &ptrs) { signalGammaCandPtrs_ = ptrs;}
-      void setIsolationCands(const reco::CandidatePtrVector &ptrs) { isolationCandPtrs_ = ptrs; }
       void setIsolationChargedHadrCands(const reco::CandidatePtrVector &ptrs) { isolationChargedHadrCandPtrs_ = ptrs;}
       void setIsolationNeutralHadrCands(const reco::CandidatePtrVector &ptrs) { isolationNeutralHadrCandPtrs_ = ptrs;}
       void setIsolationGammaCands(const reco::CandidatePtrVector &ptrs) { isolationGammaCandPtrs_ = ptrs;}
@@ -401,6 +403,7 @@ namespace pat {
 	return correctedTauJet(level, set).p4(); 
       }
 
+
       friend class PATTauSlimmer;
 
     protected:
@@ -486,12 +489,10 @@ namespace pat {
       unsigned int currentJECLevel_;
 
       // ---- references to packed pf candidates -----
-      reco::CandidatePtrVector signalCandPtrs_;
       reco::CandidatePtrVector signalChargedHadrCandPtrs_;
       reco::CandidatePtrVector signalNeutralHadrCandPtrs_;
       reco::CandidatePtrVector signalGammaCandPtrs_;
 
-      reco::CandidatePtrVector isolationCandPtrs_;
       reco::CandidatePtrVector isolationChargedHadrCandPtrs_;
       reco::CandidatePtrVector isolationNeutralHadrCandPtrs_;
       reco::CandidatePtrVector isolationGammaCandPtrs_;
