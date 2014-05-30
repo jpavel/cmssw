@@ -63,6 +63,10 @@ pat::PATTauSlimmer::produce(edm::Event & iEvent, const edm::EventSetup & iSetup)
     for (View<pat::Tau>::const_iterator it = src->begin(), ed = src->end(); it != ed; ++it) {
         out->push_back(*it);
 	pat::Tau & tau = out->back();
+	// clearing the pat isolation which is not used by taus
+	tau.isolations_.clear();
+	tau.isoDeposits_.clear();
+	
         if (linkToPackedPF_) {
 
             reco::CandidatePtrVector signalChHPtrs, signalNHPtrs, signalGammaPtrs, isolationChHPtrs, isolationNHPtrs, isolationGammaPtrs;
@@ -106,6 +110,9 @@ pat::PATTauSlimmer::produce(edm::Event & iEvent, const edm::EventSetup & iSetup)
           tau.pfSpecific_[0].signalTauChargedHadronCandidates_.clear();
           tau.pfSpecific_[0].isolationTauChargedHadronCandidates_.clear();
         }
+
+     tau.pfSpecific_.clear();
+     // tau.isolations_.clear();
 
     }
 

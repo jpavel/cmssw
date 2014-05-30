@@ -419,9 +419,6 @@ namespace pat {
       void addJECFactors(const TauJetCorrFactors& jec) {jec_.push_back(jec); };
       /// initialize the jet to a given JEC level during creation starting from Uncorrected
       void initializeJEC(unsigned int level, const unsigned int set = 0);
-      // ---- PFTau specific variables  ----
-      /// holder for PFTau info, or empty vector if CaloTau
-      std::vector<pat::tau::TauPFSpecific> pfSpecific_;
 
 
   private:
@@ -472,6 +469,10 @@ namespace pat {
 
       // ---- tau ID's holder ----
       std::vector<IdPair> tauIDs_;
+
+      // ---- PFTau specific variables  ----
+      /// holder for PFTau info, or empty vector if CaloTau
+      std::vector<pat::tau::TauPFSpecific> pfSpecific_;
 
       // ---- CaloTau specific variables  ----
       /// holder for CaloTau info, or empty vector if PFTau
