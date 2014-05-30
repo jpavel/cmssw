@@ -29,6 +29,7 @@ namespace pat {
       edm::EDGetTokenT<edm::Association<pat::PackedCandidateCollection>> pf2pc_;
       bool dropPiZeroRefs_;
       bool dropTauChargedHadronRefs_;
+      bool dropPFSpecific_;
 
 
   };
@@ -43,6 +44,7 @@ pat::PATTauSlimmer::PATTauSlimmer(const edm::ParameterSet & iConfig) :
     if (linkToPackedPF_) pf2pc_ = consumes<edm::Association<pat::PackedCandidateCollection>>(iConfig.getParameter<edm::InputTag>("packedPFCandidates"));
     dropPiZeroRefs_ = iConfig.exists("dropPiZeroRefs") ? iConfig.getParameter<bool>("dropPiZeroRefs") : true;
     dropTauChargedHadronRefs_ = iConfig.exists("dropTauChargedHadronRefs") ? iConfig.getParameter<bool>("dropTauChargedHadronRefs") : true;
+    dropPFSpecific_ = iConfig.exists("dropPFSpecific") ? iConfig.getParameter<bool>("dropPFSpecific"): true;
 
 }
 
@@ -110,9 +112,7 @@ pat::PATTauSlimmer::produce(edm::Event & iEvent, const edm::EventSetup & iSetup)
           tau.pfSpecific_[0].signalTauChargedHadronCandidates_.clear();
           tau.pfSpecific_[0].isolationTauChargedHadronCandidates_.clear();
         }
-
-     tau.pfSpecific_.clear();
-     // tau.isolations_.clear();
+     if(dropPFSpecific_){ tau.pfSpecific_.clear();}
 
     }
 
