@@ -30,6 +30,7 @@
 #include "DataFormats/PatCandidates/interface/TauPFSpecific.h"
 #include "DataFormats/PatCandidates/interface/TauCaloSpecific.h"
 #include "DataFormats/PatCandidates/interface/TauJetCorrFactors.h"
+#include "DataFormats/PatCandidates/interface/TauPFEssential.h"
 
 #include "DataFormats/Common/interface/AtomicPtrCache.h"
 // Define typedefs for convenience
@@ -157,6 +158,7 @@ namespace pat {
       bool isPFTau() const { return !pfSpecific_.empty(); }
       /// return PFTau info or throw exception 'not PFTau'
       const pat::tau::TauPFSpecific & pfSpecific() const ;
+      const pat::tau::TauPFEssential & pfEssential() const;
       /// Method copied from reco::PFTau. 
       /// Throws an exception if this pat::Tau was not made from a reco::PFTau
       const reco::PFJetRef & pfJetRef() const { return pfSpecific().pfJetRef_; }
@@ -309,20 +311,20 @@ namespace pat {
       /// ---- Tau lifetime information ----
       /// Filled from PFTauTIPAssociation.
       /// Throws an exception if this pat::Tau was not made from a reco::PFTau	
-      const reco::PFTauTransverseImpactParameter::Point& dxy_PCA() const { return pfSpecific().dxy_PCA_; }
-      double dxy() const { return pfSpecific().dxy_; }
-      double dxy_error() const { return pfSpecific().dxy_error_; }
+      const reco::PFTauTransverseImpactParameter::Point& dxy_PCA() const { return pfEssential().dxy_PCA_; }
+      double dxy() const { return pfEssential().dxy_; }
+      double dxy_error() const { return pfEssential().dxy_error_; }
       double dxy_Sig() const;
-      const reco::VertexRef& primaryVertex() const { return pfSpecific().pv_; }
-      const reco::PFTauTransverseImpactParameter::Point& primaryVertexPos() const { return pfSpecific().pvPos_; }
-      const reco::PFTauTransverseImpactParameter::CovMatrix& primaryVertexCov() const { return pfSpecific().pvCov_; }
-      bool hasSecondaryVertex() const { return pfSpecific().hasSV_; }
-      const reco::PFTauTransverseImpactParameter::Vector& flightLength() const { return pfSpecific().flightLength_; } 
-      double flightLengthSig() const { return pfSpecific().flightLengthSig_; }
+      const reco::VertexRef& primaryVertex() const { return pfEssential().pv_; }
+      const reco::PFTauTransverseImpactParameter::Point& primaryVertexPos() const { return pfEssential().pvPos_; }
+      const reco::PFTauTransverseImpactParameter::CovMatrix& primaryVertexCov() const { return pfEssential().pvCov_; }
+      bool hasSecondaryVertex() const { return pfEssential().hasSV_; }
+      const reco::PFTauTransverseImpactParameter::Vector& flightLength() const { return pfEssential().flightLength_; } 
+      double flightLengthSig() const { return pfEssential().flightLengthSig_; }
       reco::PFTauTransverseImpactParameter::CovMatrix flightLengthCov() const;
-      const reco::VertexRef& secondaryVertex() const { return pfSpecific().sv_; }
-      const reco::PFTauTransverseImpactParameter::Point& secondaryVertexPos() const { return pfSpecific().svPos_; }
-      const reco::PFTauTransverseImpactParameter::CovMatrix& secondaryVertexCov() const { return pfSpecific().svCov_; }
+      const reco::VertexRef& secondaryVertex() const { return pfEssential().sv_; }
+      const reco::PFTauTransverseImpactParameter::Point& secondaryVertexPos() const { return pfEssential().svPos_; }
+      const reco::PFTauTransverseImpactParameter::CovMatrix& secondaryVertexCov() const { return pfEssential().svCov_; }
 
       /// Methods copied from reco::Jet.
       /// (accessible from reco::CaloTau/reco::PFTau via reco::CaloTauTagInfo/reco::PFTauTagInfo)
@@ -332,7 +334,7 @@ namespace pat {
       float etaphiMoment() const;
 
       /// reconstructed tau decay mode (specific to PFTau)
-      int decayMode() const { return pfSpecific().decayMode_; }
+      int decayMode() const { return pfEssential().decayMode_; }
       /// set decay mode
       void setDecayMode(int);
 
@@ -497,6 +499,10 @@ namespace pat {
       reco::CandidatePtrVector isolationChargedHadrCandPtrs_;
       reco::CandidatePtrVector isolationNeutralHadrCandPtrs_;
       reco::CandidatePtrVector isolationGammaCandPtrs_;
+
+      // -- essential info to keep
+
+      std::vector<pat::tau::TauPFEssential>  pfEssential_;
 
 
   };

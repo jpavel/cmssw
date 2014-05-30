@@ -48,7 +48,10 @@ Tau::Tau(const reco::BaseTau & aTau) :
     ,embeddedIsolationPFGammaCands_(false)
 {
     const reco::PFTau * pfTau = dynamic_cast<const reco::PFTau *>(&aTau);
-    if (pfTau != 0) pfSpecific_.push_back(pat::tau::TauPFSpecific(*pfTau));
+    if (pfTau != 0){
+      pfSpecific_.push_back(pat::tau::TauPFSpecific(*pfTau));
+      pfEssential_.push_back(pat::tau::TauPFEssential(*pfTau));
+    }
     const reco::CaloTau * caloTau = dynamic_cast<const reco::CaloTau *>(&aTau);
     if (caloTau != 0) caloSpecific_.push_back(pat::tau::TauCaloSpecific(*caloTau));
 }
@@ -72,7 +75,10 @@ Tau::Tau(const edm::RefToBase<reco::BaseTau> & aTauRef) :
     ,embeddedIsolationPFGammaCands_(false)
 {
     const reco::PFTau * pfTau = dynamic_cast<const reco::PFTau *>(aTauRef.get());
-    if (pfTau != 0) pfSpecific_.push_back(pat::tau::TauPFSpecific(*pfTau));
+    if (pfTau != 0){
+      pfSpecific_.push_back(pat::tau::TauPFSpecific(*pfTau));
+      pfEssential_.push_back(pat::tau::TauPFEssential(*pfTau));
+    }
     const reco::CaloTau * caloTau = dynamic_cast<const reco::CaloTau *>(aTauRef.get());
     if (caloTau != 0) caloSpecific_.push_back(pat::tau::TauCaloSpecific(*caloTau));
 }
@@ -96,7 +102,10 @@ Tau::Tau(const edm::Ptr<reco::BaseTau> & aTauRef) :
     ,embeddedIsolationPFGammaCands_(false)
 {
     const reco::PFTau * pfTau = dynamic_cast<const reco::PFTau *>(aTauRef.get());
-    if (pfTau != 0) pfSpecific_.push_back(pat::tau::TauPFSpecific(*pfTau));
+    if (pfTau != 0){
+      pfSpecific_.push_back(pat::tau::TauPFSpecific(*pfTau));
+      pfEssential_.push_back(pat::tau::TauPFEssential(*pfTau));
+    }
     const reco::CaloTau * caloTau = dynamic_cast<const reco::CaloTau *>(aTauRef.get());
     if (caloTau != 0) caloSpecific_.push_back(pat::tau::TauCaloSpecific(*caloTau));
 }
@@ -240,6 +249,12 @@ const pat::tau::TauPFSpecific & Tau::pfSpecific() const {
   return pfSpecific_[0]; 
 }
 
+const pat::tau::TauPFEssential & Tau::pfEssential() const {
+  if (pfEssential_.empty()) throw cms::Exception("Type Error") << "Requesting a PFTau-specific information from a pat::Tau which wasn't made from a PFTau.\n";
+  return pfEssential_[0]; 
+}
+
+
 const pat::tau::TauCaloSpecific & Tau::caloSpecific() const {
   if (!isCaloTau()) throw cms::Exception("Type Error") << "Requesting a CaloTau-specific information from a pat::Tau which wasn't made from a CaloTau.\n";
   return caloSpecific_[0]; 
@@ -248,13 +263,13 @@ const pat::tau::TauCaloSpecific & Tau::caloSpecific() const {
 const reco::Candidate::LorentzVector& Tau::p4Jet() const
 {
   if ( isCaloTau() ) return caloSpecific().p4Jet_;
-  if ( isPFTau()   ) return pfSpecific().p4Jet_;
+  if ( isPFTau()   ) return pfEssential().p4Jet_;
   throw cms::Exception("Type Error") << "Requesting a CaloTau/PFTau-specific information from a pat::Tau which wasn't made from either a CaloTau or a PFTau.\n";
 }
 
 double Tau::dxy_Sig() const
 {
-  if ( pfSpecific().dxy_error_ != 0 ) return (pfSpecific().dxy_/pfSpecific().dxy_error_);
+  if ( pfEssential().dxy_error_ != 0 ) return (pfEssential().dxy_/pfEssential().dxy_error_);
   else return 0.;
 }
 
@@ -295,7 +310,7 @@ float Tau::etaphiMoment() const
 void Tau::setDecayMode(int decayMode)
 {
   if (!isPFTau()) throw cms::Exception("Type Error") << "Requesting a PFTau-specific information from a pat::Tau which wasn't made from a PFTau.\n";
-  pfSpecific_[0].decayMode_ = decayMode;
+  pfEssential_[0].decayMode_ = decayMode;
 } 
 
 /// method to store the leading candidate internally
