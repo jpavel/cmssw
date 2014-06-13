@@ -28,7 +28,7 @@ pfRecoTauDiscriminationByIsolation = cms.EDProducer("PFRecoTauDiscriminationByIs
 
     # Delta-Beta corrections to remove Pileup
     applyDeltaBetaCorrection = cms.bool(False),
-    particleFlowSrc = cms.InputTag("particleFlow"),
+    particleFlowSrc = cms.InputTag("pfPileUpJME"),
     vertexSrc = PFTauQualityCuts.primaryVertexSrc,
 
     # This must correspond to the cone size of the algorithm which built the
