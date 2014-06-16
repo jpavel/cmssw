@@ -87,14 +87,16 @@ recoTauCommonSequence = cms.Sequence(
     pfRecoTauTagInfoProducer
 )
 
-
+# Calculate tau isolation
+from RecoTauTag.Configuration.tauIsolation_cff import *
 
 # Produce only classic HPS taus
 recoTauClassicHPSSequence = cms.Sequence(
     ak5PFJetsCHSLegacyHPSPiZeros *
     ak5PFJetsCHSRecoTauChargedHadrons *
     combinatoricRecoTaus *
-    produceAndDiscriminateHPSPFTaus
+    produceAndDiscriminateHPSPFTaus *
+    RecoPFTauIsolation
 )
 
 
