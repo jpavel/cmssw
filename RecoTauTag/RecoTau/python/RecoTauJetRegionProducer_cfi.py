@@ -4,6 +4,6 @@ RecoTauJetRegionProducer = cms.EDProducer(
         "RecoTauJetRegionProducer",
             deltaR = cms.double(0.8),
             src = cms.InputTag("ak5PFJetsCHS"),
-            pfCandSrc = cms.InputTag("pfNoPileUpJME"),
+            pfCandSrc = cms.InputTag("particleFlow"),
             pfCandAssocMapSrc = cms.InputTag("")
         )
