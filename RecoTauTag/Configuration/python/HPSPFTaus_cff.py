@@ -828,6 +828,10 @@ hpsPFTauMVAIsolation2Seq = cms.Sequence(
    + hpsPFTauDiscriminationByVVTightIsolationMVA3newDMwLT    
 )    
 
+# Calculate tau isolation
+from RecoTauTag.Configuration.tauIsolation_cff import *
+from RecoTauTag.Configuration.tauPFIsolationValues_cff import *
+
 
 produceHPSPFTaus = cms.Sequence(
     hpsSelectionDiscriminator
@@ -835,6 +839,8 @@ produceHPSPFTaus = cms.Sequence(
     #*hpsMediumIsolationCleaner
     #*hpsLooseIsolationCleaner
     #*hpsVLooseIsolationCleaner
+    *RecoPFTauIsolation 
+    *tauPFIsolationValuesSequence
     *hpsPFTauProducerSansRefs
     *hpsPFTauProducer
 )
