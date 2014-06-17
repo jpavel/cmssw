@@ -528,7 +528,7 @@ hpsSelectionDiscriminator.PFTauProducer = cms.InputTag("combinatoricRecoTaus")
 
 from RecoTauTag.RecoTau.RecoTauCleaner_cfi import RecoTauCleaner
 hpsPFTauProducerSansRefs=RecoTauCleaner.clone(
-      src=cms.InputTag("combinatoricRecoTaus")
+      src=cms.InputTag("RecoTauIsoSumFiller")
 )
 
 
@@ -831,6 +831,8 @@ hpsPFTauMVAIsolation2Seq = cms.Sequence(
 # Calculate tau isolation
 from RecoTauTag.Configuration.tauIsolation_cff import *
 from RecoTauTag.Configuration.tauPFIsolationValues_cff import *
+from RecoTauTag.RecoTau.RecoTauIsoSumFiller_cfi import RecoTauIsoSumFiller
+
 
 
 produceHPSPFTaus = cms.Sequence(
@@ -841,6 +843,7 @@ produceHPSPFTaus = cms.Sequence(
     #*hpsVLooseIsolationCleaner
     *RecoPFTauIsolation 
     *tauPFIsolationValuesSequence
+    *RecoTauIsoSumFiller
     *hpsPFTauProducerSansRefs
     *hpsPFTauProducer
 )
