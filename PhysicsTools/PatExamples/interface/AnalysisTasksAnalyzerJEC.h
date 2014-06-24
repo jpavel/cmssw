@@ -36,8 +36,10 @@ class AnalysisTasksAnalyzerJEC : public edm::BasicAnalyzer {
   edm::InputTag Jets_;
   edm::EDGetTokenT<std::vector<pat::Jet> > JetsToken_;
   std::string jecLevel_;
+  std::string jecSetLabel_;
   std::string patJetCorrFactors_;
   bool help_;
+  std::string outputFileName_;
   unsigned int jetInEvents_;
   /// histograms
   std::map<std::string, TH2*> hists_;
