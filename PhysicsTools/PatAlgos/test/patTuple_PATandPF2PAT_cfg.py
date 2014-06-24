@@ -81,7 +81,7 @@ process.patJetCorrFactorsPFlow.payload = 'AK5PFchs'
 #                                         ##
 #   process.source.fileNames =  ...
 #
-process.maxEvents.input = 10
+process.maxEvents.input = 100
 #                                         ##
 #   process.out.outputCommands = [ ... ]  ##  (e.g. taken from PhysicsTools/PatAlgos/python/patEventContent_cff.py)
 #                                         ##

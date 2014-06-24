@@ -12,6 +12,7 @@ AnalysisTasksAnalyzerBTag::AnalysisTasksAnalyzerBTag(const edm::ParameterSet& cf
   lowerbin_(cfg.getParameter<double>("lowerbin")),
   upperbin_(cfg.getParameter<double>("upperbin"))
 {
+  hists_["NumSoftMuons"] = fs.make<TH1F>("NumSoftMuons"  , "NumSoftMuons"  ,4,  -0.5, 3.5);
   hists_["BTag_b"] = fs.make<TH1F>("BTag_b"  , "BTag_b"  ,  bins_,  lowerbin_, upperbin_);
   hists_["BTag_g"] = fs.make<TH1F>("BTag_g" , "BTag_g" ,  bins_, lowerbin_,   upperbin_);
   hists_["BTag_c"] = fs.make<TH1F>("BTag_c" , "BTag_c" ,  bins_, lowerbin_,   upperbin_);
@@ -67,8 +68,13 @@ AnalysisTasksAnalyzerBTag::analyze(const edm::EventBase& event)
 
   // loop Jet collection and fill histograms
   for(std::vector<Jet>::const_iterator Jet_it=Jets->begin(); Jet_it!=Jets->end(); ++Jet_it){
-
+    edm::LogInfo ("hint3") << "\n \n investigate the next jet...\n \n "<<std::endl;
     pat::Jet Jet(*Jet_it);
+
+    const std::vector< std::pair< std::string, float > > discrPairs = Jet.getPairDiscri();
+   for(unsigned int pair_i = 0;pair_i <discrPairs.size(); ++pair_i ){
+      edm::LogInfo ("hint3") << "discr name: "<< discrPairs[pair_i].first<<" value: "<< discrPairs[pair_i].second<<std::endl;
+    }
 
    //Categorize the Jets
     if( abs(Jet.partonFlavour())==5){
