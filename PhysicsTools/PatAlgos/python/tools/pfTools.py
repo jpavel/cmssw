@@ -378,7 +378,7 @@ def switchToPFJets(process, input=cms.InputTag('pfNoTauClones'), algo='AK4', pos
                         postfix=postfix,
                         jetTrackAssociation=True,
                         jetCorrections=inputJetCorrLabel,
-                        outputModules = outputModules,
+                        outputModules = outputModules
                         )
 
     # check whether L1FastJet is in the list of correction levels or not
