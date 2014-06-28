@@ -37,14 +37,14 @@ DeltaBetaWeights::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
   using namespace edm;
 
-  edm::Handle<edm::View<reco::Candidate> > pfCharged;
-  edm::Handle<edm::View<reco::Candidate> > pfPU;
-  edm::Handle<edm::View<reco::Candidate> > src;
+  // edm::Handle<edm::View<reco::Candidate> > pfCharged;
+  // edm::Handle<edm::View<reco::Candidate> > pfPU;
+  // edm::Handle<edm::View<reco::Candidate> > src;
   
 
-  // edm::Handle<reco::PFCandidateCollection> pfCharged;
-  // edm::Handle<reco::PFCandidateCollection> pfPU;
-  // edm::Handle<reco::PFCandidateCollection> src;
+  edm::Handle<reco::PFCandidateCollection> pfCharged;
+  edm::Handle<reco::PFCandidateCollection> pfPU;
+  edm::Handle<reco::PFCandidateCollection> src;
 
   iEvent.getByToken(src_token,src);
   iEvent.getByToken(pfCharged_token,pfCharged);
