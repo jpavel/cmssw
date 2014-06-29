@@ -68,7 +68,6 @@ void RecoTauIsoSumFiller::produce(edm::Event& evt, const edm::EventSetup& es){
     reco::PFTauRef tau(Taus, iPFTau);
     
     float tmpIso=float((*tauIsolationValues[0])[tau]);
-    std::cout << myTau.pt() << ":" << tmpIso << std::endl;
     myTau.setisolationPFChargedHadrCandsPtSum(tmpIso);
     tmpIso=float((*tauIsolationValues[1])[tau]);
     myTau.setisolationPFGammaCandsEtSum(tmpIso);

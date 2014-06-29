@@ -50,6 +50,8 @@ class PFRecoTauDiscriminationByIsolation : public PFTauDiscriminationProducerBas
     calculateWeightsNH2_ = pset.exists("ApplyDiscriminationByWeightedHCALIsolation2") ?
       pset.getParameter<bool>("ApplyDiscriminationByWeightedHCALIsolation2") : false;
 
+    usePFTauIsolation_ = pset.exists("usePFTauIsolation") ?
+      pset.getParameter<bool>("usePFTauIsolation") : false;
 
     if(calculateWeights1_ && calculateWeights2_){
       throw cms::Exception("BadIsoConfig") 
@@ -206,6 +208,7 @@ class PFRecoTauDiscriminationByIsolation : public PFTauDiscriminationProducerBas
   bool calculateWeights2_;
   bool calculateWeightsNH1_;
   bool calculateWeightsNH2_;
+  bool usePFTauIsolation_;
   bool applyWeights_;
   bool applyWeightsGamma_;
   bool applyWeightsNH_;
@@ -666,7 +669,12 @@ PFRecoTauDiscriminationByIsolation::discriminate(const PFTauRef& pfTau)
     if ( neutralPt  < 0.0 ) {
       neutralPt = 0.0;
     }
-
+    if(usePFTauIsolation_){
+      if(includeTracks_) chargedPt = pfTau->isolationPFChargedHadrCandsPtSum();
+      if(includeGammas_) neutralPt = pfTau->isolationPFGammaCandsEtSum();
+      puPt = pfTau->isolationPFPUCandsEtSum();
+      if(verbosity_) std::cout << "ch/n/pu iso = " << chargedPt << "/" << neutralPt << "/" << puPt << std::endl;
+    }
     totalPt = chargedPt + neutralPt;
     if ( verbosity_ ) {
       std::cout << "totalPt = " << totalPt << " (cut = " << maximumSumPt_ << ")" << std::endl;

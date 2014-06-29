@@ -591,11 +591,21 @@ hpsPFTauMVA3IsolationChargedIsoPtSum = hpsPFTauDiscriminationByLooseCombinedIsol
     isoConeSizeForDeltaBeta = cms.double(0.8),
     verbosity = cms.int32(0)
 )
+
+hpsPFTauMVA3IsolationChargedIsoPtSum2 = hpsPFTauMVA3IsolationChargedIsoPtSum.clone(
+    usePFTauIsolation = cms.bool(True),
+)
+
 hpsPFTauMVA3IsolationNeutralIsoPtSum = hpsPFTauMVA3IsolationChargedIsoPtSum.clone(
     ApplyDiscriminationByECALIsolation = cms.bool(True),
     ApplyDiscriminationByTrackerIsolation = cms.bool(False),
     verbosity = cms.int32(0)
 )
+
+hpsPFTauMVA3IsolationNeutralIsoPtSum2 = hpsPFTauMVA3IsolationNeutralIsoPtSum.clone(
+    usePFTauIsolation = cms.bool(True),
+)
+
 hpsPFTauMVA3IsolationNeutralHadronIsoPtSum = hpsPFTauMVA3IsolationChargedIsoPtSum.clone(
     ApplyDiscriminationByHCALIsolation = cms.bool(True),
     ApplyDiscriminationByTrackerIsolation = cms.bool(False),
@@ -609,6 +619,10 @@ hpsPFTauMVA3IsolationPUcorrPtSum = hpsPFTauMVA3IsolationChargedIsoPtSum.clone(
     storeRawSumPt = cms.bool(False),
     storeRawPUsumPt = cms.bool(True),
     verbosity = cms.int32(0)
+)
+
+hpsPFTauMVA3IsolationPUcorrPtSum2 = hpsPFTauMVA3IsolationPUcorrPtSum.clone(
+    usePFTauIsolation = cms.bool(True),
 )
 
 hpsPFTauMVA3IsolationRhoCorrPtSum = hpsPFTauMVA3IsolationPUcorrPtSum.clone(
@@ -788,6 +802,9 @@ hpsPFTauMVAIsolation2Seq = cms.Sequence(
     hpsPFTauMVA3IsolationChargedIsoPtSum
    + hpsPFTauMVA3IsolationNeutralIsoPtSum
    + hpsPFTauMVA3IsolationPUcorrPtSum
+   + hpsPFTauMVA3IsolationChargedIsoPtSum2
+   + hpsPFTauMVA3IsolationNeutralIsoPtSum2
+   + hpsPFTauMVA3IsolationPUcorrPtSum2
    + hpsPFTauMVA3IsolationRhoCorrPtSum
    + hpsPFTauMVA3IsolationNeutralHadronIsoPtSum
    + hpsPFTauMVA3IsolationNeutralIsoPtSumWeight1
