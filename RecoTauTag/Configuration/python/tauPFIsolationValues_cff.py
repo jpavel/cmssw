@@ -56,11 +56,13 @@ tauPFIsoValuePU05 = cms.EDProducer("PFCandIsolatorFromDeposits",
              )
          )
      )
+tauPFIsoValuePU08 = tauPFIsoValuePU05.clone()
+tauPFIsoValuePU08.deposits[0].deltaR = cms.double(0.8)
 
 
 tauPFIsolationValuesSequence = cms.Sequence (
     tauPFIsoValueCharged05+
     tauPFIsoValueGamma05+
     tauPFIsoValueNeutral05+
-    tauPFIsoValuePU05
+    tauPFIsoValuePU08
 )
