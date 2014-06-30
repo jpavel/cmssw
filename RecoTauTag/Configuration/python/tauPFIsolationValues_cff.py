@@ -64,5 +64,5 @@ tauPFIsolationValuesSequence = cms.Sequence (
     tauPFIsoValueCharged05+
     tauPFIsoValueGamma05+
     tauPFIsoValueNeutral05+
-    tauPFIsoValuePU05
+    tauPFIsoValuePU08
 )

@@ -7,6 +7,6 @@ RecoTauIsoSumFiller = cms.EDProducer(
         pfSumChargedHadronPt = cms.InputTag('tauPFIsoValueCharged05'),
         pfSumPhotonEt = cms.InputTag('tauPFIsoValueGamma05'),
         pfSumNeutralHadronEt= cms.InputTag('tauPFIsoValueNeutral05'),
-        pfSumPUPt = cms.InputTag('tauPFIsoValuePU05')
+        pfSumPUPt = cms.InputTag('tauPFIsoValuePU08')
         )
 )
