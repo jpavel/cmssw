@@ -22,6 +22,7 @@ recoTauDiscriminantCutMultiplexer = cms.EDProducer(
             )
         ),
     key = cms.InputTag("fixme"), # a discriminator
+    inputFileName = cms.FileInPath('RecoTauTag/RecoTau/data/wpDiscriminationAgainstElectronMVA5.root'),
     mapping = cms.VPSet(
         cms.PSet(
             category = cms.uint32(0),
