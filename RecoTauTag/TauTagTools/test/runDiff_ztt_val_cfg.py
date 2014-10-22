@@ -99,7 +99,8 @@ process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 ## Source
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-        'root://xrootd.unl.edu//store/mc/Spring14dr/DYJetsToLL_M-50_13TeV-madgraph-pythia8/AODSIM/PU20bx25_POSTLS170_V5-v1/00000/00B3D5C6-C2CB-E311-9026-002481E0D480.root'
+'file:ref.root'
+#        'root://xrootd.unl.edu//store/mc/Spring14dr/DYJetsToLL_M-50_13TeV-madgraph-pythia8/AODSIM/PU20bx25_POSTLS170_V5-v1/00000/00B3D5C6-C2CB-E311-9026-002481E0D480.root'
 #        '/store/relval/CMSSW_7_1_0_pre4_AK4/RelValZTT_13/GEN-SIM-RECO/POSTLS171_V1-v2/00000/2491D051-51B5-E311-BFA1-003048679168.root',
 #       '/store/relval/CMSSW_7_1_0_pre4_AK4/RelValZTT_13/GEN-SIM-RECO/POSTLS171_V1-v2/00000/BEC396FA-4CB5-E311-B68C-002354EF3BDD.root',
 #       '/store/relval/CMSSW_7_1_0_pre4_AK4/RelValZTT_13/GEN-SIM-RECO/POSTLS171_V1-v2/00000/E8DA9320-52B5-E311-AB3B-0025905A6088.root'
@@ -204,11 +205,78 @@ tauIDSources = cms.PSet(
         againstElectronVTightMVA5 = cms.InputTag("hpsPFTauDiscriminationByMVA5VTightElectronRejection","",procName)
 )
 
+tauIDSourcesRECO = cms.PSet(
+        # configure many IDs as InputTag <someName> = <someTag>                                                                                                                                                                       
+        # you can comment out those you don't want to save some                                                                                                                                                                       
+        # disk space                                                                                                                                                                                                                  
+        decayModeFinding = cms.InputTag("hpsPFTauDiscriminationByDecayModeFinding","","RECO"),
+        decayModeFindingNewDMs =cms.InputTag("hpsPFTauDiscriminationByDecayModeFindingNewDMs","","RECO"),
+        chargedIsoPtSum = cms.InputTag("hpsPFTauMVA3IsolationChargedIsoPtSum","","RECO"),
+        neutralIsoPtSum = cms.InputTag("hpsPFTauMVA3IsolationNeutralIsoPtSum","","RECO"),
+        puCorrPtSum = cms.InputTag("hpsPFTauMVA3IsolationPUcorrPtSum","","RECO"),
+        byIsolationMVA3oldDMwoLTraw = cms.InputTag('hpsPFTauDiscriminationByIsolationMVA3oldDMwoLTraw',"","RECO"),
+        byVLooseIsolationMVA3oldDMwoLT = cms.InputTag('hpsPFTauDiscriminationByVLooseIsolationMVA3oldDMwoLT',"","RECO"),
+        byLooseIsolationMVA3oldDMwoLT = cms.InputTag('hpsPFTauDiscriminationByLooseIsolationMVA3oldDMwoLT',"","RECO"),
+        byMediumIsolationMVA3oldDMwoLT = cms.InputTag('hpsPFTauDiscriminationByMediumIsolationMVA3oldDMwoLT',"","RECO"),
+        byTightIsolationMVA3oldDMwoLT = cms.InputTag('hpsPFTauDiscriminationByTightIsolationMVA3oldDMwoLT',"","RECO"),
+        byVTightIsolationMVA3oldDMwoLT = cms.InputTag('hpsPFTauDiscriminationByVTightIsolationMVA3oldDMwoLT',"","RECO"),
+        byVVTightIsolationMVA3oldDMwoLT = cms.InputTag('hpsPFTauDiscriminationByVVTightIsolationMVA3oldDMwoLT',"","RECO"),                     
+        byIsolationMVA3oldDMwLTraw = cms.InputTag('hpsPFTauDiscriminationByIsolationMVA3oldDMwLTraw',"","RECO"),
+        byVLooseIsolationMVA3oldDMwLT = cms.InputTag('hpsPFTauDiscriminationByVLooseIsolationMVA3oldDMwLT',"","RECO"),
+        byLooseIsolationMVA3oldDMwLT = cms.InputTag('hpsPFTauDiscriminationByLooseIsolationMVA3oldDMwLT',"","RECO"),
+        byMediumIsolationMVA3oldDMwLT = cms.InputTag('hpsPFTauDiscriminationByMediumIsolationMVA3oldDMwLT',"","RECO"),
+        byTightIsolationMVA3oldDMwLT = cms.InputTag('hpsPFTauDiscriminationByTightIsolationMVA3oldDMwLT',"","RECO"),
+        byVTightIsolationMVA3oldDMwLT = cms.InputTag('hpsPFTauDiscriminationByVTightIsolationMVA3oldDMwLT',"","RECO"),
+        byVVTightIsolationMVA3oldDMwLT = cms.InputTag('hpsPFTauDiscriminationByVVTightIsolationMVA3oldDMwLT',"","RECO"),                             
+        byIsolationMVA3newDMwoLTraw = cms.InputTag('hpsPFTauDiscriminationByIsolationMVA3newDMwoLTraw',"","RECO"),
+        byVLooseIsolationMVA3newDMwoLT = cms.InputTag('hpsPFTauDiscriminationByVLooseIsolationMVA3newDMwoLT',"","RECO"),
+        byLooseIsolationMVA3newDMwoLT = cms.InputTag('hpsPFTauDiscriminationByLooseIsolationMVA3newDMwoLT',"","RECO"),
+        byMediumIsolationMVA3newDMwoLT = cms.InputTag('hpsPFTauDiscriminationByMediumIsolationMVA3newDMwoLT',"","RECO"),
+        byTightIsolationMVA3newDMwoLT = cms.InputTag('hpsPFTauDiscriminationByTightIsolationMVA3newDMwoLT',"","RECO"),
+        byVTightIsolationMVA3newDMwoLT = cms.InputTag('hpsPFTauDiscriminationByVTightIsolationMVA3newDMwoLT',"","RECO"),
+        byVVTightIsolationMVA3newDMwoLT = cms.InputTag('hpsPFTauDiscriminationByVVTightIsolationMVA3newDMwoLT',"","RECO"),                             
+        byIsolationMVA3newDMwLTraw = cms.InputTag('hpsPFTauDiscriminationByIsolationMVA3newDMwLTraw',"","RECO"),
+        byVLooseIsolationMVA3newDMwLT = cms.InputTag('hpsPFTauDiscriminationByVLooseIsolationMVA3newDMwLT',"","RECO"),
+        byLooseIsolationMVA3newDMwLT = cms.InputTag('hpsPFTauDiscriminationByLooseIsolationMVA3newDMwLT',"","RECO"),
+        byMediumIsolationMVA3newDMwLT = cms.InputTag('hpsPFTauDiscriminationByMediumIsolationMVA3newDMwLT',"","RECO"),
+        byTightIsolationMVA3newDMwLT = cms.InputTag('hpsPFTauDiscriminationByTightIsolationMVA3newDMwLT',"","RECO"),
+        byVTightIsolationMVA3newDMwLT = cms.InputTag('hpsPFTauDiscriminationByVTightIsolationMVA3newDMwLT',"","RECO"),
+        byVVTightIsolationMVA3newDMwLT = cms.InputTag('hpsPFTauDiscriminationByVVTightIsolationMVA3newDMwLT',"","RECO"),                             
+        againstElectronLoose = cms.InputTag("hpsPFTauDiscriminationByLooseElectronRejection","","RECO"),
+        againstElectronMedium = cms.InputTag("hpsPFTauDiscriminationByMediumElectronRejection","","RECO"),
+        againstElectronTight = cms.InputTag("hpsPFTauDiscriminationByTightElectronRejection","","RECO"),
+        againstMuonLoose = cms.InputTag("hpsPFTauDiscriminationByLooseMuonRejection","","RECO"),
+        againstMuonMedium = cms.InputTag("hpsPFTauDiscriminationByMediumMuonRejection","","RECO"),
+        againstMuonTight = cms.InputTag("hpsPFTauDiscriminationByTightMuonRejection","","RECO"),
+        againstMuonLoose2 = cms.InputTag("hpsPFTauDiscriminationByLooseMuonRejection2","","RECO"),
+        againstMuonMedium2 = cms.InputTag("hpsPFTauDiscriminationByMediumMuonRejection2","","RECO"),
+        againstMuonTight2 = cms.InputTag("hpsPFTauDiscriminationByTightMuonRejection2","","RECO"),
+        againstMuonLoose3 = cms.InputTag("hpsPFTauDiscriminationByLooseMuonRejection3","","RECO"),
+        againstMuonTight3 = cms.InputTag("hpsPFTauDiscriminationByTightMuonRejection3","","RECO"),
+        againstMuonMVAraw = cms.InputTag('hpsPFTauDiscriminationByMVArawMuonRejection',"","RECO"),                                                            
+        againstMuonLooseMVA = cms.InputTag('hpsPFTauDiscriminationByMVALooseMuonRejection',"","RECO"),
+        againstMuonMediumMVA = cms.InputTag('hpsPFTauDiscriminationByMVAMediumMuonRejection',"","RECO"),
+        againstMuonTightMVA = cms.InputTag('hpsPFTauDiscriminationByMVATightMuonRejection',"","RECO"),           
+        byCombinedIsolationDeltaBetaCorrRaw3Hits = cms.InputTag("hpsPFTauDiscriminationByRawCombinedIsolationDBSumPtCorr3Hits","","RECO"),
+        byLooseCombinedIsolationDeltaBetaCorr3Hits = cms.InputTag("hpsPFTauDiscriminationByLooseCombinedIsolationDBSumPtCorr3Hits","","RECO"),
+        byMediumCombinedIsolationDeltaBetaCorr3Hits = cms.InputTag("hpsPFTauDiscriminationByMediumCombinedIsolationDBSumPtCorr3Hits","","RECO"),
+        byTightCombinedIsolationDeltaBetaCorr3Hits = cms.InputTag("hpsPFTauDiscriminationByTightCombinedIsolationDBSumPtCorr3Hits","","RECO"),
+        againstElectronMVA5raw = cms.InputTag("hpsPFTauDiscriminationByMVA5rawElectronRejection","","RECO"),
+        againstElectronMVA5category = cms.InputTag("hpsPFTauDiscriminationByMVA5rawElectronRejection:category","","RECO"),
+        againstElectronVLooseMVA5 = cms.InputTag("hpsPFTauDiscriminationByMVA5VLooseElectronRejection","","RECO"),
+        againstElectronLooseMVA5 = cms.InputTag("hpsPFTauDiscriminationByMVA5LooseElectronRejection","","RECO"),
+        againstElectronMediumMVA5 = cms.InputTag("hpsPFTauDiscriminationByMVA5MediumElectronRejection","","RECO"),
+        againstElectronTightMVA5 = cms.InputTag("hpsPFTauDiscriminationByMVA5TightElectronRejection","","RECO"),
+        againstElectronVTightMVA5 = cms.InputTag("hpsPFTauDiscriminationByMVA5VTightElectronRejection","","RECO")
+)
+
+ 
 
 
 process.tauDifferenceAnalyzer = cms.EDFilter("RecoTauValHist",
                                              src1 = cms.InputTag("hpsPFTauProducer","",procName),
                                              src2 = cms.InputTag("hpsPFTauProducer","","RECO"),
+                                             discDM = cms.InputTag("hpsPFTauDiscriminationByDecayModeFindingNewDMs","",procName),
                                              disc1 = cms.InputTag(discriminator, "", procName),
                                              disc2 = cms.InputTag(discriminator2, "", "RECO"),
                                              discLoose = cms.InputTag(discriminatorLoose, "", procName),
@@ -248,13 +316,48 @@ process.tauDifferenceAnalyzer.qualityCuts.isolationQualityCuts.minTrackHits = cm
 process.tauDifferenceAnalyzer.qualityCuts.isolationQualityCuts.minTrackPt = cms.double(0.5)
 process.tauDifferenceAnalyzer.qualityCuts.isolationQualityCuts.minGammaEt = cms.double(0.5)
 
+process.tauDifferenceAnalyzerRECO = process.tauDifferenceAnalyzer.clone(
+    src1=cms.InputTag("hpsPFTauProducer","","RECO"),
+    discDM = cms.InputTag("hpsPFTauDiscriminationByDecayModeFinding","","RECO"),
+    # disc1 = cms.InputTag(discriminator, "", "RECO"),
+    #  discLoose = cms.InputTag(discriminatorLoose, "", "RECO"),
+    #  discLoose_2 = cms.InputTag(discriminatorLoose2, "", "RECO"),
+    #  discLoose_3 = cms.InputTag(discriminatorLoose3, "", "RECO"),
+    #  discMedium = cms.InputTag(discriminatorMedium, "", "RECO"),
+    #  discMedium_2 = cms.InputTag(discriminatorMedium2, "", "RECO"),
+    #  discMedium_3 = cms.InputTag(discriminatorMedium3, "", "RECO"),
+    #  discTight = cms.InputTag(discriminatorTight, "", "RECO"),
+    #  discTight_2 = cms.InputTag(discriminatorTight2, "", "RECO"),
+    #  discTight_3 = cms.InputTag(discriminatorTight3, "", "RECO"),
+    #  chIso1 = cms.InputTag("hpsPFTauMVA3IsolationChargedIsoPtSum","","RECO"),
+    #  nIso1 = cms.InputTag("hpsPFTauMVA3IsolationNeutralIsoPtSum","","RECO"),
+    #  PUIso1 = cms.InputTag("hpsPFTauMVA3IsolationPUcorrPtSum","","RECO"),
+    #  cmbIso1 = cms.InputTag("hpsPFTauDiscriminationByRawCombinedIsolationDBSumPtCorr3Hits","","RECO"),
+                                           
+
+    idSrc = tauIDSourcesRECO
+)
+
+from RecoTauTag.Configuration.switchMVAtoDB_cfi import switchMVAtoDB
+process = switchMVAtoDB(process)
+
+process.hpsPFTauDiscriminationByVLooseIsolationMVA3oldDMwoLT.verbosity = cms.int32(1)
+process.hpsPFTauDiscriminationByVLooseIsolationMVA3oldDMwoLT.mapping[0].cut = cms.string('RecoTauTag_tauIdMVAoldDMwoLTv1_WPEff90')
+process.hpsPFTauDiscriminationByVLooseIsolationMVA3oldDMwoLT.loadMVAfromDB = cms.bool(True)
+process.hpsPFTauDiscriminationByVLooseIsolationMVA3oldDMwoLT.mvaOutput_normalization = cms.string('RecoTauTag_tauIdMVAoldDMwoLTv1_mvaOutput_normalization')
+
+process.hpsPFTauDiscriminationByVTightIsolationMVA3oldDMwoLT.verbosity = cms.int32(1)
+# process.hpsPFTauDiscriminationByVTightIsolationMVA3oldDMwoLT.mapping[0].cut = cms.string('RecoTauTag_tauIdMVAoldDMwoLTv1_WPEff50')
+# process.hpsPFTauDiscriminationByVTightIsolationMVA3oldDMwoLT.loadMVAfromDB = cms.bool(True)
+# process.hpsPFTauDiscriminationByVTightIsolationMVA3oldDMwoLT.mvaOutput_normalization = cms.string('RecoTauTag_tauIdMVAoldDMwoLTv1_mvaOutput_normalization')
 
 ## let it run
 
 process.p = cms.Path(
         process.tauGenJets*
         process.PFTau*
-        process.tauDifferenceAnalyzer
+        process.tauDifferenceAnalyzer*
+        process.tauDifferenceAnalyzerRECO
 #            process.patDefaultSequence
             )
 

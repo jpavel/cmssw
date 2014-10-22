@@ -52,6 +52,7 @@ class RecoTauValHist : public edm::EDFilter {
     reco::tau::RecoTauQualityCuts qcuts_;
   std::auto_ptr<reco::tau::RecoTauVertexAssociator> vertexAssociator_;
     edm::InputTag src1_;
+    edm::InputTag discDM_;
     edm::InputTag genSrc_;
     edm::InputTag genJetSrc_;
     edm::InputTag genTauSrc_;
@@ -114,7 +115,7 @@ RecoTauValHist::RecoTauValHist(
   
   vertexAssociator_.reset(
 			  new reco::tau::RecoTauVertexAssociator(pset.getParameterSet("qualityCuts"),consumesCollector()));
-  
+  discDM_ = pset.getParameter<edm::InputTag>("discDM");
   eventsExamined_ = 0;
   tausExamined_ = 0;
   tausMatched_ = 0;
@@ -237,7 +238,7 @@ bool RecoTauValHist::filter(
   }
 
   edm::Handle<reco::PFTauDiscriminator> discDM;
-  evt.getByLabel("hpsPFTauDiscriminationByDecayModeFindingNewDMs",discDM);
+  evt.getByLabel(discDM_,discDM);
   edm::Handle<reco::VertexCollection> verticesH_;
   evt.getByLabel(vertexTag_, verticesH_);
   int nVx = verticesH_->size();
@@ -258,6 +259,7 @@ bool RecoTauValHist::filter(
   // double rho_ = *hRho;
   // h_rho->Fill(rho_);
   // h_nVx_rho->Fill(nVx,rho_);
+
 
   if(mcMatch_ && !useGenTaus_){
   for(size_t i = 0; i < genParticles->size(); ++ i) {
@@ -493,7 +495,6 @@ if(!background_ && mcMatch_ && !useGenTaus_){
 	}
       }
     if(!background_ && matched) isMatched.at(matchIndex)=true;
-
     if(matchToJets_){
       matched = false;
     for(size_t iJet=0; iJet < genJets->size(); ++iJet)
@@ -508,12 +509,10 @@ if(!background_ && mcMatch_ && !useGenTaus_){
     if((mcMatch_ && !matched)||(matchToJets_&& !matched)) continue;
     tausMatched_++; nMatched++;
     // now we have a reco tau, that is matched to truth
-
     // See what's up with the discriminators
     double resultDM = (*discDM)[tau1];
     double pt1 = tau1->pt();
     double pt_mon, eta_mon, phi_mon;
-
  
       pt_mon=pt_vis;
       eta_mon=eta_vis;
@@ -542,7 +541,6 @@ if(!background_ && mcMatch_ && !useGenTaus_){
 
     }
   }
-
 
   
  return (filter_ ? differenceFound : true);
