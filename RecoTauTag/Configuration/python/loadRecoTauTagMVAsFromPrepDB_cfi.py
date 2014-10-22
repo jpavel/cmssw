@@ -6,8 +6,9 @@ loadRecoTauTagMVAsFromPrepDB = cms.ESSource("PoolDBESSource",
     toGet = cms.VPSet(),                                             
     #  connect = cms.string("frontier://FrontierPrep/CMS_COND_PHYSICSTOOLS")
     ##connect = cms.string("frontier://cms_orcoff_prep/CMS_COND_PHYSICSTOOLS")                                        
-#    connect = cms.string('sqlite_file:/afs/cern.ch/user/j/jez/public/tauID/RecoTauTag_MVAs_2014Jul07.db')
-    connect = cms.string("frontier://FrontierPrep/CMS_COND_PAT_001")
+    connect = cms.string('sqlite_file:/afs/cern.ch/user/j/jez/public/tauID/RecoTauTag_MVAs_2014Oct22.db')
+#RecoTauTag_MVAs_2014Jul07.db')
+#    connect = cms.string("frontier://FrontierPrep/CMS_COND_PAT_001")
 #/afs/cern.ch/work/j/jez/private/CMS/validation/140702_database/attempt1/CMSSW_7_1_0/src/RecoTauTag/TauAnalysisTools/test/RecoTauTag_MVAs_2014Jul07.db')
 #afs/cern.ch/work/j/jez/private/CMS/validation/MyLocalSQlite/RecoTauTag_MVAs_2014Jan24.db')
 #sqlite_file:/afs/cern.ch/work/j/jez/private/CMS/validation/140702_database/attempt1/CMSSW_7_1_0/src/RecoTauTag/TauAnalysisTools/test/RecoTauTag_MVAs_2014Jul04.db')
