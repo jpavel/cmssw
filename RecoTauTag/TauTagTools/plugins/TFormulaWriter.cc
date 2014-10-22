@@ -38,6 +38,7 @@ void TFormulaWriter::analyze(const edm::Event&, const edm::EventSetup&)
     TFile* inputFile = new TFile((*job)->inputFileName_.data());
     std::cout << "reading TFormula = " << (*job)->formulaName_ << " from ROOT file = " << (*job)->inputFileName_ << "." << std::endl;	
     const TFormula* formula = dynamic_cast<TFormula*>(inputFile->Get((*job)->formulaName_.data()));
+    std::cout << "the formula is " << formula->GetExpFormula("p") << std::endl;
     delete inputFile;
     if ( !formula ) 
       throw cms::Exception("TFormulaWriter") 
@@ -51,7 +52,7 @@ void TFormulaWriter::analyze(const edm::Event&, const edm::EventSetup&)
     std::vector<vfloat> limits;
     limits.push_back(vfloat(0., 1.e+6));
     std::vector<std::string> formulas;
-    formulas.push_back(formula->GetTitle());
+    formulas.push_back((formula->GetExpFormula("p")).Data());
     PhysicsTFormulaPayload* formulaPayload = new PhysicsTFormulaPayload(limits, formulas);
     delete formula;
     dbService->writeOne(formulaPayload, dbService->beginOfTime(), (*job)->outputRecord_);
