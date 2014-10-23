@@ -327,7 +327,7 @@ hpsPFTauDiscriminationByMVALooseMuonRejection = recoTauDiscriminantCutMultiplexe
     key = cms.InputTag('hpsPFTauDiscriminationByMVArawMuonRejection:category'),
     loadMVAfromDB = cms.bool(True),
     inputFileName = cms.FileInPath('RecoTauTag/RecoTau/data/wpDiscriminationByMVAMuonRejection.root'),
-    mvaOutput_normalization = cms.string("RecoTauTag_againstMuonMVAv1_mvaOutput_normalization"),
+    mvaOutput_normalization = cms.string("RecoTauTag_againstMuonMVAv2_mvaOutput_normalization"),
     mapping = cms.VPSet(
         cms.PSet(
             category = cms.uint32(0),
@@ -654,7 +654,7 @@ hpsPFTauDiscriminationByVLooseIsolationMVA3oldDMwoLT = discriminationByIsolation
     key = cms.InputTag('hpsPFTauDiscriminationByIsolationMVA3oldDMwoLTraw:category'),
     loadMVAfromDB = cms.bool(True),
     inputFileName = cms.FileInPath('RecoTauTag/RecoTau/data/wpDiscriminationByIsolationMVA3_oldDMwoLT.root'),
-    mvaOutput_normalization = cms.string("RecoTauTag_tauIdMVAoldDMwoLTv1_mvaOutput_normalization"),
+    mvaOutput_normalization = cms.string("RecoTauTag_tauIdMVAoldDMwoLTv2_mvaOutput_normalization"),
     mapping = cms.VPSet(
         cms.PSet(
             category = cms.uint32(0),
@@ -683,7 +683,7 @@ hpsPFTauDiscriminationByVLooseIsolationMVA3oldDMwLT = hpsPFTauDiscriminationByVL
     toMultiplex = cms.InputTag('hpsPFTauDiscriminationByIsolationMVA3oldDMwLTraw'),
     key = cms.InputTag('hpsPFTauDiscriminationByIsolationMVA3oldDMwLTraw:category'),
     inputFileName = cms.FileInPath('RecoTauTag/RecoTau/data/wpDiscriminationByIsolationMVA3_oldDMwLT.root'),
-    mvaOutput_normalization = cms.string("RecoTauTag_tauIdMVAoldDMwLTv1_mvaOutput_normalization"),
+    mvaOutput_normalization = cms.string("RecoTauTag_tauIdMVAoldDMwLTv2_mvaOutput_normalization"),
     mapping = cms.VPSet(
         cms.PSet(
             category = cms.uint32(0),
@@ -712,7 +712,7 @@ hpsPFTauDiscriminationByVLooseIsolationMVA3newDMwoLT = hpsPFTauDiscriminationByV
     toMultiplex = cms.InputTag('hpsPFTauDiscriminationByIsolationMVA3newDMwoLTraw'),
     key = cms.InputTag('hpsPFTauDiscriminationByIsolationMVA3newDMwoLTraw:category'),
     inputFileName = cms.FileInPath('RecoTauTag/RecoTau/data/wpDiscriminationByIsolationMVA3_newDMwoLT.root'),
-    mvaOutput_normalization = cms.string("RecoTauTag_tauIdMVAnewDMwoLTv1_mvaOutput_normalization"),
+    mvaOutput_normalization = cms.string("RecoTauTag_tauIdMVAnewDMwoLTv2_mvaOutput_normalization"),
     mapping = cms.VPSet(
         cms.PSet(
             category = cms.uint32(0),
@@ -743,7 +743,7 @@ hpsPFTauDiscriminationByVLooseIsolationMVA3newDMwLT = hpsPFTauDiscriminationByVL
     toMultiplex = cms.InputTag('hpsPFTauDiscriminationByIsolationMVA3newDMwLTraw'),
     key = cms.InputTag('hpsPFTauDiscriminationByIsolationMVA3newDMwLTraw:category'),
     inputFileName = cms.FileInPath('RecoTauTag/RecoTau/data/wpDiscriminationByIsolationMVA3_newDMwLT.root'),
-    mvaOutput_normalization = cms.string("RecoTauTag_tauIdMVAnewDMwLTv1_mvaOutput_normalization"),
+    mvaOutput_normalization = cms.string("RecoTauTag_tauIdMVAnewDMwLTv2_mvaOutput_normalization"),
     mapping = cms.VPSet(
         cms.PSet(
             category = cms.uint32(0),
