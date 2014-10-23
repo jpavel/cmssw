@@ -20,7 +20,7 @@ def switchMVAtoDB(process):
     massSearchReplaceParam(getattr(process,"produceAndDiscriminateHPSPFTaus"),"loadMVAfromDB", cms.bool(True), cms.bool(False))
     #muon discriminators
     process.hpsPFTauDiscriminationByMVArawMuonRejection.mvaName = cms.string("againstMuonMVA")
-    massSearchReplaceParam(getattr(process,"produceAndDiscriminateHPSPFTaus"), "mvaOutput_normalization", cms.string("RecoTauTag_againstMuonMVAv1_mvaOutput_normalization"), cms.string("mvaOutput_normalization_opt2"))
+    massSearchReplaceParam(getattr(process,"produceAndDiscriminateHPSPFTaus"), "mvaOutput_normalization", cms.string("RecoTauTag_againstMuonMVAv2_mvaOutput_normalization"), cms.string("mvaOutput_normalization_opt2"))
     process.hpsPFTauDiscriminationByMVALooseMuonRejection.mapping[0].cut = cms.string("opt2eff99_5")
     process.hpsPFTauDiscriminationByMVAMediumMuonRejection.mapping[0].cut = cms.string("opt2eff99_0")
     process.hpsPFTauDiscriminationByMVATightMuonRejection.mapping[0].cut = cms.string("opt2eff98_0")
@@ -131,7 +131,7 @@ def switchMVAtoDB(process):
 
     #isolation
     process.hpsPFTauDiscriminationByIsolationMVA3oldDMwoLTraw.mvaName = cms.string("tauIdMVAoldDMwoLT")
-    massSearchReplaceParam(getattr(process,"produceAndDiscriminateHPSPFTaus"),"mvaOutput_normalization", cms.string("RecoTauTag_tauIdMVAoldDMwoLTv1_mvaOutput_normalization"), cms.string("mvaOutput_normalization_oldDMwoLT"))
+    massSearchReplaceParam(getattr(process,"produceAndDiscriminateHPSPFTaus"),"mvaOutput_normalization", cms.string("RecoTauTag_tauIdMVAoldDMwoLTv2_mvaOutput_normalization"), cms.string("mvaOutput_normalization_oldDMwoLT"))
     process.hpsPFTauDiscriminationByVLooseIsolationMVA3oldDMwoLT.mapping[0].cut = cms.string("oldDMwoLTEff90")
     process.hpsPFTauDiscriminationByLooseIsolationMVA3oldDMwoLT.mapping[0].cut = cms.string("oldDMwoLTEff80")
     process.hpsPFTauDiscriminationByMediumIsolationMVA3oldDMwoLT.mapping[0].cut = cms.string("oldDMwoLTEff70")
@@ -140,7 +140,7 @@ def switchMVAtoDB(process):
     process.hpsPFTauDiscriminationByVVTightIsolationMVA3oldDMwoLT.mapping[0].cut = cms.string("oldDMwoLTEff40")
 
     process.hpsPFTauDiscriminationByIsolationMVA3oldDMwLTraw.mvaName = cms.string("tauIdMVAoldDMwLT")
-    massSearchReplaceParam(getattr(process,"produceAndDiscriminateHPSPFTaus"),"mvaOutput_normalization", cms.string("RecoTauTag_tauIdMVAoldDMwLTv1_mvaOutput_normalization"), cms.string("mvaOutput_normalization_oldDMwLT"))
+    massSearchReplaceParam(getattr(process,"produceAndDiscriminateHPSPFTaus"),"mvaOutput_normalization", cms.string("RecoTauTag_tauIdMVAoldDMwLTv2_mvaOutput_normalization"), cms.string("mvaOutput_normalization_oldDMwLT"))
     process.hpsPFTauDiscriminationByVLooseIsolationMVA3oldDMwLT.mapping[0].cut = cms.string("oldDMwLTEff90")
     process.hpsPFTauDiscriminationByLooseIsolationMVA3oldDMwLT.mapping[0].cut = cms.string("oldDMwLTEff80")
     process.hpsPFTauDiscriminationByMediumIsolationMVA3oldDMwLT.mapping[0].cut = cms.string("oldDMwLTEff70")
@@ -149,7 +149,7 @@ def switchMVAtoDB(process):
     process.hpsPFTauDiscriminationByVVTightIsolationMVA3oldDMwLT.mapping[0].cut = cms.string("oldDMwLTEff40")
     
     process.hpsPFTauDiscriminationByIsolationMVA3newDMwoLTraw.mvaName = cms.string("tauIdMVAnewDMwoLT")
-    massSearchReplaceParam(getattr(process,"produceAndDiscriminateHPSPFTaus"),"mvaOutput_normalization", cms.string("RecoTauTag_tauIdMVAnewDMwoLTv1_mvaOutput_normalization"), cms.string("mvaOutput_normalization_newDMwoLT"))
+    massSearchReplaceParam(getattr(process,"produceAndDiscriminateHPSPFTaus"),"mvaOutput_normalization", cms.string("RecoTauTag_tauIdMVAnewDMwoLTv2_mvaOutput_normalization"), cms.string("mvaOutput_normalization_newDMwoLT"))
     process.hpsPFTauDiscriminationByVLooseIsolationMVA3newDMwoLT.mapping[0].cut = cms.string("newDMwoLTEff90")
     process.hpsPFTauDiscriminationByLooseIsolationMVA3newDMwoLT.mapping[0].cut = cms.string("newDMwoLTEff80")
     process.hpsPFTauDiscriminationByMediumIsolationMVA3newDMwoLT.mapping[0].cut = cms.string("newDMwoLTEff70")
@@ -158,7 +158,7 @@ def switchMVAtoDB(process):
     process.hpsPFTauDiscriminationByVVTightIsolationMVA3newDMwoLT.mapping[0].cut = cms.string("newDMwoLTEff40")
 
     process.hpsPFTauDiscriminationByIsolationMVA3newDMwLTraw.mvaName = cms.string("tauIdMVAnewDMwLT")
-    massSearchReplaceParam(getattr(process,"produceAndDiscriminateHPSPFTaus"),"mvaOutput_normalization", cms.string("RecoTauTag_tauIdMVAnewDMwLTv1_mvaOutput_normalization"), cms.string("mvaOutput_normalization_newDMwLT"))
+    massSearchReplaceParam(getattr(process,"produceAndDiscriminateHPSPFTaus"),"mvaOutput_normalization", cms.string("RecoTauTag_tauIdMVAnewDMwLTv2_mvaOutput_normalization"), cms.string("mvaOutput_normalization_newDMwLT"))
     process.hpsPFTauDiscriminationByVLooseIsolationMVA3newDMwLT.mapping[0].cut = cms.string("newDMwLTEff90")
     process.hpsPFTauDiscriminationByLooseIsolationMVA3newDMwLT.mapping[0].cut = cms.string("newDMwLTEff80")
     process.hpsPFTauDiscriminationByMediumIsolationMVA3newDMwLT.mapping[0].cut = cms.string("newDMwLTEff70")
