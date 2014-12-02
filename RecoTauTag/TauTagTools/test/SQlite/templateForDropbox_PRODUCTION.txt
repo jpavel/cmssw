@@ -1,0 +1,13 @@
+{
+    "destinationDatabase": "oracle://cms_orcon_prod/CMS_COND_PAT_000",
+    "destinationTags": {
+        "TAGNAME": {
+            "dependencies": {},
+            "synchronizeTo": "offline"
+        }
+    },
+    "inputTag":	"PRODNAME",
+    "since": null,
+    "userText": "next attempt to export TGraph payloads (Nov28)"
+}
+ 
