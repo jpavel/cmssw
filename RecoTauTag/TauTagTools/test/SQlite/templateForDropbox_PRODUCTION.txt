@@ -8,6 +8,6 @@
     },
     "inputTag":	"PRODNAME",
     "since": null,
-    "userText": "next attempt to export TGraph payloads (Nov28)"
+    "userText": ""
 }
  

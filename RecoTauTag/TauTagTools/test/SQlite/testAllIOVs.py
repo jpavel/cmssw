@@ -2,7 +2,7 @@
 
 import subprocess
 
-version = '2014Aug07'
+version = '2014Oct22'
 
 payloads = [
     "RecoTauTag_againstMuonMVAv1",
