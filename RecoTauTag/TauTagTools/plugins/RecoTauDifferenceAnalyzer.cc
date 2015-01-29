@@ -1109,6 +1109,7 @@ if(!background_ && mcMatch_ && !useGenTaus_){
     tausExamined_++;
     reco::PFTauRef tau1(taus1, iTau1);
     // Find the best match in the other collection
+    if(verboseOutputMC_) std::cout << " There are " << taus1->size() << " reconstructed taus." << std::endl;
     if(verboseOutputMC_ && mcMatch_) std::cout << "Finding true match for tau with pt " << tau1->pt() << " !" << std::endl;
     bool matched = false;
     if(background_) matched = true;
@@ -1159,7 +1160,7 @@ if(!background_ && mcMatch_ && !useGenTaus_){
 		pt_vis=pt_visible.at(iMC);
 		eta_vis = eta_visible.at(iMC);
 		phi_vis = phi_visible.at(iMC);
-		if(verboseOutputMC_) std::cout << "This reco tau is matched to a true tau with pt " << pt_vis << std::endl;
+		if(verboseOutputMC_) std::cout << "This reco tau is matched to a true tau with pt/eta/phi " << pt_vis << "/" << eta_vis << "/" << phi_vis << std::endl;
 	      }
 	      else matched = false;
 	      matchIndex=iMC;
@@ -1232,6 +1233,9 @@ if(!background_ && mcMatch_ && !useGenTaus_){
     double ResultPUIso2 = (*PUIso2)[bestMatch];
     double ResultCmbIso1 = (*cmbIso1)[tau1];
     double ResultCmbIso2 = (*cmbIso2)[bestMatch];
+
+    if(verboseOutputMC_) std::cout << "The DM result is " << result1 << " and the tau is " << *tau1 << std::endl;
+
 
     // bool resultAntiEl = ((*discAntiEl)[tau1]>0.5);
     // bool resultAntiMu = ((*discAntiMu)[tau1]>0.5);

@@ -295,7 +295,8 @@ void PFTau::dump(std::ostream& out) const {
         out<<"Lead PFCand Pt "<<(*theLeadPFCand).pt()<<std::endl;
         out<<"Lead PFCand Charge "<<(*theLeadPFCand).charge()<<std::endl;
         out<<"Lead PFCand TrkRef "<<(*theLeadPFCand).trackRef().isNonnull()<<std::endl;
-        out<<"Inner point position (x,y,z) of the PFTau ("<<vx()<<","<<vy()<<","<<vz()<<")"<<std::endl;
+    }
+   out<<"Inner point position (x,y,z) of the PFTau ("<<vx()<<","<<vy()<<","<<vz()<<")"<<std::endl;
         out<<"Charge of the PFTau "<<charge()<<std::endl;
         out<<"Et of the highest Et HCAL PFCluster "<<maximumHCALPFClusterEt()<<std::endl;
         out<<"Number of SignalPFChargedHadrCands = "<<signalPFChargedHadrCands().size()<<std::endl;
@@ -324,7 +325,7 @@ void PFTau::dump(std::ostream& out) const {
         out<<"Sum of Et of gamma PFCandidates in other isolation annulus around Lead PF = "<<isolationPFGammaCandsEtSum()<<std::endl;
 
 
-    }
+    
     // return out;
 }
 
