@@ -27,6 +27,7 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <algorithm>
 
 // histograms
 #include "FWCore/ServiceRegistry/interface/Service.h"
@@ -41,6 +42,15 @@
 #include "TFile.h"
 
 typedef edm::View<reco::GenJet> GenJetView;
+
+namespace {
+    // Apply a hypothesis on the mass of the strips.
+    math::XYZTLorentzVector applyMassConstraint(const math::XYZTLorentzVector& vec, double mass) 
+    {
+        double factor = sqrt(vec.energy()*vec.energy() - mass*mass)/vec.P();
+        return math::XYZTLorentzVector(vec.px()*factor, vec.py()*factor, vec.pz()*factor, vec.energy());
+    }
+}
 
 class RecoTauValHist : public edm::EDFilter {
   public:
@@ -97,6 +107,9 @@ class RecoTauValHist : public edm::EDFilter {
   TH1D* h_decayMode;
   TH1D* h_rho;
   TH2D* h_nVx_rho;
+
+  TH1D* h_DMfailReason;
+  TProfile* h_TauPFJetComposition;
 
   std::vector<TH1D*> h_discs_raw;
   std::vector<TProfile*> h_discs_pt;
@@ -172,6 +185,31 @@ RecoTauValHist::RecoTauValHist(
   h_summary->GetXaxis()->SetBinLabel(6,"Pass 2");
   h_summary->GetXaxis()->SetBinLabel(7,"Exclusive 2");
 
+  h_DMfailReason =  fs->make<TH1D>("h_DMfailReason","Summary of reasons why DM failed",11,-0.5,10.5);
+
+  h_DMfailReason->GetXaxis()->SetBinLabel(1,"pt");
+  h_DMfailReason->GetXaxis()->SetBinLabel(2,"DM");
+  h_DMfailReason->GetXaxis()->SetBinLabel(3,"nTracksMin");
+  h_DMfailReason->GetXaxis()->SetBinLabel(4,"nChPFcandsMin");
+  h_DMfailReason->GetXaxis()->SetBinLabel(5,"tau mass");
+  h_DMfailReason->GetXaxis()->SetBinLabel(6,"strip mass");
+  h_DMfailReason->GetXaxis()->SetBinLabel(7,"matching cone");
+  h_DMfailReason->GetXaxis()->SetBinLabel(8,"signal cone (ch)");
+  h_DMfailReason->GetXaxis()->SetBinLabel(9,"signal cone (pi0)");
+  h_DMfailReason->GetXaxis()->SetBinLabel(10,"chHadAreChPFCands");
+  h_DMfailReason->GetXaxis()->SetBinLabel(11,"other");
+
+  h_TauPFJetComposition = fs->make<TProfile>("h_TauPFJetComposition","Average Composition of tau refJets",8,-0.5,7.5);
+
+  h_TauPFJetComposition->GetXaxis()->SetBinLabel(1,"X");
+  h_TauPFJetComposition->GetXaxis()->SetBinLabel(2,"h");
+  h_TauPFJetComposition->GetXaxis()->SetBinLabel(3,"e");
+  h_TauPFJetComposition->GetXaxis()->SetBinLabel(4,"#mu");
+  h_TauPFJetComposition->GetXaxis()->SetBinLabel(5,"#gamma");
+  h_TauPFJetComposition->GetXaxis()->SetBinLabel(6,"h^{0}");
+  h_TauPFJetComposition->GetXaxis()->SetBinLabel(7,"h^{0}_{HF}");
+  h_TauPFJetComposition->GetXaxis()->SetBinLabel(8,"e/#gamma^{0}_{HF}");
+
 
   TFileDirectory DiscResultsVal = fs->mkdir("DiscResultsVal");
   for (std::vector<std::string>::const_iterator it = discNames_.begin(), ed = discNames_.end(); it != ed; ++it) {
@@ -237,7 +275,7 @@ bool RecoTauValHist::filter(
   }
 
   edm::Handle<reco::PFTauDiscriminator> discDM;
-  evt.getByLabel("hpsPFTauDiscriminationByDecayModeFindingNewDMs",discDM);
+  evt.getByLabel("hpsPFTauDiscriminationByDecayModeFinding",discDM);
   edm::Handle<reco::VertexCollection> verticesH_;
   evt.getByLabel(vertexTag_, verticesH_);
   int nVx = verticesH_->size();
@@ -513,12 +551,180 @@ if(!background_ && mcMatch_ && !useGenTaus_){
     double resultDM = (*discDM)[tau1];
     double pt1 = tau1->pt();
     double pt_mon, eta_mon, phi_mon;
+    
+    reco::PFJetRef jet1 = getJetRef(*tau1);
+    // now loop over jet constituents...
+    TH1D* help_histo = new TH1D("h_TauPFJetComposition","Average Composition of tau refJets",8,-0.5,7.5);
+    for(auto & pfCand : jet1->getPFConstituents())
+      {
+	help_histo->Fill(pfCand->particleId());
+      }
+    for(size_t iBin = 1; iBin < 9; iBin ++)
+      {
+	h_TauPFJetComposition->Fill(iBin-1,help_histo->GetBinContent(iBin));
+      }
+      
 
- 
       pt_mon=pt_vis;
       eta_mon=eta_vis;
       phi_mon=phi_vis;
- 
+      // tau failed DM, let's find out why
+      if(!resultDM){
+	size_t nCh = tau1->signalTauChargedHadronCandidates().size();
+	size_t nPi0 = tau1->signalPiZeroCandidates().size();
+
+      unsigned int nTracks = 0;
+      bool ChHarePFCands = true;
+      const std::vector<reco::PFRecoTauChargedHadron>& chargedHadrons = tau1->signalTauChargedHadronCandidates();
+      for ( std::vector<reco::PFRecoTauChargedHadron>::const_iterator chargedHadron = chargedHadrons.begin();
+	    chargedHadron != chargedHadrons.end(); ++chargedHadron ) {
+	if ( chargedHadron->algoIs(reco::PFRecoTauChargedHadron::kChargedPFCandidate) || chargedHadron->algoIs(reco::PFRecoTauChargedHadron::kTrack) ) {
+	  ++nTracks;
+	}
+	if (!chargedHadron->algoIs(reco::PFRecoTauChargedHadron::kChargedPFCandidate)) ChHarePFCands = false;
+      }
+
+      unsigned int nChargedPFCands = 0;
+      for ( std::vector<reco::PFRecoTauChargedHadron>::const_iterator chargedHadron = chargedHadrons.begin();
+	    chargedHadron != chargedHadrons.end(); ++chargedHadron ) {
+	if ( chargedHadron->algoIs(reco::PFRecoTauChargedHadron::kChargedPFCandidate) ) {
+	  ++nChargedPFCands;
+	}
+      }
+
+      math::XYZTLorentzVector tauP4 = tau1->p4();
+
+      reco::Candidate::LorentzVector stripsP4;
+      for (auto & cand: tau1->signalPiZeroCandidates()){
+	math::XYZTLorentzVector candP4 = cand.p4();
+	stripsP4 += candP4;
+      }
+      double matchDR = deltaR(tauP4, jet1->p4());
+      
+      double sigCone = std::max(std::min(0.1, 3.0/(tau1->pt())), 0.05);
+
+        if(tau1->pt() < 0.0) h_DMfailReason->Fill(0);
+	if(nCh==1){
+	  if ( nPi0 ==0){
+	    double tauMass = tauP4.M();
+	    bool failSigConeCH = false;
+	    bool failSigConeN = false;
+	    for( auto & cand : tau1->signalTauChargedHadronCandidates()){
+	      if(deltaR(cand.p4(), tauP4) > sigCone){
+		failSigConeCH = true;
+		break;
+	      }
+	    }
+	    for( auto & cand : tau1->signalPiZeroCandidates()){
+	      if(deltaR(cand.p4(), tauP4) > sigCone){
+                failSigConeN = true;
+                break;
+              }
+            }
+	    
+	    if(nTracks < 1) h_DMfailReason->Fill(2);
+	    else if (nChargedPFCands < 1)  h_DMfailReason->Fill(3);
+	    else if (tauMass > 1. || tauMass < -1000.0) h_DMfailReason->Fill(4);
+	    else if (matchDR > 0.5) h_DMfailReason->Fill(6);
+	    else if (failSigConeCH)  h_DMfailReason->Fill(7);
+	    else if (failSigConeN)  h_DMfailReason->Fill(8);
+	    else if (ChHarePFCands) h_DMfailReason->Fill(9);
+	    else h_DMfailReason->Fill(10);
+	  }else if (nPi0 == 1){
+	    for (auto & cand : tau1->signalPiZeroCandidates()){
+	      math::XYZTLorentzVector uncorrected = cand.p4();
+	      math::XYZTLorentzVector corrected = applyMassConstraint(uncorrected, 0.1349);
+	      math::XYZTLorentzVector correction = corrected - uncorrected;
+              tauP4 += correction;
+              stripsP4 += correction;
+            }
+	    double tauMass = tauP4.M();
+	    double maxMass = std::max(1.3, std::min(1.3*sqrt(tau1->pt()/100.), 4.2));
+	    bool failSigConeCH = false;
+            bool failSigConeN = false;
+            for( auto & cand : tau1->signalTauChargedHadronCandidates()){
+              if(deltaR(cand.p4(), tauP4) > sigCone){
+                failSigConeCH = true;
+                break;
+              }
+            }
+            for( auto & cand : tau1->signalPiZeroCandidates()){
+              if(deltaR(cand.p4(), tauP4) > sigCone){
+                failSigConeN = true;
+                break;
+              }
+            }
+
+	    if(nTracks < 1) h_DMfailReason->Fill(2);
+	    else if (nChargedPFCands < 1)  h_DMfailReason->Fill(3);
+	    else if (tauMass > maxMass || tauMass < 0.3) h_DMfailReason->Fill(4);
+	    else if (matchDR > 0.5) h_DMfailReason->Fill(6);
+	    else if (failSigConeCH)  h_DMfailReason->Fill(7);
+            else if (failSigConeN)  h_DMfailReason->Fill(8);
+	    else if (ChHarePFCands) h_DMfailReason->Fill(9);
+	    else h_DMfailReason->Fill(10);
+	  }else if (nPi0 == 2){
+	    for (auto & cand : tau1->signalPiZeroCandidates()){
+	      math::XYZTLorentzVector uncorrected = cand.p4();
+	      math::XYZTLorentzVector corrected = applyMassConstraint(uncorrected, 0.0);
+	      math::XYZTLorentzVector correction = corrected - uncorrected;
+              tauP4 += correction;
+              stripsP4 += correction;
+            }
+	    double tauMass = tauP4.M();
+            double maxMass = std::max(1.2, std::min(1.2*sqrt(tau1->pt()/100.), 4.0));
+            double stripMass = stripsP4.M();
+	    bool failSigConeCH = false;
+            bool failSigConeN = false;
+            for( auto & cand : tau1->signalTauChargedHadronCandidates()){
+              if(deltaR(cand.p4(), tauP4) > sigCone){
+                failSigConeCH = true;
+                break;
+              }
+            }
+            for( auto & cand : tau1->signalPiZeroCandidates()){
+              if(deltaR(cand.p4(), tauP4) > sigCone){
+                failSigConeN = true;
+                break;
+              }
+            }
+	    if(nTracks < 1) h_DMfailReason->Fill(2);
+            else if (nChargedPFCands < 1)  h_DMfailReason->Fill(3);
+	    else if (tauMass > maxMass || tauMass < 0.4) h_DMfailReason->Fill(4);
+	    else if (stripMass > 0.2 || stripMass < 0.05) h_DMfailReason->Fill(5);
+	    else if (matchDR > 0.5) h_DMfailReason->Fill(6);
+	    else if (failSigConeCH)  h_DMfailReason->Fill(7);
+            else if (failSigConeN)  h_DMfailReason->Fill(8);
+	    else if (ChHarePFCands) h_DMfailReason->Fill(9);
+            else h_DMfailReason->Fill(10);
+	  }else h_DMfailReason->Fill(1);
+	} else if (nCh==3 && nPi0==0){
+           double tauMass = tauP4.M();
+	   bool failSigConeCH = false;
+	   bool failSigConeN = false;
+	   for( auto & cand : tau1->signalTauChargedHadronCandidates()){
+	     if(deltaR(cand.p4(), tauP4) > sigCone){
+	       failSigConeCH = true;
+	       break;
+	     }
+	   }
+	   for( auto & cand : tau1->signalPiZeroCandidates()){
+	     if(deltaR(cand.p4(), tauP4) > sigCone){
+	       failSigConeN = true;
+	       break;
+	     }
+	   }
+           if(nTracks < 2) h_DMfailReason->Fill(2);
+	   else if (nChargedPFCands < 1)  h_DMfailReason->Fill(3);
+	   else if (tauMass > 1.5 || tauMass < 0.8) h_DMfailReason->Fill(4);
+	   else if (matchDR > 0.5) h_DMfailReason->Fill(6);
+	   else if (failSigConeCH)  h_DMfailReason->Fill(7);
+	   else if (failSigConeN)  h_DMfailReason->Fill(8);
+	   else if (ChHarePFCands) h_DMfailReason->Fill(9);
+	   else h_DMfailReason->Fill(10);
+	} else h_DMfailReason->Fill(1);
+      }
+      
 
 
     if(pt_mon < 5.0) continue;
