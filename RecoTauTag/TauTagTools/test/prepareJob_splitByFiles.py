@@ -7,11 +7,11 @@ if len(argList) != 4:
 jobName=argList[1]
 filesPerJob=argList[2]
 numberOfJobs=argList[3]
-batchScript='ak4Job_ztt.sh'
-cfgScript='runDiff_ztt_val_cfg.py'
-cfgScript_part1='runDiff_ztt_val_cfg_part1.py'
-cfgScript_part2='runDiff_ztt_val_cfg_part2.py'
-filelist='file.list_fullsim'
+batchScript='ak4Job_qcd.sh'
+cfgScript='runDiff_qcd_val_cfg.py'
+cfgScript_part1='runDiff_qcd_val_cfg_part1.py'
+cfgScript_part2='runDiff_qcd_val_cfg_part2.py'
+filelist='file.list_16'
 currDir=os.getcwd()
 
 
@@ -78,7 +78,7 @@ for j_number in range(int(numberOfJobs)):
     cfg_f.write(line)
   cfg_f.close()
   call(["chmod","+x",batchScript])
-  call(["bsub","-q","1nh",command])
+  call(["bsub","-q","1nd",command])
   os.chdir(currDir)
 
 print os.getcwd()
