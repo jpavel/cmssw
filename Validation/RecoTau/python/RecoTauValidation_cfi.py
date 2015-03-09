@@ -166,6 +166,7 @@ proc.RunHPSValidation.discriminators = cms.VPSet(
    cms.PSet( discriminator = cms.string("hpsPFTauDiscriminationByVVTightIsolationMVA3newDMwLT"),selectionCut = cms.double(0.5),plotStep = cms.bool(True)),
    cms.PSet( discriminator = cms.string("hpsPFTauDiscriminationByLooseElectronRejection"),selectionCut = cms.double(0.5),plotStep = cms.bool(False)),
    cms.PSet( discriminator = cms.string("hpsPFTauDiscriminationByMediumElectronRejection"),selectionCut = cms.double(0.5),plotStep = cms.bool(True)),
+   cms.PSet( discriminator = cms.string("hpsPFTauDiscriminationByMediumElectronRejection2"),selectionCut = cms.double(0.5),plotStep = cms.bool(True)),
    cms.PSet( discriminator = cms.string("hpsPFTauDiscriminationByTightElectronRejection"),selectionCut = cms.double(0.5),plotStep = cms.bool(False)),
    cms.PSet( discriminator = cms.string("hpsPFTauDiscriminationByMVA5VLooseElectronRejection"),selectionCut = cms.double(0.5),plotStep = cms.bool(False)),
    cms.PSet( discriminator = cms.string("hpsPFTauDiscriminationByMVA5LooseElectronRejection"),selectionCut = cms.double(0.5),plotStep = cms.bool(False)),
