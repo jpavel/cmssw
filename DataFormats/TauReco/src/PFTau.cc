@@ -10,6 +10,8 @@ PFTau::PFTau()
     leadPFChargedHadrCandsignedSipt_ = NAN;
     isolationPFChargedHadrCandsPtSum_ = NAN;
     isolationPFGammaCandsEtSum_ = NAN;
+    isolationPFNeutralHadrCandsPtSum_ = NAN;
+    isolationPFPUCandsEtSum_ = NAN;
     maximumHCALPFClusterEt_ = NAN;
     emFraction_ = NAN;
     hcalTotOverPLead_ = NAN;
@@ -31,8 +33,9 @@ PFTau::PFTau(Charge q, const LorentzVector& p4, const Point& vtx)
    leadPFChargedHadrCandsignedSipt_ = NAN;
    isolationPFChargedHadrCandsPtSum_ = NAN;
    isolationPFGammaCandsEtSum_ = NAN;
+   isolationPFNeutralHadrCandsPtSum_ = NAN;
+   isolationPFPUCandsEtSum_ = NAN;
    maximumHCALPFClusterEt_ = NAN;
-
    emFraction_ = NAN;
    hcalTotOverPLead_ = NAN;
    hcalMaxOverPLead_ = NAN;
@@ -199,8 +202,14 @@ void PFTau::setDecayMode(const PFTau::hadronicDecayMode& dm){ decayMode_=dm;}
 float PFTau::isolationPFChargedHadrCandsPtSum() const {return isolationPFChargedHadrCandsPtSum_;}
 void PFTau::setisolationPFChargedHadrCandsPtSum(const float& x){isolationPFChargedHadrCandsPtSum_=x;}
 
+float PFTau::isolationPFNeutralHadrCandsPtSum() const {return isolationPFNeutralHadrCandsPtSum_;}
+void PFTau::setisolationPFNeutralHadrCandsPtSum(const float& x){isolationPFNeutralHadrCandsPtSum_=x;}
+
 float PFTau::isolationPFGammaCandsEtSum() const {return isolationPFGammaCandsEtSum_;}
 void PFTau::setisolationPFGammaCandsEtSum(const float& x){isolationPFGammaCandsEtSum_=x;}
+
+float PFTau::isolationPFPUCandsEtSum() const {return isolationPFPUCandsEtSum_;}
+void PFTau::setisolationPFPUCandsEtSum(const float& x){isolationPFPUCandsEtSum_=x;}
 
 float PFTau::maximumHCALPFClusterEt() const {return maximumHCALPFClusterEt_;}
 void PFTau::setmaximumHCALPFClusterEt(const float& x){maximumHCALPFClusterEt_=x;}
