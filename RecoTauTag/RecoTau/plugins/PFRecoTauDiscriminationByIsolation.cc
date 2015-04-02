@@ -37,6 +37,45 @@ class PFRecoTauDiscriminationByIsolation : public PFTauDiscriminationProducerBas
     calculateWeights_ = pset.exists("ApplyDiscriminationByWeightedECALIsolation") ?
       pset.getParameter<bool>("ApplyDiscriminationByWeightedECALIsolation") : false;
 
+    includeNeutralHadrons_ = pset.exists("ApplyDiscriminationByHCALIsolation") ?
+      pset.getParameter<bool>("ApplyDiscriminationByHCALIsolation") : false;
+
+    calculateWeights1_ = pset.exists("ApplyDiscriminationByWeightedECALIsolation1") ?
+      pset.getParameter<bool>("ApplyDiscriminationByWeightedECALIsolation1") : false;
+
+    calculateWeights2_ = pset.exists("ApplyDiscriminationByWeightedECALIsolation2") ?
+      pset.getParameter<bool>("ApplyDiscriminationByWeightedECALIsolation2") : false;
+
+    calculateWeightsNH1_ = pset.exists("ApplyDiscriminationByWeightedHCALIsolation1") ?
+      pset.getParameter<bool>("ApplyDiscriminationByWeightedHCALIsolation1") : false;
+
+    calculateWeightsNH2_ = pset.exists("ApplyDiscriminationByWeightedHCALIsolation2") ?
+      pset.getParameter<bool>("ApplyDiscriminationByWeightedHCALIsolation2") : false;
+
+    usePFTauIsolation_ = pset.exists("usePFTauIsolation") ?
+      pset.getParameter<bool>("usePFTauIsolation") : false;
+    //for compatibility => calucateWeights2_ is the default method
+    calculateWeights_ = calculateWeights2_;
+    if(calculateWeights1_ && calculateWeights_){
+      throw cms::Exception("BadIsoConfig") 
+    << "2 ways of reweighting neutral particles have been chosen "
+    << "simultaneously (ApplyDiscriminationByWeightedECALIsolation1 and "
+    << "ApplyDiscriminationByWeightedECALIsolation2). "
+    << " These options are mutually exclusive.";
+    }
+
+    if(calculateWeightsNH1_ && calculateWeightsNH2_){
+      throw cms::Exception("BadIsoConfig") 
+         << "2 ways of reweighting neutral particles have been chosen "
+            << "simultaneously (ApplyDiscriminationByWeightedHCALIsolation1 and "
+            << "ApplyDiscriminationByWeightedHCALIsolation2). "
+            << " These options are mutually exclusive.";
+     }
+    
+    applyWeightsGamma_=(calculateWeights1_ || calculateWeights_ );
+    applyWeightsNH_=(calculateWeightsNH1_ || calculateWeightsNH2_ );
+    applyWeights_ = (applyWeightsGamma_ || applyWeightsNH_);
+
     applyOccupancyCut_ = pset.getParameter<bool>("applyOccupancyCut");
     maximumOccupancy_ = pset.getParameter<uint32_t>("maximumOccupancy");
 
@@ -68,7 +107,7 @@ class PFRecoTauDiscriminationByIsolation : public PFTauDiscriminationProducerBas
     }
     
     // sanity check2 - can't use weighted and unweighted iso at the same time
-    if(includeGammas_ && calculateWeights_)
+    if(includeGammas_ && applyWeights_)
       {
 	throw cms::Exception("BasIsoConfig")
 	  << "Both 'ApplyDiscriminationByECALIsolation' and 'ApplyDiscriminationByWeightedECALIsolation' "
@@ -104,7 +143,7 @@ class PFRecoTauDiscriminationByIsolation : public PFTauDiscriminationProducerBas
     applyDeltaBeta_ = pset.exists("applyDeltaBetaCorrection") ?
       pset.getParameter<bool>("applyDeltaBetaCorrection") : false;
 
-    if ( applyDeltaBeta_ || calculateWeights_ ) {
+    if ( applyDeltaBeta_ || applyWeights_ ) {
       // Factorize the isolation QCuts into those that are used to
       // select PU and those that are not.
       std::pair<edm::ParameterSet, edm::ParameterSet> puFactorizedIsoQCuts =
@@ -171,6 +210,14 @@ class PFRecoTauDiscriminationByIsolation : public PFTauDiscriminationProducerBas
     return out;
   }
 
+  inline  double weightedSum1(std::vector<PFCandidatePtr> inColl_, double eta, double phi) const {
+    double out = 0.0;
+    for (auto const & inObj_ : inColl_){
+      out+= 1./(deltaR2(eta,phi,inObj_->eta(),inObj_->phi()));
+    }
+    return out;
+  }
+
  private:
   std::string moduleLabel_;
 
@@ -185,6 +232,15 @@ class PFRecoTauDiscriminationByIsolation : public PFTauDiscriminationProducerBas
   
   bool includeTracks_;
   bool includeGammas_;
+  bool includeNeutralHadrons_;
+  bool calculateWeights1_;
+  bool calculateWeights2_;
+  bool calculateWeightsNH1_;
+  bool calculateWeightsNH2_;
+  bool usePFTauIsolation_;
+  bool applyWeights_;
+  bool applyWeightsGamma_;
+  bool applyWeightsNH_;
   bool calculateWeights_;
   bool applyOccupancyCut_;
   uint32_t maximumOccupancy_;
@@ -241,7 +297,7 @@ void PFRecoTauDiscriminationByIsolation::beginEvent(const edm::Event& event, con
 
   // If we are applying the delta beta correction, we need to get the PF
   // candidates from the event so we can find the PU tracks.
-  if ( applyDeltaBeta_ || calculateWeights_ ) {
+  if ( applyDeltaBeta_ || applyWeights_ ) {
     // Collect all the PF pile up tracks
     edm::Handle<reco::PFCandidateCollection> pfCandidates;
     event.getByToken(pfCand_token, pfCandidates);
@@ -279,8 +335,10 @@ PFRecoTauDiscriminationByIsolation::discriminate(const PFTauRef& pfTau) const
   // collect the objects we are working with (ie tracks, tracks+gammas, etc)
   std::vector<PFCandidatePtr> isoCharged_;
   std::vector<PFCandidatePtr> isoNeutral_;
+  std::vector<PFCandidatePtr> isoNeutralHadron_;
   std::vector<PFCandidatePtr> isoPU_;
   PFCandidateCollection isoNeutralWeight_;
+  PFCandidateCollection isoNeutralHadronWeight_;
   std::vector<PFCandidatePtr> chPV_;
   isoCharged_.reserve(pfTau->isolationPFChargedHadrCands().size());
   isoNeutral_.reserve(pfTau->isolationPFGammaCands().size());
@@ -315,7 +373,7 @@ PFRecoTauDiscriminationByIsolation::discriminate(const PFTauRef& pfTau) const
   qcuts_->setPV(pv);
   qcuts_->setLeadTrack(pfTau->leadPFChargedHadrCand());
 
-  if ( applyDeltaBeta_ || calculateWeights_) {
+  if ( applyDeltaBeta_ || applyWeights_) {
     pileupQcutsGeneralQCuts_->setPV(pv);
     pileupQcutsGeneralQCuts_->setLeadTrack(pfTau->leadPFChargedHadrCand());
     pileupQcutsPUTrackSelection_->setPV(pv);
@@ -331,7 +389,7 @@ PFRecoTauDiscriminationByIsolation::discriminate(const PFTauRef& pfTau) const
       }
     }
   }
-  if ( includeGammas_ || calculateWeights_ ) {
+  if ( includeGammas_ || applyWeightsGamma_ ) {
     for( auto const & cand : pfTau->isolationPFGammaCands() ) {
       if ( qcuts_->filterCandRef(cand) ) {
 	LogTrace("discriminate") << "adding neutral iso cand with pt " << cand->pt() ;
@@ -339,12 +397,19 @@ PFRecoTauDiscriminationByIsolation::discriminate(const PFTauRef& pfTau) const
       }
     }
   }
+  if ( includeNeutralHadrons_ || applyWeightsNH_) {
+    BOOST_FOREACH( const reco::PFCandidatePtr& cand, pfTau->isolationPFNeutrHadrCands() ) {
+        if ( qcuts_->filterCandRef(cand) ) {
+	        isoNeutralHadron_.push_back(cand);
+	}
+     }
+   }
 
   typedef reco::tau::cone::DeltaRPtrFilter<PFCandidatePtr> DRFilter;
   typedef reco::tau::cone::DeltaRFilter<PFCandidate> DRFilter2;
 
   // If desired, get PU tracks.
-  if ( applyDeltaBeta_ || calculateWeights_) {
+  if ( applyDeltaBeta_ || applyWeights_) {
     // First select by inverted the DZ/track weight cuts. True = invert
     if ( verbosity_ ) {
       std::cout << "Initial PFCands: " << chargedPFCandidatesInEvent_.size() << std::endl;
@@ -406,7 +471,64 @@ PFRecoTauDiscriminationByIsolation::discriminate(const PFTauRef& pfTau) const
 
 	  isoNeutralWeight_.push_back(neutral);
 	}
+      } else  if (calculateWeights1_) {
+        for( auto const & isoObject : isoNeutral_ ) {
+          if(isoObject->charge() !=0){
+            // weight only neutral objects                                                                                                                                                                    
+            isoNeutralWeight_.push_back(*isoObject);
+            continue;
+          }
+
+          double eta=isoObject->eta();
+          double phi=isoObject->phi();
+          double sumNPU = weightedSum1(chPV_,eta,phi);
+
+          double sumPU = weightedSum1(isoPU_,eta,phi);
+          PFCandidate neutral = *isoObject;
+          if (sumNPU+sumPU>0) neutral.setP4(((sumNPU)/(sumNPU+sumPU))*neutral.p4());
+
+          isoNeutralWeight_.push_back(neutral);
+        }
+    }
+
+    if (calculateWeightsNH2_)
+      {
+        for( auto const & isoObject : isoNeutralHadron_ ) {
+          if(isoObject->charge() !=0){
+            // weight only neutral objects
+            isoNeutralWeight_.push_back(*isoObject);
+            continue;
+          }
+
+          double eta=isoObject->eta();
+          double phi=isoObject->phi();
+          double sumNPU = 0.5*log(weightedSum(chPV_,eta,phi));
+
+          double sumPU = 0.5*log(weightedSum(isoPU_,eta,phi));
+          PFCandidate neutral = *isoObject;
+          if (sumNPU+sumPU>0)  neutral.setP4(((sumNPU)/(sumNPU+sumPU))*neutral.p4());
+
+          isoNeutralHadronWeight_.push_back(neutral);
+        }
+      } else  if (calculateWeightsNH1_) {
+      for( auto const & isoObject : isoNeutralHadron_ ) {
+	if(isoObject->charge() !=0){
+	  // weight only neutral objects                                                                                                                                                                   \
+	  isoNeutralWeight_.push_back(*isoObject);
+	  continue;
+	}
+
+	double eta=isoObject->eta();
+	double phi=isoObject->phi();
+	double sumNPU = weightedSum1(chPV_,eta,phi);
+
+	double sumPU = weightedSum1(isoPU_,eta,phi);
+	PFCandidate neutral = *isoObject;
+	if (sumNPU+sumPU>0) neutral.setP4(((sumNPU)/(sumNPU+sumPU))*neutral.p4());
+
+	isoNeutralHadronWeight_.push_back(neutral);
       }
+    }
 
   // Check if we want a custom iso cone
   if ( customIsoCone_ >= 0. ) {
@@ -415,11 +537,12 @@ PFRecoTauDiscriminationByIsolation::discriminate(const PFTauRef& pfTau) const
     std::vector<PFCandidatePtr> isoCharged_filter;
     std::vector<PFCandidatePtr> isoNeutral_filter;
     PFCandidateCollection isoNeutralWeight_filter;
+    PFCandidateCollection isoNeutralHadronWeight_filter;
     // Remove all the objects not in our iso cone
     for( auto const & isoObject : isoCharged_ ) {
       if ( filter(isoObject) ) isoCharged_filter.push_back(isoObject);
     }
-    if(!calculateWeights_){
+    if(!applyWeights_){
       for( auto const & isoObject : isoNeutral_ ) {
 	if ( filter(isoObject) ) isoNeutral_filter.push_back(isoObject);
       }
@@ -429,6 +552,10 @@ PFRecoTauDiscriminationByIsolation::discriminate(const PFTauRef& pfTau) const
 	if ( filter2(isoObject) ) isoNeutralWeight_filter.push_back(isoObject);
       }
       isoNeutralWeight_ = isoNeutralWeight_filter;
+      for( auto const & isoObject : isoNeutralHadronWeight_){
+        if ( filter2(isoObject) ) isoNeutralHadronWeight_filter.push_back(isoObject);
+      }
+      isoNeutralHadronWeight_ = isoNeutralWeight_filter;
     }
     isoCharged_ = isoCharged_filter;
   }
@@ -457,17 +584,25 @@ PFRecoTauDiscriminationByIsolation::discriminate(const PFTauRef& pfTau) const
   if ( applySumPtCut_ || applyRelativeSumPtCut_ || storeRawSumPt_ || storeRawPUsumPt_ ) {
     double chargedPt = 0.0;
     double neutralPt = 0.0;
+    double neutralHadronPt = 0.0;
     double weightedNeutralPt = 0.0;
+    double weightedNeutralHadronPt = 0.0;
     for( auto const & isoObject : isoCharged_ ) {
       chargedPt += isoObject->pt();
     }
-    if(!calculateWeights_){
+    if(!applyWeights_){
       for( auto const & isoObject : isoNeutral_ ) {
 	neutralPt += isoObject->pt();
+      }
+      for( auto const & isoObject : isoNeutralHadron_ ) {
+        neutralHadronPt += isoObject->pt();
       }
     }else{
       for( auto const & isoObject : isoNeutralWeight_){
 	weightedNeutralPt+=isoObject.pt();
+      }
+      for( auto const & isoObject : isoNeutralHadronWeight_){
+        weightedNeutralHadronPt+=isoObject.pt();
       }
     }
     for( auto const & isoObject : isoPU_ ) {
@@ -477,10 +612,13 @@ PFRecoTauDiscriminationByIsolation::discriminate(const PFTauRef& pfTau) const
       LogTrace("discriminate") << "neutralPt = " << neutralPt ;
       LogTrace("discriminate") << "weighted neutral Pt = " << weightedNeutralPt ;
       LogTrace("discriminate") << "puPt = " << puPt << " (delta-beta corr. = " << (deltaBetaFactorThisEvent_*puPt) << ")" ;
-    if( calculateWeights_) {
+    if( applyWeightsGamma_) {
       neutralPt = weightedNeutralPt;
     }
-
+    if( applyWeightsNH_ ){
+       neutralHadronPt = weightedNeutralHadronPt;
+    }
+    neutralPt+=neutralHadronPt;
     if ( applyDeltaBeta_ ) {
       neutralPt -= deltaBetaFactorThisEvent_*puPt;
     }
@@ -492,6 +630,13 @@ PFRecoTauDiscriminationByIsolation::discriminate(const PFTauRef& pfTau) const
     if ( neutralPt < 0.0 ) {
       neutralPt = 0.0;
     }
+
+    if(usePFTauIsolation_){
+        if(includeTracks_) chargedPt = pfTau->isolationPFChargedHadrCandsPtSum();
+        if(includeGammas_) neutralPt = pfTau->isolationPFGammaCandsEtSum();
+        puPt = pfTau->isolationPFPUCandsEtSum();
+        if(verbosity_) std::cout << "ch/n/pu iso = " << chargedPt << "/" << neutralPt << "/" << puPt << std::endl;
+      }
 
     totalPt = chargedPt + neutralPt;
     LogTrace("discriminate") << "totalPt = " << totalPt << " (cut = " << maximumSumPt_ << ")" ;
